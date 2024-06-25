@@ -3,11 +3,14 @@
     "name": "thanywhere",
     "slug": "thanywhere",
     "version": "1.0.0",
+    "scheme": [
+      "thanywhere-app"
+    ],
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icons/web-logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/icons/web-logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,12 +22,26 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icons/web-logo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.kaung312.thanywhere"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "92ffd935-2014-4d7d-bd0f-dfb1f02ba941"
+      }
     }
   }
 }
