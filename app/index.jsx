@@ -1,19 +1,27 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Image, ScrollView, StatusBar, Text, View, Easing } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { icons, images } from "../constants";
-import CustomButton from "../components/CustomButton";
-import { router } from "expo-router";
+import { router, useRouter } from "expo-router";
 import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Index = () => {
   // Initial position off the screen
   const ring1padding = useSharedValue(0);
   const ring2padding = useSharedValue(0);
+  let [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+
+  const handleLanguageSelect = async (language) => {
+    // Mark user as not new
+    await AsyncStorage.setItem("isFirstTimeUser", "true");
+  };
 
   useEffect(() => {
     ring1padding.value = 0;
@@ -26,7 +34,10 @@ const Index = () => {
       () => (ring2padding.value = withSpring(ring2padding.value + hp(5.5))),
       300
     );
-    setTimeout(() => router.push("/home"), 2500);
+    setTimeout(() => {
+      handleLanguageSelect();
+      router.push("/home");
+    }, 2500);
   }, []);
 
   return (
@@ -65,15 +76,6 @@ const Index = () => {
               ThailandAny Where
             </Text>
           </View>
-
-          {/* <CustomButton
-            title="Get Start"
-            handlePress={() => {
-              router.push("/home");
-            }}
-            containerStyle="w-auto px-6 py-2 mt-7"
-            textStyles="text-base"
-          /> */}
         </View>
       </ScrollView>
       <StatusBar backgroundColor="#161622" style="light" />

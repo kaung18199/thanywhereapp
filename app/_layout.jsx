@@ -50,8 +50,7 @@ const RootLayout = () => {
           <Stack.Screen
             name="(tabs)"
             options={{
-              headerShown: true,
-              header: () => <TabHeader />,
+              headerShown: false,
             }}
           />
 

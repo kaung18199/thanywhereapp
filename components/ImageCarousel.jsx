@@ -89,11 +89,6 @@ const Carousel = ({ list, showButtom }) => {
                 key={index}
                 className={`  w-full h-[350px] `}
               >
-                {/* <Image
-                  source={{ uri: item.image }}
-                  resizeMode="cover"
-                  className=" w-full h-full mx-auto"
-                /> */}
                 <CachedImage
                   uri={item.image}
                   resizeMode="cover"

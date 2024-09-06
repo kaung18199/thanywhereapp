@@ -1,76 +1,119 @@
-import {
-  View,
-  Text,
-  SafeAreaView,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
-import React from "react";
-import images from "../../constants/images";
-import HomeCart from "../../components/HomeCart";
+import React, { useEffect, useState } from "react";
+import { View, Text, SafeAreaView, Image, FlatList } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import Animated, { FadeInDown } from "react-native-reanimated";
-import { MaterialIcons } from "@expo/vector-icons";
+import { icons } from "../../constants";
+import HeaderPart from "../../components/homePackage/HeaderPartHome";
+import HomeAllProduct from "../../components/homePackage/HomeAllProduct";
+import ReadAboutDestiantion from "../../components/homePackage/ReadAboutDestiantion";
+import ThingsToDo from "../../components/homePackage/ThingsToDo";
+import StayInBangkok from "../../components/homePackage/StayInBangkok";
+import LanguageSelectionModal from "../../components/Language/LanguagePage";
+import WhyBookWithUs from "../../components/homePackage/WhyBookWithUs";
+import BestSellingVantour from "../../components/homePackage/BestSellingVantour";
+import StayInPattaya from "../../components/homePackage/StayInPattaya";
+import BestSellingAttraction from "../../components/homePackage/BestingSellingAttraction";
+import TopDestinationToRead from "../../components/homePackage/TopDestinationToRead";
 
 const Home = () => {
   const router = useRouter();
+  const [isFirstTime, setIsFirstTime] = useState(null);
+
+  useEffect(() => {
+    const checkFirstTimeUser = async () => {
+      const isNewUser = await AsyncStorage.getItem("isFirstTimeUser");
+      setIsFirstTime(isNewUser === "true");
+    };
+    checkFirstTimeUser();
+  }, []);
+
+  const handleLanguageSelect = async (language) => {
+    console.log(`Language selected: ${language}`);
+    await AsyncStorage.setItem("isFirstTimeUser", "false");
+    setIsFirstTime(false);
+  };
+
+  if (isFirstTime === null) return null;
+
+  const renderItem = ({ item }) => {
+    switch (item.key) {
+      case "header":
+        return (
+          <HeaderPart>
+            <View>
+              <Text className="text-white text-base font-psemibold">
+                Expore Thailand.
+              </Text>
+              <Text className="text-white text-sm font-pregular">
+                bringing you over 140 partners and counting.
+              </Text>
+            </View>
+            <View className=" bg-white px-4 py-4 flex flex-row mt-5 mb-1  justify-between items-center rounded-full">
+              <Text className=" text-black/40 text-sm font-pregular">
+                search for all products
+              </Text>
+              <Image
+                source={icons.search}
+                resizeMethod="contain"
+                className=" w-5 h-5"
+                tintColor="#FF601B"
+              />
+            </View>
+          </HeaderPart>
+        );
+      case "homeAllProduct":
+        return <HomeAllProduct />;
+      case "thingsToDo":
+        return <ThingsToDo />;
+      case "whyBookWithUs":
+        return <WhyBookWithUs />;
+      case "stayInBangkok":
+        return <StayInBangkok />;
+      case "bestSellingVantour":
+        return <BestSellingVantour />;
+      case "bestSellingAttraction":
+        return <BestSellingAttraction />;
+      case "topDestinationToRead":
+        return <TopDestinationToRead />;
+      case "stayInPattaya":
+        return <StayInPattaya />;
+      case "readAboutDestination":
+        return (
+          <View className="pb-5">
+            <ReadAboutDestiantion />
+          </View>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const sections = [
+    { key: "header" },
+    { key: "homeAllProduct" },
+    { key: "thingsToDo" },
+    { key: "whyBookWithUs" },
+    { key: "stayInBangkok" },
+    { key: "bestSellingVantour" },
+    { key: "bestSellingAttraction" },
+    { key: "topDestinationToRead" },
+    { key: "stayInPattaya" },
+    { key: "readAboutDestination" },
+  ];
 
   return (
-    <SafeAreaView className=" ">
-      <ScrollView className=" px-2">
-        <View className=" bg-secondary-100/80 w-full h-[130px] shadow rounded-2xl z-20 mt-8">
-          <Image
-            source={images.welcomeImage}
-            alt="home"
-            width={200}
-            height={200}
-            resizeMode="cover"
-            className=" w-[160px] h-[150px] z-10 object-bottom absolute bottom-0 right-0"
-          />
-          <View className=" absolute top-[30%] px-4 left-1 z-10 gap-y-3">
-            <Text className=" font-pbold text-2xl text-white">
-              Welcome From{" "}
-            </Text>
-            <Text className=" font-pbold text-lg text-white">
-              Thailand Anywhere
-            </Text>
-          </View>
-          <View className=" w-full h-[130px] overflow-hidden ">
-            <View className=" absolute bottom-4 -left-10 w-[200px] h-[200px] bg-secondary-200/70 -z-10 rounded-full"></View>
-          </View>
-        </View>
-        {/* <View className=" pt-6">
-          <Text className=" text-base font-pbold text-secondary">
-            OUR AVALIABLE PACKAGES
-          </Text>
-        </View> */}
-        <View className="pt-6 flex flex-row w-full justify-start items-center gap-4">
-          <MaterialIcons name="travel-explore" size={20} color="#FF4000" />
-          <Text className="text-base tracking-wide font-pbold text-secondary">
-            AVAILABLE PACKAGES
-          </Text>
-        </View>
-        <Animated.View
-          entering={FadeInDown.duration(1000).springify().delay(2000)}
-          className=" flex-row flex-wrap justify-around gap-y-6 items-center w-full mt-5 mb-6 relative z-10"
-        >
-          <HomeCart
-            image={images.hotel}
-            text="HOTELS"
-            count="40 + "
-            icon="hotel"
-            action={() => router.push("/hotel")}
-          />
-          <HomeCart
-            image={images.ticket}
-            text="ATTRACTIONS"
-            count="40 + "
-            icon="ticket-alt"
-            action={() => router.push("/attraction")}
-          />
-        </Animated.View>
-      </ScrollView>
+    <SafeAreaView className="flex-1">
+      {isFirstTime && (
+        <LanguageSelectionModal
+          visible={isFirstTime}
+          onSelectLanguage={handleLanguageSelect}
+        />
+      )}
+      <FlatList
+        data={sections}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.key}
+      />
     </SafeAreaView>
   );
 };

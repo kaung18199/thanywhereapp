@@ -1,19 +1,44 @@
 import { View, Text, Image } from "react-native";
-import React from "react";
-import { images } from "../constants";
-import CustomButton from "./CustomButton";
-import { router } from "expo-router";
+import { images } from "../constants"; // Assuming you have images imported
 
 const EmptyState = ({ title, subtitle }) => {
   return (
-    <View className=" justify-center items-center px-4 h-full">
+    <View
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: 16, // px-4
+        height: "100%", // h-full
+      }}
+    >
       <Image
         source={images.search}
         resizeMode="contain"
-        className=" w-[270px] h-[215px]"
+        style={{
+          width: 270, // w-[270px]
+          height: 215, // h-[215px]
+        }}
       />
-      <Text className=" font-psemibold text-lg text-gray-100">{title}</Text>
-      <Text className=" text-sm font-pmedium text-gray-100">{subtitle}</Text>
+      <Text
+        style={{
+          fontFamily: "Poppins-SemiBold", // font-psemibold
+          fontSize: 18, // text-lg
+          color: "#D1D5DB", // text-gray-100
+          marginTop: 8, // Add margin for spacing
+        }}
+      >
+        {title}
+      </Text>
+      <Text
+        style={{
+          fontFamily: "Poppins-Medium", // font-pmedium
+          fontSize: 14, // text-sm
+          color: "#D1D5DB", // text-gray-100
+          marginTop: 4, // Add margin for spacing
+        }}
+      >
+        {subtitle}
+      </Text>
     </View>
   );
 };

@@ -46,9 +46,9 @@ const TabsLayout = () => {
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icon={icons.home}
+                icon={icons.homefootericon}
                 color={color}
-                name="Home"
+                name="home"
                 focused={focused}
               />
             ),
@@ -61,9 +61,9 @@ const TabsLayout = () => {
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icon={icons.logo}
+                icon={icons.searchfootericon}
                 color={color}
-                name="About"
+                name="search"
                 focused={focused}
               />
             ),
@@ -76,15 +76,29 @@ const TabsLayout = () => {
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icon={icons.heart}
+                icon={icons.wishlistsfootericon}
                 color={color}
-                name="Wishlists"
+                name="wishlists"
                 focused={focused}
               />
             ),
           }}
         />
-
+        <Tabs.Screen
+          name="trips"
+          options={{
+            title: "trips",
+            headerShown: false,
+            tabBarIcon: ({ color, focused }) => (
+              <TabIcon
+                icon={icons.tripsfootericon}
+                color={color}
+                name="trips"
+                focused={focused}
+              />
+            ),
+          }}
+        />
         <Tabs.Screen
           name="profile"
           options={{
@@ -92,9 +106,9 @@ const TabsLayout = () => {
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icon={icons.profile}
+                icon={icons.profilefootericon}
                 color={color}
-                name="Profile"
+                name="profile"
                 focused={focused}
               />
             ),
