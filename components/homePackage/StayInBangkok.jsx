@@ -41,14 +41,12 @@ const truncateHtml = (html, maxChars) => {
 
 const StayInBangkok = () => {
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
   const { width } = useWindowDimensions();
 
   useEffect(() => {
     const fetchData = async () => {
       const result = await getListAction();
       setData(result);
-      setLoading(false);
     };
 
     fetchData();
@@ -242,7 +240,7 @@ const StayInBangkok = () => {
           </Text>
         </TouchableOpacity>
       </View>
-      {!loading && data?.data ? (
+      {data && data?.data ? (
         <FlatList
           data={data?.data}
           renderItem={renderItem}

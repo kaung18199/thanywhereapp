@@ -46,11 +46,11 @@ const LanguageSelectionModal = ({ visible, onSelectLanguage }) => {
             source={images.languageImage}
             resizeMode="cover"
             className="absolute w-[95vw] h-[80vh] rounded-lg"
-            style={{ zIndex: "0" }}
+            style={{ zIndex: 0 }}
           />
 
           {/* Content Container */}
-          <View style={{ zIndex: "1" }}>
+          <View style={{ zIndex: 1 }}>
             <Text className="text-secondary text-2xl text-center font-pbold mb-4">
               Choose your language
             </Text>

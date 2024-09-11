@@ -69,11 +69,13 @@ const ListVantour = ({ city_id = "", search = "" }) => {
     const { contentOffset } = event.nativeEvent;
 
     const offsetY = contentOffset.y;
-
+    // setIsHeaderVisible(offsetY > 350);
     if (offsetY > 350) {
+      setIsHeaderVisible(true);
+    } else if (offsetY < 350) {
       setIsHeaderVisible(false);
     } else {
-      setIsHeaderVisible(true);
+      setIsHeaderVisible(false);
     }
   };
 
@@ -148,7 +150,7 @@ const ListVantour = ({ city_id = "", search = "" }) => {
           Refresh Loading ...
         </Text>
       )}
-      {!isHeaderVisible && (
+      {isHeaderVisible && (
         <Animated.View
           entering={FadeIn.delay(500).duration(1000).springify().damping(12)}
           exiting={FadeOut}
