@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Image, ScrollView, StatusBar, Text, View, Easing } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { icons, images } from "../constants";
+
 import { router, useRouter } from "expo-router";
 import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
 import {
@@ -9,6 +10,7 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { TouchableOpacity } from "react-native";
 
 const Index = () => {
   // Initial position off the screen
@@ -69,12 +71,14 @@ const Index = () => {
               width: "100%",
             }}
           >
-            <Text
-              className=" text-secondary-200 text-center font-pbold"
-              style={{ fontSize: hp(4) }}
-            >
-              ThailandAny Where
-            </Text>
+            <TouchableOpacity onPress={() => router.push("/home")}>
+              <Text
+                className=" text-secondary-200 text-center font-pbold"
+                style={{ fontSize: hp(4) }}
+              >
+                ThailandAny Where
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>

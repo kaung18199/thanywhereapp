@@ -5,6 +5,7 @@ import roomReducer from "./stores/roomSlice";
 import attractionReducer from "./stores/attractionSlice";
 import variationReducer from "./stores/variationSlice";
 import vantourReducer from "./stores/vantourSlice";
+import authReducer from "./stores/authSlice";
 
 export const store = configureStore({
     reducer: {
@@ -14,5 +15,6 @@ export const store = configureStore({
         attraction: attractionReducer,
         variation: variationReducer,
         vantour: vantourReducer,
+        auth: authReducer,
     },
 });

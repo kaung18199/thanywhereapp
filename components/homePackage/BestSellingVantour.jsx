@@ -18,7 +18,7 @@ const getListAction = async () => {
     const res = await axios.get(
       "/private-van-tours?order_by=top_selling_products&type=van_tour"
     );
-    console.log("API Response:", res.data);
+    // console.log("API Response:", res.data);
     return res.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -78,19 +78,15 @@ const BestSellingVantour = () => {
           }}
         >
           <View style={{ padding: 6 }}>
-            {item.cover_image ? (
-              <CachedImage
-                uri={item.cover_image}
-                style={{ height: 100, borderRadius: 15, width: "100%" }}
-                accessibilityLabel="Cover Image"
-              />
-            ) : (
-              <Image
-                source={icons.bookmark}
-                style={{ height: 100, borderRadius: 15, width: "100%" }}
-                accessibilityLabel="Default Image"
-              />
-            )}
+            <CachedImage
+              uri={
+                item.cover_image
+                  ? item.cover_image
+                  : "https://img.freepik.com/free-photo/abstract-textured-backgound_1258-30576.jpg?t=st=1730589697~exp=1730593297~hmac=fcac11d660a2c87242409664e4e8bf25de2f964c16334084e744579ef2f41136&w=1380"
+              }
+              style={{ height: 100, borderRadius: 15, width: "100%" }}
+              accessibilityLabel="Cover Image"
+            />
           </View>
           <View style={{ paddingHorizontal: 8, paddingVertical: 12 }}>
             <Text

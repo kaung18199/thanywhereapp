@@ -13,20 +13,18 @@ const HeaderPart = ({ children }) => {
 
   const getLanguage = async () => {
     let res = await AsyncStorage.getItem("language");
-    console.log("====================================");
-    console.log(res);
-    console.log("====================================");
+
     setLanguage(res);
   };
 
   const handleLanguageSelect = async (language) => {
-    console.log(`Language selected: ${language}`);
+    // console.log(`Language selected: ${language}`);
     setIsShowModal(false);
   };
 
   useEffect(() => {
     getLanguage();
-  }, []);
+  }, [isShowModal]);
 
   return (
     <View style={styles.container}>
@@ -37,15 +35,17 @@ const HeaderPart = ({ children }) => {
         />
       )}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.push("/home")}>
-          <Image
-            source={icons.logo}
-            tintColor="#ffffff"
-            resizeMode="cover"
-            style={styles.logo}
-          />
-        </TouchableOpacity>
-        <Text style={styles.title}>THAILAND ANYWHERE</Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <TouchableOpacity onPress={() => router.push("/home")}>
+            <Image
+              source={icons.logo}
+              tintColor="#ffffff"
+              resizeMode="cover"
+              style={styles.logo}
+            />
+          </TouchableOpacity>
+          <Text style={styles.title}>THANYWHERE</Text>
+        </View>
         <View style={styles.languageContainer}>
           {language === "english" ? (
             <TouchableOpacity
@@ -56,7 +56,7 @@ const HeaderPart = ({ children }) => {
                 source={images.englishImage}
                 style={styles.languageImage}
               />
-              <Text style={styles.languageText}>en</Text>
+              {/* <Text style={styles.languageText}>en</Text> */}
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -67,7 +67,7 @@ const HeaderPart = ({ children }) => {
                 source={images.myanmarImage}
                 style={styles.languageImage}
               />
-              <Text style={styles.languageText}>mm</Text>
+              {/* <Text style={styles.languageText}>mm</Text> */}
             </TouchableOpacity>
           )}
         </View>
@@ -92,8 +92,8 @@ const styles = {
     paddingBottom: 12, // pb-3
   },
   logo: {
-    width: 32, // w-8
-    height: 32, // h-8
+    width: 25, // w-8
+    height: 25, // h-8
   },
   title: {
     color: "#ffffff",
@@ -101,11 +101,11 @@ const styles = {
     fontWeight: "600", // font-psemibold
   },
   languageContainer: {
-    borderColor: "#ffffff",
-    borderWidth: 1,
-    borderRadius: 50,
-    paddingHorizontal: 4, // px-1
-    paddingVertical: 4, // py-1
+    // borderColor: "#ffffff",
+    // borderWidth: 1,
+    // borderRadius: 50,
+    // paddingHorizontal: 4, // px-1
+    // paddingVertical: 4, // py-1
   },
   languageButton: {
     flexDirection: "row",

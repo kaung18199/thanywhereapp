@@ -28,7 +28,10 @@ const AllProductCart = ({ icon, text, state, link }) => {
           tintColor={"#ffffff"}
         />
       </View>
-      <Text className=" pt-2 w-[53px] text-wrap font-pregular text-xs text-center">
+      <Text
+        className=" pt-2 w-[53px] text-wrap font-pregular text-center"
+        style={{ fontSize: 9 }}
+      >
         {text}
       </Text>
     </TouchableOpacity>

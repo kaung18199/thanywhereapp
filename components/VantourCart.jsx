@@ -1,4 +1,11 @@
-import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  useWindowDimensions,
+} from "react-native";
 import React from "react";
 import { useRouter } from "expo-router";
 import icons from "../constants/icons";
@@ -8,6 +15,7 @@ import HTML from "react-native-render-html";
 
 const VantourCart = ({ item }) => {
   const router = useRouter();
+  const { width: contentWidth } = useWindowDimensions();
   const fadeInRight = {
     from: {
       opacity: 0,
@@ -34,21 +42,18 @@ const VantourCart = ({ item }) => {
   };
 
   return (
-    <Animatable.View
-      style={{ backgroundColor: "white" }}
-      animation={fadeInRight}
-      duration={500}
-      key={item.id}
-    >
+    <View style={{ backgroundColor: "white" }} key={item.id.toString()}>
       <TouchableOpacity
         activeOpacity={0.7}
         onPress={() => console.log("hello")}
         style={{ position: "relative" }}
       >
-        <ScrollView
-          contentContainerStyle={{
-            padding: 6,
-            margin: 4,
+        <View
+          style={{
+            width: contentWidth,
+            padding: 5,
+            borderBottomColor: "#ececec",
+            borderBottomWidth: 6,
           }}
         >
           <View
@@ -56,10 +61,8 @@ const VantourCart = ({ item }) => {
               flexDirection: "row",
               justifyContent: "flex-start",
               alignItems: "flex-start",
+              gap: 6,
               padding: 8,
-              borderRadius: 20,
-              borderWidth: 1,
-              borderColor: "#f0f0f0",
             }}
           >
             {/* Image Section */}
@@ -75,7 +78,7 @@ const VantourCart = ({ item }) => {
                 uri={
                   item?.cover_image
                     ? item?.cover_image
-                    : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLEoaTsWQuPn6bW-_n6hqZvmy5Lh64qwETLg&s"
+                    : "https://img.freepik.com/free-photo/abstract-textured-backgound_1258-30576.jpg?t=st=1730589697~exp=1730593297~hmac=fcac11d660a2c87242409664e4e8bf25de2f964c16334084e744579ef2f41136&w=1380"
                 }
                 style={{ width: "100%", height: "100%", borderRadius: 15 }}
               />
@@ -205,9 +208,9 @@ const VantourCart = ({ item }) => {
               </View>
             </View>
           </View>
-        </ScrollView>
+        </View>
       </TouchableOpacity>
-    </Animatable.View>
+    </View>
   );
 };
 

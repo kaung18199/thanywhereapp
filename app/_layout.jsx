@@ -12,6 +12,8 @@ import SearchHeader from "../components/SearchHeader";
 import "../assets/global.css";
 import TabHeader from "../components/TabHeader";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
+import toastConfig from "../helpers/toastConfig";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -40,6 +42,7 @@ const RootLayout = () => {
   return (
     <Provider store={store}>
       <GestureHandlerRootView>
+        {/* <Toast config={toastConfig} /> */}
         <Stack>
           <Stack.Screen
             name="index"

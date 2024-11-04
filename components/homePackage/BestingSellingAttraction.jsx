@@ -18,7 +18,7 @@ const getListAction = async () => {
     const res = await axios.get(
       "/entrance-tickets?order_by=top_selling_products"
     );
-    console.log("API Response:", res.data);
+    // console.log("API Response:", res.data);
     return res.data;
   } catch (error) {
     console.error("Error fetching data:", error);

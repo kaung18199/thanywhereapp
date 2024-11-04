@@ -18,7 +18,7 @@ export const vantourSlice = createSlice({
 export const getListvantour = (params) => async(dispatch) => {
     try {
         const { city_id, page } = params;
-        console.log(city_id, page, "this is page");
+        // console.log(city_id, page, "this is page");
         const response = await axios.get(
             "/private-van-tours?order_by=top_selling_products&type=van_tour", { params: params }
         );
@@ -34,7 +34,7 @@ export const getListvantour = (params) => async(dispatch) => {
 export const getListvantourSearch = (params) => async(dispatch) => {
     try {
         const { city_id, page } = params;
-        console.log(city_id, page, "this is page");
+        // console.log(city_id, page, "this is page");
         const response = await axios.get(
             "/private-van-tours?order_by=top_selling_products&type=van_tour", { params: params }
         );

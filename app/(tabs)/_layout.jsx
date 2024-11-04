@@ -11,7 +11,7 @@ const TabIcon = ({ icon, color, name, focused }) => {
         source={icon}
         resizeMode="contain"
         tintColor={color}
-        className="w-6 h-6"
+        className="w-5 h-5"
       />
       <Text
         className={`${focused ? "font-psemibold" : "font-pregular"} text-sm`}
@@ -103,12 +103,19 @@ const TabsLayout = () => {
           name="profile"
           options={{
             title: "Profile",
-            headerShown: false,
+            headerShown: true,
+            headerTitle: "Profile",
+            headerTitleAlign: "center",
+            headerTitleStyle: {
+              fontFamily: "Poppins-SemiBold",
+              fontSize: 16,
+              color: "#FF601B",
+            },
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
                 icon={icons.profilefootericon}
                 color={color}
-                name="profile"
+                name="account"
                 focused={focused}
               />
             ),

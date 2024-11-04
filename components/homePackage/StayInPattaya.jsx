@@ -18,7 +18,7 @@ const getListAction = async () => {
     const res = await axios.get(
       "/hotels?city_id=4&order_by=top_selling_products"
     );
-    console.log("API Response:", res.data); // Log API response
+    // console.log("API Response:", res.data); // Log API response
     return res.data;
   } catch (error) {
     console.error("Error fetching data:", error);

@@ -15,7 +15,7 @@ import { icons } from "../../constants";
 const getListAction = async () => {
   try {
     const res = await axios.get("/destinations");
-    console.log("API Response:", res.data); // Log API response
+    // console.log("API Response:", res.data); // Log API response
     return res.data;
   } catch (error) {
     console.error("Error fetching data:", error);

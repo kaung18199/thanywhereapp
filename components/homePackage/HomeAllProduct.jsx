@@ -48,7 +48,10 @@ const HomeAllProduct = () => {
   return (
     <View className=" px-4 gap-y-4">
       <View className="pt-6 flex flex-row w-full justify-start items-center gap-4">
-        <Text className="text-lg tracking-wide font-psemibold text-secondary">
+        <Text
+          className=" tracking-wide font-psemibold text-secondary "
+          style={{ fontSize: 14 }}
+        >
           all products
         </Text>
       </View>

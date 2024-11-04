@@ -18,7 +18,7 @@ const getListAction = async () => {
     const res = await axios.get(
       "/hotels?city_id=2&order_by=top_selling_products"
     );
-    console.log("API Response:", res.data); // Log API response
+    // console.log("API Response:", res.data); // Log API response
     return res.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -69,14 +69,13 @@ const StayInBangkok = () => {
     }
   };
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item, index }) => (
     <View
       style={{
         width: width / 2 - 20,
-        marginBottom: 10,
-        marginLeft: 2,
-        margin: "auto",
-        marginRight: 2,
+        marginBottom: 8,
+        marginLeft: index % 2 === 0 ? 0 : 4, // Margin left for even index
+        marginRight: index % 2 !== 0 ? 0 : 4, // Margin right for odd index
       }}
       key={item.id}
     >
@@ -179,7 +178,7 @@ const StayInBangkok = () => {
                 source={{ html: truncateHtml(item?.full_description, 100) }}
                 baseFontStyle={{ fontSize: 8 }}
                 contentWidth={width}
-                numberOfLines={4}
+                numberOfLines={3}
               />
             </View>
             <Text style={{ fontSize: 14, fontWeight: "500", paddingBottom: 4 }}>
@@ -243,7 +242,7 @@ const StayInBangkok = () => {
       {data && data?.data ? (
         <FlatList
           data={data?.data}
-          renderItem={renderItem}
+          renderItem={({ item, index }) => renderItem({ item, index })}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
         />

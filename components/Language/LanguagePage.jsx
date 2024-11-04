@@ -87,14 +87,12 @@ const LanguageSelectionModal = ({ visible, onSelectLanguage }) => {
                 }`}
                 onPress={() => handleLanguageChange("myanmar")}
               >
-                <View className="flex-row justify-start items-center gap-4">
+                <View className="flex-row justify-start items-center gap-4 ">
                   <Image
                     source={images.myanmarImage}
                     className="w-8 h-8 rounded-full border-2 border-white"
                   />
-                  <Text className="text-sm pt-3 font-psemibold">
-                    Burmese / မြန်မာ
-                  </Text>
+                  <Text className="text-sm font-psemibold">Burmese</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
