@@ -7,7 +7,13 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getListvantour } from "../../redux/stores/vantourSlice";
 import Animated, {
@@ -23,6 +29,7 @@ import SearchPart from "./SearchPart";
 import VantourCart from "../VantourCart";
 import { debounce } from "lodash";
 import axios from "../../axiosConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ListVantour = ({ city_id = "", search = "", handleOpenPreps }) => {
   const dispatch = useDispatch();
@@ -33,6 +40,7 @@ const ListVantour = ({ city_id = "", search = "", handleOpenPreps }) => {
   const [vantourData, setVantourData] = useState([]);
 
   const memoizedPage = useMemo(() => page, [page]);
+  const memoizedVantourData = useMemo(() => vantourData, [vantourData]);
 
   const listRef = useRef(null);
   const [stop, setStop] = useState(false);
@@ -51,6 +59,11 @@ const ListVantour = ({ city_id = "", search = "", handleOpenPreps }) => {
         (item) => !vantourData.some((v) => v.id === item.id)
       ); // Prevent duplicates
       setVantourData((prevVantourData) => [...prevVantourData, ...newData]);
+
+      await AsyncStorage.setItem(
+        "vantourDataCache",
+        JSON.stringify([...vantourData])
+      );
 
       // Check for stop condition
       if (res?.data?.data.length != 10) {
@@ -84,7 +97,7 @@ const ListVantour = ({ city_id = "", search = "", handleOpenPreps }) => {
     }
   };
 
-  const handleEndReached = async () => {
+  const handleEndReached = useCallback(async () => {
     if (!stop) {
       setPage(page + 1);
       try {
@@ -101,7 +114,7 @@ const ListVantour = ({ city_id = "", search = "", handleOpenPreps }) => {
       console.log("hello");
       console.log("====================================");
     }
-  };
+  });
 
   const renderFooter = () => {
     return !stop ? (
@@ -113,21 +126,36 @@ const ListVantour = ({ city_id = "", search = "", handleOpenPreps }) => {
     ) : null;
   };
 
+  // const debouncedHandleScroll = debounce(handleScroll, 100); // Adjust delay as needed
+
   useEffect(() => {
-    const fetchVantourData = async () => {
+    // const fetchVantourData = async () => {
+    //   try {
+    //     setPage(1);
+    //     setRefreshing(true);
+    //     await getListing({ page: 1 });
+    //   } catch (error) {
+    //     console.log(error);
+    //   } finally {
+    //     setRefreshing(false);
+    //     listRef.current?.scrollToIndex({ animated: true, index: 0 });
+    //   }
+    // };
+    const fetchInitialData = async () => {
       try {
-        setPage(1);
-        setRefreshing(true);
+        const cachedData = await AsyncStorage.getItem("vantourDataCache");
+        if (cachedData) {
+          setVantourData(JSON.parse(cachedData)); // Load cached data
+        }
+        // Fetch fresh data from the server
         await getListing({ page: 1 });
       } catch (error) {
         console.log(error);
-      } finally {
-        setRefreshing(false);
-        listRef.current?.scrollToIndex({ animated: true, index: 0 });
       }
     };
+    fetchInitialData();
 
-    fetchVantourData();
+    // fetchVantourData();
   }, [city_id, search]);
 
   const endReachedThreshold = refreshing || loading ? Number.MAX_VALUE : 0.5;
@@ -293,13 +321,13 @@ const ListVantour = ({ city_id = "", search = "", handleOpenPreps }) => {
             </View>
           </View>
         }
-        ListEmptyComponent={() => (
-          <EmptyState
-            title="vantour Searching"
-            subtitle="No Data Found ..."
-            count="5"
-          />
-        )}
+        // ListEmptyComponent={() => (
+        //   <EmptyState
+        //     title="vantour Searching"
+        //     subtitle="No Data Found ..."
+        //     count="2"
+        //   />
+        // )}
         scrollEventThrottle={16}
         onScroll={handleScroll}
         refreshControl={

@@ -88,7 +88,7 @@ const SignUp = () => {
               autoCorrect={false} // Disable autocorrect
             />
             <TextInput
-              className=" border-b border-gray-300 rounded-md px-4 text-sm font-pregular py-3 w-full"
+              className="  rounded-md px-4 text-sm font-pregular py-3 w-full"
               placeholder="Last Name"
               keyboardType="name" // Show email-specific keyboard
               value={formData.last_name}
@@ -142,7 +142,7 @@ const SignUp = () => {
           </View>
           <View className=" flex flex-col justify-start items-center border border-gray-300 rounded-md">
             <TextInput
-              className="  rounded-md px-4 text-sm font-pregular py-3 w-full"
+              className="  rounded-md px-4 text-sm font-pregular py-3 w-full border-b border-gray-300"
               placeholder="Enter your password"
               secureTextEntry // Hides the input for passwords
               value={formData.password}
