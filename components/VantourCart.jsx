@@ -89,7 +89,7 @@ const VantourCart = ({ item }) => {
               <View style={{ gap: 4, paddingBottom: 2 }}>
                 <Text
                   style={{
-                    fontSize: 14,
+                    fontSize: 12,
                     fontWeight: "600",
                     color: "#FF601B",
                   }}
@@ -161,7 +161,7 @@ const VantourCart = ({ item }) => {
                 </View>
 
                 {/* Description Section */}
-                <View style={{ height: 60, overflow: "hidden", marginTop: 8 }}>
+                <View style={{ height: 50, overflow: "hidden", marginTop: 8 }}>
                   {item?.long_description && (
                     <HTML
                       source={{
@@ -183,17 +183,17 @@ const VantourCart = ({ item }) => {
                       paddingBottom: 2,
                     }}
                   >
-                    <Text style={{ fontSize: 14, fontWeight: "500" }}>
+                    <Text style={{ fontSize: 10, fontWeight: "500" }}>
                       starting price
                     </Text>
                   </View>
                   <TouchableOpacity>
                     <Text
                       style={{
-                        fontSize: 18,
-                        fontWeight: "bold",
+                        fontSize: 16,
                         color: "#FF601B",
                       }}
+                      className=" font-psemibold"
                     >
                       {item?.lowest_car_price} THB
                       <Text

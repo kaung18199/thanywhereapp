@@ -20,7 +20,7 @@ const SearchPart = ({ text, handleIndexPreps, icon }) => {
         />
       </TouchableOpacity>
       <TouchableOpacity
-        className="w-[70%]"
+        className="w-[80%]"
         onPress={() => {
           handleIndexPreps();
         }}

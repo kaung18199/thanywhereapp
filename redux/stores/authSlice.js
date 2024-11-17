@@ -19,15 +19,15 @@ export const authSlice = createSlice({
 export const loginAction = (data) => async(dispatch) => {
     try {
         const response = await axios.post("/login", data);
-        // console.log(response.data, "this is a login action");
+        console.log(response, "this is a login action");
 
-        if (response.data.message == "success") {
-            AsyncStorage.setItem("token", response.data.data.token);
-            AsyncStorage.setItem("user", JSON.stringify(response.data.data.user));
-        }
+        // if (response.data.message == "success") {
+        //     AsyncStorage.setItem("token", response.data.data.token);
+        //     AsyncStorage.setItem("user", JSON.stringify(response.data.data.user));
+        // }
         return response.data; // Return the response
     } catch (error) {
-        console.error("Error fetching user data:", error.response);
+        console.error("Error fetching user data:", error);
         return "error";
     }
 };

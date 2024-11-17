@@ -34,8 +34,8 @@ const SmoothModal = ({ visible, onClose, children }) => {
         style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.5)" }}
         onPress={onClose}
       >
-        <Animated.View
-          style={[
+        <Animated.ScrollView
+          contentContainerStyle={[
             {
               position: "absolute",
               bottom: 0,
@@ -49,7 +49,7 @@ const SmoothModal = ({ visible, onClose, children }) => {
           ]}
         >
           {children}
-        </Animated.View>
+        </Animated.ScrollView>
       </TouchableOpacity>
     </Modal>
   );

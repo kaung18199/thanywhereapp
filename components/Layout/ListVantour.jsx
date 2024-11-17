@@ -1,12 +1,4 @@
-import {
-  View,
-  Text,
-  FlatList,
-  RefreshControl,
-  useWindowDimensions,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import { Stack } from "expo-router";
 import React, {
   useCallback,
   useEffect,
@@ -14,40 +6,64 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getListvantour } from "../../redux/stores/vantourSlice";
-import Animated, {
-  FadeInRight,
-  FadeOutLeft,
-  FadeIn,
-  FadeOut,
-} from "react-native-reanimated";
-import EmptyState from "../EmptyState";
-import { icons } from "../../constants";
+import {
+  Animated,
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  SafeAreaView,
+  RefreshControl,
+  ActivityIndicator,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 import HeaderPart from "./HeaderPart";
 import SearchPart from "./SearchPart";
+import { icons } from "../../constants";
+import EmptyState from "../EmptyState";
 import VantourCart from "../VantourCart";
-import { debounce } from "lodash";
 import axios from "../../axiosConfig";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ArrowPathIcon } from "react-native-heroicons/outline";
 
-const ListVantour = ({ city_id = "", search = "", handleOpenPreps }) => {
-  const dispatch = useDispatch();
-  const [showStickyHeader, setShowStickyHeader] = useState(true);
-  const vantour = useSelector((state) => state.vantour.vantour);
+export default function Hotel({ handleOpenPreps, handle2OpenPreps }) {
+  const scrollY = useRef(new Animated.Value(0)).current;
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [city_id, setCityId] = useState("");
   const [vantourData, setVantourData] = useState([]);
+  const [stop, setStop] = useState(false);
 
   const memoizedPage = useMemo(() => page, [page]);
   const memoizedVantourData = useMemo(() => vantourData, [vantourData]);
 
-  const listRef = useRef(null);
-  const [stop, setStop] = useState(false);
+  // Scale the header and move it upwards to simulate top-aligned shrinking
+  const headerScale = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [1, 0], // Fully scaled to zero scaling
+    extrapolate: "clamp",
+  });
 
-  const { width: contentWidth } = useWindowDimensions();
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [1, 0], // Fully visible to fully hidden
+    extrapolate: "clamp",
+  });
 
-  const getListing = async (params) => {
+  const headerTranslateY = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, -75], // Half of initial header height to move up while shrinking
+    extrapolate: "clamp",
+  });
+
+  const labelTranslateY = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, -80], // Adjust to match header height reduction
+    extrapolate: "clamp",
+  });
+
+  const getListing = useCallback(async (params) => {
     try {
       const res = await axios.get(
         "/private-van-tours?order_by=top_selling_products&type=van_tour",
@@ -60,11 +76,6 @@ const ListVantour = ({ city_id = "", search = "", handleOpenPreps }) => {
       ); // Prevent duplicates
       setVantourData((prevVantourData) => [...prevVantourData, ...newData]);
 
-      await AsyncStorage.setItem(
-        "vantourDataCache",
-        JSON.stringify([...vantourData])
-      );
-
       // Check for stop condition
       if (res?.data?.data.length != 10) {
         setStop(true);
@@ -76,20 +87,15 @@ const ListVantour = ({ city_id = "", search = "", handleOpenPreps }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleScroll = (event) => {
-    const scrollY = event?.nativeEvent?.contentOffset.y;
-    setShowStickyHeader(scrollY < 5); // Show sticky header when scrolled past 100 pixels
-  };
+  });
 
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = async () => {
     try {
       setRefreshing(true);
+      setVantourData([]);
       setPage(1);
       await getListing({ page: 1 });
-      setVantourData([]);
     } catch (error) {
       console.log(error);
     } finally {
@@ -118,36 +124,15 @@ const ListVantour = ({ city_id = "", search = "", handleOpenPreps }) => {
 
   const renderFooter = () => {
     return !stop ? (
-      <EmptyState
-        title="vantour Searching"
-        subtitle="No Data Found ..."
-        count="1"
-      />
+      <View style={styles.loading} className=" h-24 pt-6">
+        <ActivityIndicator size="small" color="#FF601B" />
+      </View>
     ) : null;
   };
 
-  // const debouncedHandleScroll = debounce(handleScroll, 100); // Adjust delay as needed
-
   useEffect(() => {
-    // const fetchVantourData = async () => {
-    //   try {
-    //     setPage(1);
-    //     setRefreshing(true);
-    //     await getListing({ page: 1 });
-    //   } catch (error) {
-    //     console.log(error);
-    //   } finally {
-    //     setRefreshing(false);
-    //     listRef.current?.scrollToIndex({ animated: true, index: 0 });
-    //   }
-    // };
     const fetchInitialData = async () => {
       try {
-        const cachedData = await AsyncStorage.getItem("vantourDataCache");
-        if (cachedData) {
-          setVantourData(JSON.parse(cachedData)); // Load cached data
-        }
-        // Fetch fresh data from the server
         await getListing({ page: 1 });
       } catch (error) {
         console.log(error);
@@ -161,185 +146,202 @@ const ListVantour = ({ city_id = "", search = "", handleOpenPreps }) => {
   const endReachedThreshold = refreshing || loading ? Number.MAX_VALUE : 0.5;
 
   return (
-    <View style={{ flex: 1, position: "relative" }}>
-      {refreshing && (
-        <Text
-          style={{
-            textAlign: "center",
-            paddingVertical: 8,
-            fontSize: 14,
-            fontFamily: "Poppins-Medium",
-          }}
-        >
-          Refresh Loading ...
-        </Text>
-      )}
+    <SafeAreaView style={styles.container}>
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+      />
 
-      {showStickyHeader && (
-        <Animated.View
-          entering={FadeIn.delay(500).duration(1000).springify().damping(12)}
-          exiting={FadeOut}
-        >
-          <HeaderPart>
-            <View style={{ paddingHorizontal: 16 }}>
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 16,
-                  fontFamily: "Poppins-Medium",
-                }}
-              >
-                van tour packages
-              </Text>
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 14,
-                  fontFamily: "Poppins-Regular",
-                  marginVertical: 4,
-                }}
-              >
-                bangkok, pattaya, phuket, etc ...
-              </Text>
-              <View style={{ paddingTop: 15, gap: 8 }}>
-                <SearchPart
-                  text="choose your destination"
-                  handleIndexPreps={() =>
-                    console.log("choose your destination")
-                  }
-                  icon={icons.locationPin}
-                />
-                <SearchPart
-                  text="pick a date of travel"
-                  handleIndexPreps={() => console.log("pick a date of travel")}
-                  icon={icons.locationPin}
-                />
-                <SearchPart
-                  text="choose activity type"
-                  handleIndexPreps={() => console.log("choose activity type")}
-                  icon={icons.locationPin}
-                />
-                <View style={{ width: "100%" }}>
-                  <View
+      {/* Animated Header */}
+      <Animated.View
+        style={[
+          styles.header,
+          {
+            transform: [
+              { translateY: headerTranslateY },
+              { scaleY: headerScale },
+            ],
+            opacity: headerOpacity,
+          },
+        ]}
+      >
+        {/* <Text style={styles.headerText}>Filter Section</Text> */}
+        <HeaderPart>
+          <View style={{ paddingHorizontal: 16 }}>
+            <Text
+              style={{
+                color: "#fff",
+                fontSize: 16,
+                fontFamily: "Poppins-Medium",
+              }}
+            >
+              van tour packages
+            </Text>
+            <Text
+              style={{
+                color: "#fff",
+                fontSize: 12,
+                fontFamily: "Poppins-Regular",
+                marginVertical: 4,
+              }}
+            >
+              bangkok, pattaya, phuket, etc ...
+            </Text>
+            <View style={{ paddingTop: 15, gap: 8 }}>
+              <SearchPart
+                text="choose your destination *"
+                handleIndexPreps={() => handleOpenPreps()}
+                icon={icons.locationPin}
+              />
+              <SearchPart
+                text="pick a date of travel"
+                handleIndexPreps={() => handle2OpenPreps()}
+                icon={icons.destiantionicon}
+              />
+              <SearchPart
+                text="choose activity type *"
+                handleIndexPreps={() => console.log("choose activity type")}
+                icon={icons.attractionicon}
+              />
+              <View style={{ width: "100%" }}>
+                <View
+                  style={{
+                    backgroundColor: "#FF601B",
+                    borderRadius: 50,
+                    paddingVertical: 10,
+                    borderColor: "#fff",
+                    borderWidth: 1,
+                  }}
+                >
+                  <Text
                     style={{
-                      backgroundColor: "#FF601B",
-                      borderRadius: 50,
-                      paddingVertical: 10,
-                      borderColor: "#fff",
-                      borderWidth: 1,
+                      color: "#fff",
+                      textAlign: "center",
+                      fontSize: 12,
+                      fontFamily: "Poppins-Medium",
                     }}
                   >
-                    <Text
-                      style={{
-                        color: "#fff",
-                        textAlign: "center",
-                        fontSize: 12,
-                        fontFamily: "Poppins-Medium",
-                      }}
-                    >
-                      explore
-                    </Text>
-                  </View>
+                    explore
+                  </Text>
                 </View>
               </View>
             </View>
-          </HeaderPart>
-        </Animated.View>
-      )}
+          </View>
+        </HeaderPart>
+      </Animated.View>
 
+      {/* Animated Label with translation */}
+      <Animated.View
+        style={[styles.label, { transform: [{ translateY: labelTranslateY }] }]}
+      >
+        <Text style={styles.labelText} className=" font-psemibold">
+          Vantours Packages
+        </Text>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => {
+            onRefresh();
+          }}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 10,
+              fontFamily: "Poppins-Medium",
+              color: "#000",
+            }}
+          >
+            Refresh
+          </Text>
+          <ArrowPathIcon color="orange" size={12} />
+        </TouchableOpacity>
+      </Animated.View>
+
+      {/* FlatList with Animated Scroll */}
       <Animated.FlatList
-        ref={listRef}
+        style={{ paddingTop: 20 }}
         data={vantourData || []}
         keyExtractor={(item, index) => item.id.toString()}
-        renderItem={({ item }) => (
-          <VantourCart item={item} contentWidth={contentWidth} />
+        renderItem={({ item }) => <VantourCart item={item} />}
+        contentContainerStyle={styles.contentContainer}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
         )}
-        stickyHeaderIndices={[0]}
-        removeClippedSubviews={true}
-        ListHeaderComponent={
-          <View style={{ position: "relative" }}>
-            {showStickyHeader && (
-              <View
-                style={{
-                  height: 4,
-                  backgroundColor: "#767676",
-                  width: 50,
-                  position: "absolute",
-                  top: 0,
-                  alignSelf: "center",
-                  zIndex: 10,
-                  borderRadius: 2,
-                }}
-              ></View>
-            )}
-            <View
-              style={{
-                backgroundColor: "#fff",
-                paddingHorizontal: 16,
-                paddingVertical: 12,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontFamily: "Poppins-SemiBold",
-                  color: "#FF601B",
-                }}
-              >
-                van tours packages
-              </Text>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => {
-                  handleOpenPreps();
-                }}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 2,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 10,
-                    fontFamily: "Poppins-Medium",
-                    color: "#000",
-                  }}
-                >
-                  filter by
-                </Text>
-                <Image
-                  source={icons.menu}
-                  style={{ width: 10, height: 10 }}
-                  resizeMode="contain"
-                  tintColor="#FF601B"
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-        }
-        // ListEmptyComponent={() => (
-        //   <EmptyState
-        //     title="vantour Searching"
-        //     subtitle="No Data Found ..."
-        //     count="2"
-        //   />
-        // )}
-        scrollEventThrottle={16}
-        onScroll={handleScroll}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        scrollEventThrottle={20}
+        // refreshControl={
+        //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        // }
         onEndReached={handleEndReached}
         onEndReachedThreshold={endReachedThreshold}
         ListFooterComponent={renderFooter}
-        contentContainerStyle={{ paddingBottom: 20 }}
       />
-    </View>
+      {refreshing && (
+        <View className=" flex-row justify-center gap-x-4 items-center">
+          <Text
+            style={{
+              textAlign: "center",
+              paddingVertical: 10,
+              fontSize: 12,
+              fontFamily: "Poppins-Medium",
+            }}
+          >
+            Refreshing
+          </Text>
+          <ActivityIndicator size="small" color="#FF601B" />
+        </View>
+      )}
+    </SafeAreaView>
   );
-};
+}
 
-export default ListVantour;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    overflow: "hidden",
+  },
+  header: {
+    justifyContent: "center",
+    alignItems: "center",
+
+    position: "absolute",
+    width: "100%",
+    height: 350, // Fixed height for header
+    zIndex: 2,
+    paddingTop: 12,
+  },
+  headerText: {
+    fontSize: 24,
+    color: "#fff",
+  },
+  label: {
+    position: "absolute",
+    top: 80, // Starts below the header
+    width: "100%",
+    backgroundColor: "#ffffff",
+    paddingVertical: 10,
+    zIndex: 1,
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
+    paddingHorizontal: 16,
+  },
+  labelText: {
+    color: "#000000",
+    textAlign: "center",
+    fontSize: 14,
+  },
+  contentContainer: {
+    paddingTop: 150, // Account for header space
+  },
+  item: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderColor: "#ddd",
+  },
+});

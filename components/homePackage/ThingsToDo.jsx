@@ -19,8 +19,8 @@ const getListAction = async ({ categoryId, cityId }) => {
   return res.data;
 };
 
-const getCityAction = async () => {
-  const res = await axios.get("/cities?limit=10");
+const getCityAction = async (params) => {
+  const res = await axios.get("/cities?limit=100", { params: params });
   return res.data;
 };
 
@@ -96,6 +96,7 @@ const ThingsToDo = () => {
   const [cityLoading, setCityLoading] = useState(true);
   const [cityId, setCityId] = useState(null);
   const [categoryId, setCategoryId] = useState(null);
+  const [cityName, setCityName] = useState(null);
 
   // for modal
   // ... existing state variables ...
@@ -272,7 +273,7 @@ const ThingsToDo = () => {
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text
-                style={{ fontSize: 16, fontWeight: "800", color: "#FF5722" }}
+                style={{ fontSize: 20, fontWeight: "800", color: "#FF5722" }}
               >
                 ฿ {item?.lowest_variation_price}
               </Text>
@@ -340,7 +341,7 @@ const ThingsToDo = () => {
           style={{ fontSize: 14, fontWeight: "600", color: "#FF601B" }}
           className=" font-psemibold"
         >
-          things to do in bangkok
+          things to do in {cityName ? cityName : "bangkok"}
         </Text>
         <TouchableOpacity onPress={handleOpenModal}>
           <Text
@@ -358,7 +359,7 @@ const ThingsToDo = () => {
             showsHorizontalScrollIndicator={false}
             ref={scrollViewRef}
           >
-            {category?.map((item) => (
+            {category?.map((item, index) => (
               <TouchableOpacity
                 key={item.id}
                 onPress={() => {
@@ -366,7 +367,7 @@ const ThingsToDo = () => {
                   scrollViewRef.current.scrollTo({
                     // Scroll to the selected item
                     animated: true,
-                    x: item.item * 70, // Adjust this value based on your item width
+                    x: index * 70, // Adjust this value based on your item width
                     y: 0,
                   });
                 }}
@@ -458,8 +459,8 @@ const ThingsToDo = () => {
         visible={modalVisible} // Use modal visibility state
         onRequestClose={handleCloseModal} // Handle back button
       >
-        <View
-          style={{
+        <ScrollView
+          contentContainerStyle={{
             flex: 1,
             justifyContent: "center",
             alignItems: "center",
@@ -477,13 +478,18 @@ const ThingsToDo = () => {
             <Text className="px-6 pb-2 text-secondary font-psemibold">
               Choose city
             </Text>
-            <View>
+
+            <ScrollView
+              className="mt-2 "
+              style={{ maxHeight: 200, minHeight: 200, overflow: "hidden" }}
+            >
               {city?.data.map((item) => (
                 <TouchableOpacity
                   className="w-full "
                   key={item.id}
                   onPress={() => {
-                    console.log("hello");
+                    setCityId(item.id);
+                    setCityName(item.name);
                     handleCloseModal(); // Close modal on selection
                   }}
                   style={{
@@ -495,9 +501,7 @@ const ThingsToDo = () => {
                 >
                   <Text
                     className={`rounded-full px-4 w-full font-pregular py-1 mr-2 ${
-                      categoryId === item.id
-                        ? "border-secondary"
-                        : "border-[#dadada]"
+                      cityId == item.id ? "text-secondary" : "text-[#000]"
                     }`}
                     style={{ flex: 1, fontSize: 12 }}
                   >
@@ -516,13 +520,14 @@ const ThingsToDo = () => {
                         justifyContent: "center",
                         alignItems: "center",
                       }}
+                      className={` ${cityId == item.id ? "bg-secondary" : ""}`}
                     >
                       {/* Placeholder for checkbox */}
                     </View>
                   </TouchableOpacity>
                 </TouchableOpacity>
               ))}
-            </View>
+            </ScrollView>
             <TouchableOpacity
               onPress={handleCloseModal}
               style={{ marginTop: 10 }}
@@ -532,7 +537,7 @@ const ThingsToDo = () => {
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
       </Modal>
     </View>
   );

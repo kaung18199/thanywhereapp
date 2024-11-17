@@ -38,35 +38,58 @@ const Login = () => {
   const router = useRouter();
 
   const handleLogin = async () => {
-    // Handle login logic here
-    const frmData = new FormData();
-    frmData.append("email", formData.email);
-    frmData.append("password", formData.password);
-    // Make API call to login endpoint
-    const res = await dispatch(loginAction(frmData));
-    // console.log(res, "this is response in login");
+    try {
+      // Handle login logic here
+      const frmData = {
+        email: formData.email,
+        password: formData.password,
+      }; // Your form data here
+      try {
+        const res = await axios.post(
+          "https://api-blog.thanywhere.com/api/v2/login",
+          frmData, // data goes here as the second parameter
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
+        console.log(res, frmData, "this is response in login");
+      } catch (error) {
+        console.error("Error during login:", error);
+      }
 
-    console.log("toast emit");
-    if (res.message != "success") {
-      setFormData({ email: "", password: "" });
-      Toast.show({
-        type: "error",
-        text1: "Oww !",
-        text2: "Please check your email and password",
-        position: "top",
-        visibilityTime: 3000,
-      });
-    } else {
-      Toast.show({
-        type: "success",
-        text1: "Login success",
-        text2: "Welcome to ThanyWhere 👋",
-        position: "top",
-        visibilityTime: 3000,
-      });
-      setTimeout(() => {
-        router.push("/home");
-      }, 5000);
+      // console.log("toast emit");
+      // if (res.message != "success") {
+      //   setFormData({ email: "", password: "" });
+      //   Toast.show({
+      //     type: "error",
+      //     text1: "Oww !",
+      //     text2: "Please check your email and password",
+      //     position: "top",
+      //     visibilityTime: 3000,
+      //   });
+      // } else {
+      //   Toast.show({
+      //     type: "success",
+      //     text1: "Login success",
+      //     text2: "Welcome to ThanyWhere 👋",
+      //     position: "top",
+      //     visibilityTime: 3000,
+      //   });
+      //   setTimeout(() => {
+      //     router.push("/home");
+      //   }, 5000);
+      // }
+    } catch (error) {
+      if (error.response) {
+        console.log("Server responded with an error:", error.response.data);
+      } else if (error.request) {
+        console.log("Request made but no response received:", error.request);
+      } else {
+        console.log("Error in setting up the request:", error.message);
+      }
     }
   };
 

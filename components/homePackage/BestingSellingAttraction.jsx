@@ -7,24 +7,88 @@ import {
   useWindowDimensions,
   StyleSheet,
   Image,
+  ActivityIndicator,
+  Modal,
+  ScrollView,
 } from "react-native";
 import { CachedImage } from "../../helpers/image";
 import axios from "../../axiosConfig";
 import HTML from "react-native-render-html";
 import { icons } from "../../constants";
+import { useRef } from "react";
 
-const getListAction = async () => {
-  try {
-    const res = await axios.get(
-      "/entrance-tickets?order_by=top_selling_products"
-    );
-    // console.log("API Response:", res.data);
-    return res.data;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return { data: [] };
-  }
+const getListAction = async ({ categoryId, cityId }) => {
+  let data = {
+    city_id: cityId != "" ? cityId : 2,
+    order_by: "top_selling_products",
+    category_id: categoryId != "" ? categoryId : "",
+  };
+  const res = await axios.get("/entrance-tickets", { params: data });
+  return res.data;
 };
+
+const getCityAction = async (params) => {
+  const res = await axios.get("/cities?limit=100", { params: params });
+  return res.data;
+};
+
+const category = [
+  {
+    item: 0,
+    id: null,
+    name: "all",
+  },
+  {
+    item: 1,
+    id: 32,
+    name: "amusement park",
+  },
+  {
+    item: 2,
+    id: 40,
+    name: "dinner cruises",
+  },
+  {
+    item: 3,
+    id: 31,
+    name: "water parks",
+  },
+  {
+    item: 4,
+    id: 17,
+    name: "safari",
+  },
+  {
+    item: 5,
+    id: 16,
+    name: "museums",
+  },
+  {
+    item: 6,
+    id: 29,
+    name: "theme parks",
+  },
+  {
+    item: 7,
+    id: 54,
+    name: "buffet",
+  },
+  {
+    item: 8,
+    id: 42,
+    name: "island tours",
+  },
+  {
+    item: 9,
+    id: 39,
+    name: "shows",
+  },
+  {
+    item: 10,
+    id: 22,
+    name: "skywalks",
+  },
+];
 
 const truncateHtml = (html, maxChars) => {
   let truncated = html.replace(/<[^>]+>/g, "");
@@ -43,15 +107,51 @@ const BestSellingAttraction = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const { width } = useWindowDimensions();
+  const [city, setCity] = useState(null);
+  const [cityLoading, setCityLoading] = useState(true);
+  const [cityId, setCityId] = useState(null);
+  const [categoryId, setCategoryId] = useState(null);
+  const [cityName, setCityName] = useState(null);
+
+  const scrollViewRef = useRef(null);
+
+  // ... existing state variables ...
+  const [modalVisible, setModalVisible] = useState(false); // Add state for modal visibility
+
+  const handleOpenModal = () => setModalVisible(true); // Open modal
+  const handleCloseModal = () => setModalVisible(false); // Close modal
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getListAction();
-      setData(result);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const result = await getListAction({ categoryId, cityId });
+        setData(result);
+      } catch (error) {
+        console.error("Error setting data:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
+  }, [categoryId, cityId]);
+
+  useEffect(() => {
+    const fetchCityData = async () => {
+      try {
+        setCityLoading(true);
+        const result = await getCityAction();
+        setCity(result);
+        // console.log(city, "this is ciity");
+      } catch (error) {
+        console.error("Error setting data:", error);
+      } finally {
+        setCityLoading(false);
+      }
+    };
+
+    fetchCityData();
   }, []);
 
   const percent = (lowest_walk_in_price, lowest_variation_price) => {
@@ -237,27 +337,84 @@ const BestSellingAttraction = () => {
           paddingTop: 20,
           flexDirection: "row",
           justifyContent: "space-between",
-          paddingBottom: 16,
-          position: "sticky",
-          top: 0,
+          paddingBottom: 0,
+
           alignItems: "center",
-          gap: 16,
+          gap: 10,
         }}
       >
-        <Text
+        {/* <Text
           style={{ fontSize: 16, fontWeight: "600", color: "#FF601B" }}
           className=" font-psemibold"
         >
           best selling attraction
-        </Text>
-        <TouchableOpacity onPress={() => console.log("see more")}>
+        </Text> */}
+        <View className=" flex-1 flex-row items-center justify-start  overflow-hidden">
           <Text
-            style={{ fontSize: 10, color: "#000000" }}
-            className=" font-pregular"
+            style={{ fontSize: 16, fontWeight: "600", color: "#FF601B" }}
+            className=" font-psemibold mr-2"
           >
-            see more
+            best selling attraction
+          </Text>
+          {cityName != null && (
+            <View className=" rounded-full bg-secondary/10 text-center">
+              <Text
+                className=" font-pregular text-secondary text-center py-1 line-clamp-1 px-2"
+                style={{ fontSize: 10, maxWidth: 100, minWidth: 50 }}
+              >
+                {cityName}
+              </Text>
+            </View>
+          )}
+        </View>
+        <TouchableOpacity onPress={handleOpenModal}>
+          <Text
+            style={{ fontSize: 10 }}
+            className="text-secondary font-psemibold"
+          >
+            filter city
           </Text>
         </TouchableOpacity>
+      </View>
+      <View>
+        {!cityLoading && (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            ref={scrollViewRef}
+          >
+            {category?.map((item, index) => (
+              <TouchableOpacity
+                key={item.id}
+                onPress={() => {
+                  setCategoryId(item.id);
+                  scrollViewRef.current.scrollTo({
+                    // Scroll to the selected item
+                    animated: true,
+                    x: index * 70, // Adjust this value based on your item width
+                    y: 0,
+                  });
+                }}
+              >
+                <View
+                  className={`rounded-full px-4 py-1 mr-2 ${
+                    categoryId === item.id
+                      ? "border-secondary"
+                      : "border-[#dadada]"
+                  }`}
+                  style={{ borderWidth: 1 }}
+                >
+                  <Text
+                    className={categoryId === item.id ? "text-secondary" : ""}
+                    style={{ fontSize: 10 }}
+                  >
+                    {item.name}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        )}
       </View>
       {!loading && data?.data ? (
         <FlatList
@@ -275,9 +432,109 @@ const BestSellingAttraction = () => {
             paddingVertical: 20,
           }}
         >
-          <Text style={{ fontSize: 12, color: "#6c757d" }}>Loading...</Text>
+          <ActivityIndicator size="large" color="#FF601B" />
         </View>
       )}
+      {data?.data?.length === 0 && !loading && (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            paddingVertical: 40,
+          }}
+        >
+          <Text className=" text-secondary font-pregular text-xs">
+            Coming soon for this place
+          </Text>
+        </View>
+      )}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible} // Use modal visibility state
+        onRequestClose={handleCloseModal} // Handle back button
+      >
+        <ScrollView
+          contentContainerStyle={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.2)",
+          }}
+        >
+          <View
+            style={{
+              width: "80%",
+              backgroundColor: "white",
+              borderRadius: 10,
+              padding: 16,
+            }}
+          >
+            <Text className="px-6 pb-2 text-secondary font-psemibold">
+              Choose city
+            </Text>
+
+            <ScrollView
+              className="mt-2 "
+              style={{ maxHeight: 200, minHeight: 200, overflow: "hidden" }}
+            >
+              {city?.data.map((item) => (
+                <TouchableOpacity
+                  className="w-full "
+                  key={item.id}
+                  onPress={() => {
+                    setCityId(item.id);
+                    setCityName(item.name);
+                    handleCloseModal(); // Close modal on selection
+                  }}
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: 6,
+                  }}
+                >
+                  <Text
+                    className={`rounded-full px-4 w-full font-pregular py-1 mr-2 ${
+                      cityId == item.id ? "text-secondary" : "text-[#000]"
+                    }`}
+                    style={{ flex: 1, fontSize: 12 }}
+                  >
+                    {item.name}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => console.log(`Checkbox for ${item.name}`)}
+                  >
+                    <View
+                      style={{
+                        width: 20,
+                        height: 20,
+                        borderWidth: 1,
+                        borderColor: "#757575",
+                        borderRadius: 30,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                      className={` ${cityId == item.id ? "bg-secondary" : ""}`}
+                    >
+                      {/* Placeholder for checkbox */}
+                    </View>
+                  </TouchableOpacity>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            <TouchableOpacity
+              onPress={handleCloseModal}
+              style={{ marginTop: 10 }}
+            >
+              <Text style={{ textAlign: "center", color: "#FF601B" }}>
+                Close
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </Modal>
     </View>
   );
 };

@@ -35,7 +35,13 @@ const HeaderPart = ({ children }) => {
         />
       )}
       <View style={styles.header}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
           <TouchableOpacity onPress={() => router.push("/home")}>
             <Image
               source={icons.logo}
@@ -97,7 +103,7 @@ const styles = {
   },
   title: {
     color: "#ffffff",
-    fontSize: 18, // text-lg
+    fontSize: 16, // text-lg
     fontWeight: "600", // font-psemibold
   },
   languageContainer: {

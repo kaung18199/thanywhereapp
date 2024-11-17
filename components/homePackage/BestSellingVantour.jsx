@@ -7,17 +7,46 @@ import {
   useWindowDimensions,
   Image,
   StyleSheet,
+  ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import { CachedImage } from "../../helpers/image";
 import axios from "../../axiosConfig";
 import HTML from "react-native-render-html";
 import { icons } from "../../constants";
+import { useRef } from "react";
 
-const getListAction = async () => {
+const filterCityList = [
+  {
+    id: 2,
+    name: "Bangkok",
+  },
+  {
+    id: 4,
+    name: "Pattaya",
+  },
+  {
+    id: 8,
+    name: "Kanchanburi",
+  },
+  {
+    id: 9,
+    name: "Phuket",
+  },
+  {
+    id: 10,
+    name: "Chiang Mai",
+  },
+];
+
+const getListAction = async (cityId) => {
   try {
-    const res = await axios.get(
-      "/private-van-tours?order_by=top_selling_products&type=van_tour"
-    );
+    let data = {
+      order_by: "top_selling_products",
+      type: "van_tour",
+      city_id: cityId,
+    };
+    const res = await axios.get("/private-van-tours", { params: data });
     // console.log("API Response:", res.data);
     return res.data;
   } catch (error) {
@@ -27,32 +56,40 @@ const getListAction = async () => {
 };
 
 const truncateHtml = (html, maxChars) => {
-  let truncated = html.replace(/<[^>]+>/g, "");
-  if (truncated.length > maxChars) {
-    truncated = truncated.substring(0, maxChars);
-    truncated = truncated.substring(
-      0,
-      Math.min(truncated.length, truncated.lastIndexOf(" "))
-    );
-    truncated += "...";
+  if (html != "" || html != null) {
+    let truncated = html.replace(/<[^>]+>/g, "");
+    if (truncated.length > maxChars) {
+      truncated = truncated.substring(0, maxChars);
+      truncated = truncated.substring(
+        0,
+        Math.min(truncated.length, truncated.lastIndexOf(" "))
+      );
+      truncated += "...";
+    }
+    return `<div style="font-size: 10px;">${truncated}</div>`;
+  } else {
+    return "";
   }
-  return `<div style="font-size: 10px;">${truncated}</div>`;
 };
 
 const BestSellingVantour = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const { width } = useWindowDimensions();
+  const [cityId, setCityId] = useState("");
+
+  const scrollViewRef = useRef(null);
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
-      const result = await getListAction();
+      const result = await getListAction(cityId);
       setData(result);
       setLoading(false);
     };
 
     fetchData();
-  }, []);
+  }, [cityId]);
 
   const renderItem = ({ item }) => (
     <View
@@ -175,7 +212,7 @@ const BestSellingVantour = () => {
           paddingTop: 20,
           flexDirection: "row",
           justifyContent: "space-between",
-          paddingBottom: 16,
+          paddingBottom: 0,
           position: "sticky",
           top: 0,
           alignItems: "center",
@@ -188,15 +225,49 @@ const BestSellingVantour = () => {
         >
           best selling van tours
         </Text>
-        <TouchableOpacity onPress={() => console.log("see more")}>
+        {/* <TouchableOpacity onPress={() => console.log("see more")}>
           <Text
             style={{ fontSize: 10, color: "#000000" }}
             className=" font-pregular"
           >
             see more
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        ref={scrollViewRef}
+      >
+        {filterCityList?.map((item, index) => (
+          <TouchableOpacity
+            key={item.id}
+            onPress={() => {
+              setCityId(item.id);
+              scrollViewRef.current.scrollTo({
+                // Scroll to the selected item
+                animated: true,
+                x: index * 70, // Adjust this value based on your item width
+                y: 0,
+              });
+            }}
+          >
+            <View
+              className={`rounded-full px-4 py-1 mr-2 ${
+                cityId === item.id ? "border-secondary" : "border-[#dadada]"
+              }`}
+              style={{ borderWidth: 1 }}
+            >
+              <Text
+                className={cityId === item.id ? "text-secondary" : ""}
+                style={{ fontSize: 10 }}
+              >
+                {item.name}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
       {!loading && data?.data ? (
         <FlatList
           data={data?.data}
@@ -213,7 +284,7 @@ const BestSellingVantour = () => {
             paddingVertical: 20,
           }}
         >
-          <Text style={{ fontSize: 12, color: "#6c757d" }}>Loading...</Text>
+          <ActivityIndicator size="large" color="#FF601B" />
         </View>
       )}
     </View>

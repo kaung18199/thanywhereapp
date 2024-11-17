@@ -9,7 +9,7 @@ const data = [
   {
     icon: icons.hotelicon,
     text: "hotel bookings",
-    state: false,
+    state: true,
     link: "/hotel",
   },
   {

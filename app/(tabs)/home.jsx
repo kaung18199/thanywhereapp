@@ -49,7 +49,7 @@ const Home = () => {
               </Text>
             </View>
             <View className=" bg-white px-4 py-4 flex flex-row mt-5 mb-1  justify-between items-center rounded-full">
-              <Text className=" text-black/40 text-sm font-pregular">
+              <Text className=" text-secondary text-sm font-pregular pl-2">
                 search for all products
               </Text>
               <Image
