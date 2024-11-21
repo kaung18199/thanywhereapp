@@ -1,45 +1,46 @@
 {
-    "expo": {
-        "name": "thanywhere",
-        "slug": "thanywhere",
-        "version": "1.0.0",
-        "scheme": ["thanywhere-app"],
-        "orientation": "portrait",
-        "icon": "./assets/icons/web-logo.png",
-        "userInterfaceStyle": "light",
-        "splash": {
-            "image": "./assets/icons/web-logo.png",
-            "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
-        },
-        "assetBundlePatterns": ["**/*"],
-        "ios": {
-            "supportsTablet": true,
-            "bundleIdentifier": "com.kaung312.thanywhere"
-        },
-        "android": {
-            "adaptiveIcon": {
-                "foregroundImage": "./assets/icons/web-logo.png",
-                "backgroundColor": "#ffffff"
-            },
-            "package": "com.kaung312.thanywhere",
-            "permissions": ["INTERNET"],
-            "config": {
-                "cleartext": true
-            }
-        },
-        "web": {
-            "favicon": "./assets/favicon.png",
-            "bundler": "metro"
-        },
-        "plugins": ["expo-router", "expo-font"],
-        "extra": {
-            "router": {
-                "origin": false
-            },
-            "eas": {
-                "projectId": "92ffd935-2014-4d7d-bd0f-dfb1f02ba941"
-            }
-        }
+  "expo": {
+    "name": "thanywhere",
+    "slug": "thanywhere",
+    "version": "1.0.0",
+    "scheme": ["thanywhere-app"],
+    "orientation": "portrait",
+    "icon": "./assets/icons/web-logo.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/icons/web-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.kaung312.thanywhere"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icons/web-logo.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.kaung312.thanywhere",
+      "permissions": ["INTERNET"],
+      "config": {
+        "cleartext": true
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": ["expo-router", "expo-font"],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "92ffd935-2014-4d7d-bd0f-dfb1f02ba941"
+      }
     }
+  }
 }

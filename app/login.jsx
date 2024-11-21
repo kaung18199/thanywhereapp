@@ -2,8 +2,8 @@ import axios from "../axiosConfig";
 import { Stack, useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Button, TextInput } from "react-native";
-import { loginAction } from "../redux/stores/authSlice";
-import { useDispatch } from "react-redux";
+// import { loginAction } from "../redux/stores/authSlice";
+// import { useDispatch } from "react-redux";
 import {
   Image,
   SafeAreaView,
@@ -15,6 +15,7 @@ import { ChevronLeftIcon } from "react-native-heroicons/outline";
 // import Toast from "react-native-toast-message";
 import Toast from "react-native-toast-message";
 import toastConfig from "../helpers/toastConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HeaderLeftCustom = () => {
   const router = useRouter();
@@ -33,7 +34,7 @@ const Login = () => {
     password: "",
   });
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const router = useRouter();
 
@@ -44,45 +45,48 @@ const Login = () => {
         email: formData.email,
         password: formData.password,
       }; // Your form data here
-      try {
-        const res = await axios.post(
-          "https://api-blog.thanywhere.com/api/v2/login",
-          frmData, // data goes here as the second parameter
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          }
-        );
-        console.log(res, frmData, "this is response in login");
-      } catch (error) {
-        console.error("Error during login:", error);
-      }
+      const res = await axios.post(
+        "https://api-blog.thanywhere.com/api/v2/login",
+        frmData, // data goes here as the second parameter
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
 
-      // console.log("toast emit");
-      // if (res.message != "success") {
-      //   setFormData({ email: "", password: "" });
-      //   Toast.show({
-      //     type: "error",
-      //     text1: "Oww !",
-      //     text2: "Please check your email and password",
-      //     position: "top",
-      //     visibilityTime: 3000,
-      //   });
-      // } else {
-      //   Toast.show({
-      //     type: "success",
-      //     text1: "Login success",
-      //     text2: "Welcome to ThanyWhere 👋",
-      //     position: "top",
-      //     visibilityTime: 3000,
-      //   });
-      //   setTimeout(() => {
-      //     router.push("/home");
-      //   }, 5000);
-      // }
+      console.log(res.data, "this is response");
+
+      if (res.data.message == "success") {
+        setFormData({ email: "", password: "" });
+        await AsyncStorage.setItem("token", res.data.data.token);
+        await AsyncStorage.setItem("user", JSON.stringify(res.data.data.user));
+        Toast.show({
+          type: "success",
+          text1: "Login success",
+          text2: "Welcome to ThanyWhere 👋",
+          position: "top",
+          visibilityTime: 3000,
+        });
+        setTimeout(() => {
+          router.push("/home");
+        }, 5000);
+      } else {
+        setFormData({ email: "", password: "" });
+        Toast.show({
+          type: "error",
+          text1: "Oww !",
+          text2: "Please check your email and password",
+          position: "top",
+          visibilityTime: 3000,
+        });
+        await AsyncStorage.removeItem("token");
+        await AsyncStorage.removeItem("user");
+      }
     } catch (error) {
+      await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem("user");
       if (error.response) {
         console.log("Server responded with an error:", error.response.data);
       } else if (error.request) {

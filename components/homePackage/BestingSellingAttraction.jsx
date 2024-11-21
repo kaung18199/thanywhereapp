@@ -16,6 +16,7 @@ import axios from "../../axiosConfig";
 import HTML from "react-native-render-html";
 import { icons } from "../../constants";
 import { useRef } from "react";
+import LoadingCart from "../LoadingCart/LoadingCart";
 
 const getListAction = async ({ categoryId, cityId }) => {
   let data = {
@@ -121,10 +122,12 @@ const BestSellingAttraction = () => {
   const handleOpenModal = () => setModalVisible(true); // Open modal
   const handleCloseModal = () => setModalVisible(false); // Close modal
 
+  const loadingCarts = [1, 2, 3, 4, 5, 6, 7, 8];
+
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
         const result = await getListAction({ categoryId, cityId });
         setData(result);
       } catch (error) {
@@ -171,14 +174,13 @@ const BestSellingAttraction = () => {
     }
   };
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item, index }) => (
     <View
       style={{
         width: width / 2 - 20,
-        marginBottom: 10,
-        marginLeft: 2,
-        margin: "auto",
-        marginRight: 2,
+        marginBottom: 8,
+        marginLeft: index % 2 === 0 ? 0 : 4, // Margin left for even index
+        marginRight: index % 2 !== 0 ? 0 : 4, // Margin right for odd index
       }}
       key={item.id}
     >
@@ -419,7 +421,7 @@ const BestSellingAttraction = () => {
       {!loading && data?.data ? (
         <FlatList
           data={data?.data}
-          renderItem={renderItem}
+          renderItem={({ item, index }) => renderItem({ item, index })}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
         />
@@ -429,12 +431,28 @@ const BestSellingAttraction = () => {
             flex: 1,
             justifyContent: "center",
             alignItems: "center",
-            paddingVertical: 20,
           }}
         >
-          <ActivityIndicator size="large" color="#FF601B" />
+          {loading && (
+            <View style={{ flex: 1 }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "space-between",
+                }}
+              >
+                {loadingCarts.map((item, index) => (
+                  <View key={index} style={{ width: "48%", marginBottom: 10 }}>
+                    <LoadingCart />
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
         </View>
       )}
+      {/* data?.data?.length === 0 && !loading && */}
       {data?.data?.length === 0 && !loading && (
         <View
           style={{

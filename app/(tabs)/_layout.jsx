@@ -6,7 +6,7 @@ import "../../assets/global.css";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
-    <View className=" items-center justify-center gap-2">
+    <View className=" items-center justify-center pt-4 gap-2">
       <Image
         source={icon}
         resizeMode="contain"
@@ -14,8 +14,10 @@ const TabIcon = ({ icon, color, name, focused }) => {
         className="w-5 h-5"
       />
       <Text
-        className={`${focused ? "font-psemibold" : "font-pregular"} text-sm`}
-        style={{ color: color }}
+        className={`${
+          focused ? "font-psemibold" : "font-pregular"
+        } text-center whitespace-nowrap line-clamp-1 font-pregular`}
+        style={{ color: color, fontSize: 10 }}
       >
         {name}
       </Text>

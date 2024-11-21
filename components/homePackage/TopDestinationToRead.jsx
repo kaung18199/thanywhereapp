@@ -10,6 +10,7 @@ import {
 import { CachedImage } from "../../helpers/image";
 import axios from "../../axiosConfig";
 import { icons } from "../../constants";
+import LoadingCart from "../LoadingCart/LoadingCart";
 
 // Fetch the destination data using axios
 const getListAction = async () => {
@@ -22,6 +23,8 @@ const getListAction = async () => {
     return { data: [] }; // Return empty data on error
   }
 };
+
+const loadingCarts = [1, 2, 3, 4, 5, 6, 7, 8];
 
 const TopDestinationToRead = () => {
   const [data, setData] = useState(null);
@@ -40,14 +43,13 @@ const TopDestinationToRead = () => {
   }, []);
 
   // Function to render each item in the carousel
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item, index }) => (
     <View
       style={{
         width: width / 2 - 20,
-        marginBottom: 10,
-        marginLeft: 2,
-        margin: "auto",
-        marginRight: 2,
+        marginBottom: 8,
+        marginLeft: index % 2 === 0 ? 0 : 4, // Margin left for even index
+        marginRight: index % 2 !== 0 ? 0 : 4, // Margin right for odd index
       }}
       key={item.id.toString()}
     >
@@ -177,27 +179,25 @@ const TopDestinationToRead = () => {
       {!loading && data?.data ? (
         <FlatList
           data={data?.data}
-          renderItem={renderItem}
+          renderItem={({ item, index }) => renderItem({ item, index })}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
         />
       ) : (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            paddingVertical: 40,
-          }}
-        >
-          <Text
+        <View>
+          <View
             style={{
-              fontSize: 12,
-              fontWeight: "500",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
             }}
           >
-            Loading...
-          </Text>
+            {loadingCarts.map((item, index) => (
+              <View key={index} style={{ width: "49%", marginBottom: 10 }}>
+                <LoadingCart />
+              </View>
+            ))}
+          </View>
         </View>
       )}
     </View>

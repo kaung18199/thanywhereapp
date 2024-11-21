@@ -7,6 +7,7 @@ import { useRef } from "react";
 // import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 // import { clearAppData } from "../../helpers/database";
 import { Modal } from "react-native";
+import LoadingThingToDo from "../LoadingCart/LoadingThingToDo";
 
 // Async function to fetch data
 const getListAction = async ({ categoryId, cityId }) => {
@@ -352,6 +353,7 @@ const ThingsToDo = () => {
           </Text>
         </TouchableOpacity>
       </View>
+
       <View>
         {!cityLoading && (
           <ScrollView
@@ -449,7 +451,14 @@ const ThingsToDo = () => {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingVertical: 4 }}
           >
-            {loadData.map((item) => loadingItem(item, "loading ..."))}
+            {loadData.map((item, index) => (
+              <View
+                key={index}
+                style={{ width: 200, marginBottom: 10, marginRight: 10 }}
+              >
+                <LoadingThingToDo />
+              </View>
+            ))}
           </ScrollView>
         </View>
       )}

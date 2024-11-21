@@ -12,10 +12,11 @@ import icons from "../constants/icons";
 import * as Animatable from "react-native-animatable";
 import { CachedImage } from "../helpers/image";
 import HTML from "react-native-render-html";
+import { Dimensions } from "react-native";
 
 const VantourCart = ({ item }) => {
   const router = useRouter();
-  const { width: contentWidth } = useWindowDimensions();
+  const { width: screenWidth } = useWindowDimensions();
   const fadeInRight = {
     from: {
       opacity: 0,
@@ -50,7 +51,7 @@ const VantourCart = ({ item }) => {
       >
         <View
           style={{
-            width: contentWidth,
+            width: screenWidth,
             padding: 5,
             borderBottomColor: "#ececec",
             borderBottomWidth: 6,
@@ -68,7 +69,7 @@ const VantourCart = ({ item }) => {
             {/* Image Section */}
             <View
               style={{
-                width: "40%",
+                width: screenWidth * 0.35,
                 height: 160,
                 overflow: "hidden",
                 borderRadius: 15,
@@ -85,7 +86,7 @@ const VantourCart = ({ item }) => {
             </View>
 
             {/* Details Section */}
-            <View style={{ width: "60%", paddingLeft: 8 }}>
+            <View style={{ width: screenWidth * 0.6, paddingLeft: 4 }}>
               <View style={{ gap: 4, paddingBottom: 2 }}>
                 <Text
                   style={{

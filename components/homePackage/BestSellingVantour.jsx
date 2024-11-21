@@ -15,6 +15,7 @@ import axios from "../../axiosConfig";
 import HTML from "react-native-render-html";
 import { icons } from "../../constants";
 import { useRef } from "react";
+import LoadingCart from "../LoadingCart/LoadingCart";
 
 const filterCityList = [
   {
@@ -80,6 +81,8 @@ const BestSellingVantour = () => {
 
   const scrollViewRef = useRef(null);
 
+  const loadingCarts = [1, 2, 3, 4, 5, 6, 7, 8];
+
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
@@ -91,14 +94,13 @@ const BestSellingVantour = () => {
     fetchData();
   }, [cityId]);
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item, index }) => (
     <View
       style={{
         width: width / 2 - 20,
-        marginBottom: 10,
-        marginLeft: 2,
-        marginRight: 2,
-        margin: "auto",
+        marginBottom: 8,
+        marginLeft: index % 2 === 0 ? 0 : 4, // Margin left for even index
+        marginRight: index % 2 !== 0 ? 0 : 4, // Margin right for odd index
       }}
       key={item.id}
     >
@@ -271,7 +273,7 @@ const BestSellingVantour = () => {
       {!loading && data?.data ? (
         <FlatList
           data={data?.data}
-          renderItem={renderItem}
+          renderItem={({ item, index }) => renderItem({ item, index })}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
         />
@@ -281,10 +283,25 @@ const BestSellingVantour = () => {
             flex: 1,
             justifyContent: "center",
             alignItems: "center",
-            paddingVertical: 20,
           }}
         >
-          <ActivityIndicator size="large" color="#FF601B" />
+          {loading && (
+            <View style={{ flex: 1 }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "space-between",
+                }}
+              >
+                {loadingCarts.map((item, index) => (
+                  <View key={index} style={{ width: "49%", marginBottom: 10 }}>
+                    <LoadingCart />
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
         </View>
       )}
     </View>

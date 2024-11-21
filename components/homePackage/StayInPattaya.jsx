@@ -15,6 +15,7 @@ import { CachedImage } from "../../helpers/image";
 import axios from "../../axiosConfig";
 import HTML from "react-native-render-html";
 import { icons } from "../../constants";
+import LoadingCart from "../LoadingCart/LoadingCart";
 
 const priceOptions = [
   {
@@ -97,6 +98,8 @@ const StayInPattaya = () => {
   const handleCloseModal = () => setModalVisible(false); // Close modal
 
   const scrollViewRef = useRef(null);
+
+  const loadingCarts = [1, 2, 3, 4, 5, 6, 7, 8];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -363,15 +366,20 @@ const StayInPattaya = () => {
           numColumns={2}
         />
       ) : (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            paddingVertical: 40,
-          }}
-        >
-          {loadingData && <ActivityIndicator size="large" color="#FF601B" />}
+        <View style={{ flex: 1 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
+            }}
+          >
+            {loadingCarts.map((item, index) => (
+              <View key={index} style={{ width: "49%", marginBottom: 10 }}>
+                <LoadingCart />
+              </View>
+            ))}
+          </View>
         </View>
       )}
       {data?.data?.length === 0 && !loadingData && (

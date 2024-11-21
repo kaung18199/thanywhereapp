@@ -15,6 +15,7 @@ import { CachedImage } from "../../helpers/image";
 import axios from "../../axiosConfig";
 import HTML from "react-native-render-html";
 import { icons } from "../../constants";
+import LoadingCart from "../LoadingCart/LoadingCart";
 
 const priceOptions = [
   {
@@ -132,6 +133,8 @@ const StayInBangkok = () => {
   const [priceRange, setPriceRange] = useState("");
   const [place, setPlace] = useState("");
   const [loadingData, setLoadingData] = useState(false);
+
+  const loadingCarts = [1, 2, 3, 4, 5, 6, 7, 8];
 
   const [modalVisible, setModalVisible] = useState(false); // Add state for modal visibility
 
@@ -397,6 +400,7 @@ const StayInBangkok = () => {
           </TouchableOpacity>
         ))}
       </ScrollView>
+
       {data && data?.data && !loadingData ? (
         <FlatList
           data={data?.data}
@@ -410,10 +414,25 @@ const StayInBangkok = () => {
             flex: 1,
             justifyContent: "center",
             alignItems: "center",
-            paddingVertical: 40,
           }}
         >
-          {loadingData && <ActivityIndicator size="large" color="#FF601B" />}
+          {loadingData && (
+            <View style={{ flex: 1 }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "space-between",
+                }}
+              >
+                {loadingCarts.map((item, index) => (
+                  <View key={index} style={{ width: "49%", marginBottom: 10 }}>
+                    <LoadingCart />
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
         </View>
       )}
       {data?.data?.length === 0 && !loadingData && (

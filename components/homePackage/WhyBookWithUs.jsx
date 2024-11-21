@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
 import { CachedImage } from "../../helpers/image";
 import { images } from "../../constants";
+// import LoadingCity from "../LoadingCart/LoadingCity";
 
 // const { width: screenWidth } = Dimensions.get("window");
 
@@ -73,6 +74,9 @@ const WhyBookWithUs = () => {
         </Text>
       </View>
 
+      {/* <View>
+        <LoadingCity />
+      </View> */}
       <ScrollView
         horizontal={true}
         showsHorizontalScrollIndicator={false}
