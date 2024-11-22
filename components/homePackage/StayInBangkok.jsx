@@ -326,7 +326,9 @@ const StayInBangkok = () => {
   );
 
   return (
-    <View style={{ paddingHorizontal: 16, gap: 10 }}>
+    <View
+      style={{ paddingHorizontal: 16, gap: 10, backgroundColor: "#FFFFFF" }}
+    >
       <View
         style={{
           paddingTop: 20,

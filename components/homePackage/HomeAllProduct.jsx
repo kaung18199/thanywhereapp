@@ -46,7 +46,7 @@ const data = [
 
 const HomeAllProduct = () => {
   return (
-    <View className=" px-4 gap-y-4">
+    <View className=" px-4 gap-y-4 bg-white">
       <View className="pt-6 flex flex-row w-full justify-start items-center gap-4">
         <Text
           className=" tracking-wide font-psemibold text-secondary "

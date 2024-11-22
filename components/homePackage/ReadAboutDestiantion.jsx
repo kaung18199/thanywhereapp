@@ -67,7 +67,14 @@ const ReadAboutDestination = () => {
   );
 
   return (
-    <View style={{ paddingHorizontal: 16, paddingBottom: 16, gap: 16 }}>
+    <View
+      style={{
+        paddingHorizontal: 16,
+        paddingBottom: 16,
+        gap: 16,
+        backgroundColor: "#FFFFFF",
+      }}
+    >
       <View
         style={{
           paddingTop: 24,

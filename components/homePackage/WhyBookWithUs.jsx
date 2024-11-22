@@ -67,7 +67,7 @@ const WhyBookWithUs = () => {
   );
 
   return (
-    <View className=" px-4 gap-y-4">
+    <View className=" px-4 gap-y-4 bg-white">
       <View className="pt-5 flex flex-row w-full justify-between sticky top-0 items-center gap-4">
         <Text className="text-lg tracking-wide font-psemibold text-secondary">
           why book with us

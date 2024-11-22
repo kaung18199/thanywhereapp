@@ -39,7 +39,7 @@ const Home = () => {
     switch (item.key) {
       case "header":
         return (
-          <HeaderPart>
+          <HeaderPart style="home">
             <View>
               <Text className="text-white text-base font-psemibold">
                 Expore Thailand.
@@ -79,7 +79,7 @@ const Home = () => {
         return <StayInPattaya />;
       case "readAboutDestination":
         return (
-          <View className="pb-5">
+          <View className="">
             <ReadAboutDestiantion />
           </View>
         );

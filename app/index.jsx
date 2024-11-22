@@ -45,42 +45,44 @@ const Index = () => {
   return (
     <SafeAreaView className="  h-full relative">
       <ScrollView contentContainerStyle={{ height: "100%" }}>
-        <View className="w-full justify-center items-center h-full px-4 space-y-4 bg-secondary-100/30">
-          <Animated.View
-            className=" bg-white/20 rounded-full"
-            style={{ padding: ring2padding }}
-          >
+        <TouchableOpacity onPress={() => router.push("/home")}>
+          <View className="w-full justify-center items-center h-full px-4 space-y-4 bg-secondary-100/30">
             <Animated.View
-              className=" bg-white/30 rounded-full"
-              style={{ padding: ring1padding }}
+              className=" bg-white/20 rounded-full"
+              style={{ padding: ring2padding }}
             >
-              <Image
-                source={icons.logo}
-                style={{
-                  maxWidth: 380,
-                  height: hp(20),
-                  width: hp(20),
-                  resizeMode: "contain",
-                }}
-              />
-            </Animated.View>
-          </Animated.View>
-          <View
-            className="relative mt-5"
-            style={{
-              width: "100%",
-            }}
-          >
-            <TouchableOpacity onPress={() => router.push("/home")}>
-              <Text
-                className=" text-secondary-200 text-center font-pbold"
-                style={{ fontSize: hp(4) }}
+              <Animated.View
+                className=" bg-white/30 rounded-full"
+                style={{ padding: ring1padding }}
               >
-                ThailandAny Where
-              </Text>
-            </TouchableOpacity>
+                <Image
+                  source={icons.logo}
+                  style={{
+                    maxWidth: 380,
+                    height: hp(20),
+                    width: hp(20),
+                    resizeMode: "contain",
+                  }}
+                />
+              </Animated.View>
+            </Animated.View>
+            {/* <View
+              className="relative mt-5"
+              style={{
+                width: "100%",
+              }}
+            >
+              <TouchableOpacity onPress={() => router.push("/home")}>
+                <Text
+                  className=" text-secondary-200 text-center font-pbold"
+                  style={{ fontSize: hp(4) }}
+                >
+                  ThailandAny Where
+                </Text>
+              </TouchableOpacity>
+            </View> */}
           </View>
-        </View>
+        </TouchableOpacity>
       </ScrollView>
       <StatusBar backgroundColor="#161622" style="light" />
     </SafeAreaView>

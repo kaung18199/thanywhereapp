@@ -25,8 +25,7 @@ import { ArrowPathIcon } from "react-native-heroicons/outline";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import LoadingVantour from "../LoadingCart/LoadingVantour";
 
-export default function ListVantour() {
-  const scrollY = useRef(new Animated.Value(0)).current;
+export default function ListVantour({ setStickyHeader }) {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -38,6 +37,19 @@ export default function ListVantour() {
 
   const memoizedPage = useMemo(() => page, [page]);
   const memoizedVantourData = useMemo(() => vantourData, [vantourData]);
+
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  const handleScroll = Animated.event(
+    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+    {
+      useNativeDriver: false,
+      listener: (event) => {
+        const offsetY = event.nativeEvent.contentOffset.y;
+        setStickyHeader(offsetY > 100); // Switch header after 100px
+      },
+    }
+  );
 
   const getListing = useCallback(async (params) => {
     try {
@@ -97,14 +109,9 @@ export default function ListVantour() {
         paddingVertical: 8,
         paddingHorizontal: 14,
         backgroundColor: "#FFFFFF",
-        shadowColor: "#000", // iOS
-        shadowOffset: { width: 0, height: 2 }, // iOS
-        shadowOpacity: 0.2, // iOS
-        shadowRadius: 4, // iOS
-        elevation: 2, // Android
       }}
     >
-      <Text className=" font-psemibold  text-sm">Van tours Packages</Text>
+      <Text className=" font-psemibold  text-base">Van tours Packages</Text>
     </View>
   );
 
@@ -143,6 +150,7 @@ export default function ListVantour() {
         contentContainerStyle={styles.contentContainer}
         ListHeaderComponent={renderHeader}
         stickyHeaderIndices={[0]}
+        onScroll={handleScroll}
         scrollEventThrottle={20}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

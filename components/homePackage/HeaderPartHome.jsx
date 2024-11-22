@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import LanguageSelectionModal from "../Language/LanguagePage";
 import { useRouter } from "expo-router";
 
-const HeaderPart = ({ children }) => {
+const HeaderPart = ({ children, style }) => {
   const [language, setLanguage] = useState();
   const [isShowModal, setIsShowModal] = useState(false);
 
@@ -27,58 +27,60 @@ const HeaderPart = ({ children }) => {
   }, [isShowModal]);
 
   return (
-    <View style={styles.container}>
-      {isShowModal && (
-        <LanguageSelectionModal
-          visible={isShowModal}
-          onSelectLanguage={handleLanguageSelect}
-        />
-      )}
-      <View style={styles.header}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 10,
-          }}
-        >
-          <TouchableOpacity onPress={() => router.push("/home")}>
-            <Image
-              source={icons.logo}
-              tintColor="#ffffff"
-              resizeMode="cover"
-              style={styles.logo}
-            />
-          </TouchableOpacity>
-          <Text style={styles.title}>THANYWHERE</Text>
-        </View>
-        <View style={styles.languageContainer}>
-          {language === "english" ? (
-            <TouchableOpacity
-              style={styles.languageButton}
-              onPress={() => setIsShowModal(true)}
-            >
+    <View className={`${style != "home" ? "bg-secondary" : "bg-white"}`}>
+      <View style={styles.container}>
+        {isShowModal && (
+          <LanguageSelectionModal
+            visible={isShowModal}
+            onSelectLanguage={handleLanguageSelect}
+          />
+        )}
+        <View style={styles.header}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <TouchableOpacity onPress={() => router.push("/home")}>
               <Image
-                source={images.englishImage}
-                style={styles.languageImage}
+                source={icons.logo}
+                tintColor="#ffffff"
+                resizeMode="cover"
+                style={styles.logo}
               />
-              {/* <Text style={styles.languageText}>en</Text> */}
             </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={styles.languageButton}
-              onPress={() => setIsShowModal(true)}
-            >
-              <Image
-                source={images.myanmarImage}
-                style={styles.languageImage}
-              />
-              {/* <Text style={styles.languageText}>mm</Text> */}
-            </TouchableOpacity>
-          )}
+            <Text style={styles.title}>THANYWHERE</Text>
+          </View>
+          <View style={styles.languageContainer}>
+            {language === "english" ? (
+              <TouchableOpacity
+                style={styles.languageButton}
+                onPress={() => setIsShowModal(true)}
+              >
+                <Image
+                  source={images.englishImage}
+                  style={styles.languageImage}
+                />
+                {/* <Text style={styles.languageText}>en</Text> */}
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.languageButton}
+                onPress={() => setIsShowModal(true)}
+              >
+                <Image
+                  source={images.myanmarImage}
+                  style={styles.languageImage}
+                />
+                {/* <Text style={styles.languageText}>mm</Text> */}
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
+        <View style={styles.childrenContainer}>{children}</View>
       </View>
-      <View style={styles.childrenContainer}>{children}</View>
     </View>
   );
 };
@@ -131,9 +133,7 @@ const styles = {
     fontWeight: "600", // font-psemibold
     color: "#ffffff",
   },
-  childrenContainer: {
-    // any specific styling for children container if needed
-  },
+  childrenContainer: {},
 };
 
 export default HeaderPart;

@@ -174,11 +174,12 @@ const ThingsToDo = () => {
         width: 200,
         overflow: "hidden",
         backgroundColor: "#FFFFFF",
+
         borderRadius: 20,
         padding: 8,
       }}
     >
-      <View style={{ position: "relative" }} className="shadow-lg">
+      <View style={{ position: "relative" }} className="">
         <CachedImage
           uri={item.cover_image}
           style={{ width: 185, height: 100, borderRadius: 15 }}
@@ -329,7 +330,9 @@ const ThingsToDo = () => {
   };
 
   return (
-    <View style={{ paddingHorizontal: 16, gap: 10 }}>
+    <View
+      style={{ paddingHorizontal: 16, gap: 10, backgroundColor: "#FFFFFF" }}
+    >
       <View
         style={{
           paddingTop: 30,
@@ -401,7 +404,9 @@ const ThingsToDo = () => {
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ paddingVertical: 4 }}
+                contentContainerStyle={{
+                  paddingVertical: 5,
+                }}
               >
                 {data.data.map(renderItem)}
               </ScrollView>

@@ -32,7 +32,7 @@ import LoadingCity from "../components/LoadingCart/LoadingCity";
 
 const Vantour = () => {
   const dispatch = useDispatch();
-
+  const [stickyHeader, setStickyHeader] = useState(false);
   const { height: screenHeight } = Dimensions.get("window");
 
   const [city, setCity] = useState(null);
@@ -103,7 +103,7 @@ const Vantour = () => {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <View>
         <Stack.Screen
           options={{
@@ -111,70 +111,72 @@ const Vantour = () => {
           }}
         />
       </View>
-      <HeaderPart>
-        <View style={{ paddingHorizontal: 16 }}>
-          <Text
-            style={{
-              color: "#fff",
-              fontSize: 16,
-              fontFamily: "Poppins-Medium",
-            }}
-          >
-            van tour packages
-          </Text>
-          <Text
-            style={{
-              color: "#fff",
-              fontSize: 12,
-              fontFamily: "Poppins-Regular",
-              marginVertical: 4,
-            }}
-          >
-            bangkok, pattaya, phuket, etc ...
-          </Text>
-          <View style={{ paddingTop: 15, gap: 8 }}>
-            <SearchPart
-              text="choose your destination *"
-              handleIndexPreps={() => handleOpenPreps()}
-              icon={icons.locationPin}
-            />
-            <SearchPart
-              text="pick a date of travel"
-              handleIndexPreps={() => handle2OpenPreps()}
-              icon={icons.destiantionicon}
-            />
-            <SearchPart
-              text="choose activity type *"
-              handleIndexPreps={() => console.log("choose activity type")}
-              icon={icons.attractionicon}
-            />
-            <View style={{ width: "100%" }}>
-              <View
-                style={{
-                  backgroundColor: "#FF601B",
-                  borderRadius: 50,
-                  paddingVertical: 10,
-                  borderColor: "#fff",
-                  borderWidth: 1,
-                }}
-              >
-                <Text
+      {!stickyHeader && (
+        <HeaderPart>
+          <View style={{ paddingHorizontal: 16 }}>
+            <Text
+              style={{
+                color: "#fff",
+                fontSize: 16,
+                fontFamily: "Poppins-Medium",
+              }}
+            >
+              van tour packages
+            </Text>
+            <Text
+              style={{
+                color: "#fff",
+                fontSize: 12,
+                fontFamily: "Poppins-Regular",
+                marginVertical: 4,
+              }}
+            >
+              bangkok, pattaya, phuket, etc ...
+            </Text>
+            <View style={{ paddingTop: 15, gap: 8 }}>
+              <SearchPart
+                text="choose your destination *"
+                handleIndexPreps={() => handleOpenPreps()}
+                icon={icons.locationPin}
+              />
+              <SearchPart
+                text="pick a date of travel"
+                handleIndexPreps={() => handle2OpenPreps()}
+                icon={icons.destiantionicon}
+              />
+              <SearchPart
+                text="choose activity type *"
+                handleIndexPreps={() => console.log("choose activity type")}
+                icon={icons.attractionicon}
+              />
+              <View style={{ width: "100%" }}>
+                <View
                   style={{
-                    color: "#fff",
-                    textAlign: "center",
-                    fontSize: 12,
-                    fontFamily: "Poppins-Medium",
+                    backgroundColor: "#FF601B",
+                    borderRadius: 50,
+                    paddingVertical: 10,
+                    borderColor: "#fff",
+                    borderWidth: 1,
                   }}
                 >
-                  explore
-                </Text>
+                  <Text
+                    style={{
+                      color: "#fff",
+                      textAlign: "center",
+                      fontSize: 12,
+                      fontFamily: "Poppins-Medium",
+                    }}
+                  >
+                    explore
+                  </Text>
+                </View>
               </View>
             </View>
           </View>
-        </View>
-      </HeaderPart>
+        </HeaderPart>
+      )}
       <View style={{ flex: 1 }}>
-        <ListVantour />
+        <ListVantour setStickyHeader={setStickyHeader} />
       </View>
 
       <BottomSheet
