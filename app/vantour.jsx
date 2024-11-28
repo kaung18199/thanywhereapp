@@ -29,15 +29,20 @@ import HeaderPart from "../components/Layout/HeaderPart";
 import SearchPart from "../components/Layout/SearchPart";
 import debounce from "lodash.debounce";
 import LoadingCity from "../components/LoadingCart/LoadingCity";
+import CustomCalendar from "../components/Layout/CustomCalendar";
 
 const Vantour = () => {
   const dispatch = useDispatch();
   const [stickyHeader, setStickyHeader] = useState(false);
   const { height: screenHeight } = Dimensions.get("window");
+  const [selectedConfirmDate, setSelectedConfirmDate] = useState(null);
 
   const [city, setCity] = useState(null);
   const [city_name, setCityName] = useState(null);
   const [cityLoading, setCityLoading] = useState(true);
+
+  const [chooseDestination, setChooseDestination] = useState("");
+  const [chooseDestination_name, setChooseDestinationName] = useState("");
 
   const handleInputChange = (value) => {
     setCityName(value);
@@ -84,7 +89,7 @@ const Vantour = () => {
 
   const bottomSheetRef = useRef(null);
   const bottomSheetRef2 = useRef(null);
-  const snapPoints = useMemo(() => ["1%", "60%", "80%", "95%"], []);
+  const snapPoints = useMemo(() => ["1%", "95%"], []);
 
   const handleClosePreps = () => bottomSheetRef.current?.close();
   const handleOpenPreps = () => bottomSheetRef.current?.expand();
@@ -135,12 +140,20 @@ const Vantour = () => {
             </Text>
             <View style={{ paddingTop: 15, gap: 8 }}>
               <SearchPart
-                text="choose your destination *"
+                text={
+                  chooseDestination_name
+                    ? chooseDestination_name
+                    : "choose your destination"
+                }
                 handleIndexPreps={() => handleOpenPreps()}
                 icon={icons.locationPin}
               />
               <SearchPart
-                text="pick a date of travel"
+                text={
+                  selectedConfirmDate
+                    ? selectedConfirmDate
+                    : "pick a date of travel"
+                }
                 handleIndexPreps={() => handle2OpenPreps()}
                 icon={icons.destiantionicon}
               />
@@ -150,7 +163,8 @@ const Vantour = () => {
                 icon={icons.attractionicon}
               />
               <View style={{ width: "100%" }}>
-                <View
+                <TouchableOpacity
+                  onPress={() => console.log("explore")}
                   style={{
                     backgroundColor: "#FF601B",
                     borderRadius: 50,
@@ -169,7 +183,7 @@ const Vantour = () => {
                   >
                     explore
                   </Text>
-                </View>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -240,7 +254,7 @@ const Vantour = () => {
               />
               <TextInput
                 className="  text-sm font-pregular w-full pt-4 ml-4"
-                placeholder="search"
+                placeholder={chooseDestination_name ?? "search"}
                 keyboardType="" // Show email-specific keyboard
                 value={city_name}
                 onChangeText={handleInputChange}
@@ -258,12 +272,18 @@ const Vantour = () => {
                   key={item.id}
                   onPress={() => {
                     console.log("====================================");
-                    console.log("hello");
+                    setChooseDestination(item.id);
+                    setChooseDestinationName(item.name);
+                    handleClosePreps();
                     console.log("====================================");
                   }}
                 >
                   <View
-                    className={`rounded-full py-4 gap-x-2 w-full flex-1 flex-row justify-start items-center`}
+                    className={`rounded-full py-4 gap-x-2 w-full flex-1 flex-row justify-start items-center ${
+                      chooseDestination == item.id
+                        ? "border-b border-secondary"
+                        : ""
+                    }`}
                   >
                     <Image
                       source={icons.locationPin}
@@ -323,7 +343,7 @@ const Vantour = () => {
             >
               <Text style={{ opacity: 0 }}>......</Text>
               <Text
-                style={{ fontSize: 14, color: "#FF601B" }}
+                style={{ fontSize: 14, color: "#000000" }}
                 className=" font-psemibold"
               >
                 Pick a Date
@@ -337,6 +357,27 @@ const Vantour = () => {
                 />
               </TouchableOpacity>
             </View>
+          </View>
+          <CustomCalendar setSelectedConfirmDate={setSelectedConfirmDate} />
+          <View className="absolute bottom-0 left-0 py-8 px-6 border-t border-gray-100 right-0 flex-1 flex-row justify-between items-center">
+            <Text className=" font-pbold text-lg text-secondary">
+              {selectedConfirmDate
+                ? selectedConfirmDate
+                : "Please select a date"}
+            </Text>
+
+            <TouchableOpacity
+              onPress={() => {
+                if (selectedConfirmDate) {
+                  handle2ClosePreps();
+                }
+              }}
+              className=" bg-secondary py-3 rounded-full w-28"
+            >
+              <Text className=" font-psemibold text-sm text-white text-center">
+                Confirm
+              </Text>
+            </TouchableOpacity>
           </View>
         </BottomSheetView>
       </BottomSheet>

@@ -1,10 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-
+import { ActivityIndicator, View, StyleSheet } from "react-native";
 import Animated from "react-native-reanimated";
 
 export const CachedImage = (props) => {
   const [cachedSource, setCachedSource] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { uri } = props;
 
   useEffect(() => {
@@ -35,11 +36,21 @@ export const CachedImage = (props) => {
         console.log(error);
         console.log("====================================");
         setCachedSource({ uri });
+      } finally {
+        setIsLoading(false);
       }
     };
 
     getCachedImage();
-  }, []);
+  }, [uri]);
 
-  return <Animated.Image source={cachedSource} {...props} />;
+  return (
+    <View className=" justify-center items-center">
+      {isLoading ? (
+        <ActivityIndicator size="small" color="#FF601B" {...props} />
+      ) : (
+        <Animated.Image source={cachedSource} {...props} />
+      )}
+    </View>
+  );
 };

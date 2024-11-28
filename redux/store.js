@@ -6,6 +6,7 @@ import attractionReducer from "./stores/attractionSlice";
 import variationReducer from "./stores/variationSlice";
 import vantourReducer from "./stores/vantourSlice";
 import authReducer from "./stores/authSlice";
+import homeReducer from "./stores/homeSlice";
 
 export const store = configureStore({
     reducer: {
@@ -16,5 +17,6 @@ export const store = configureStore({
         variation: variationReducer,
         vantour: vantourReducer,
         auth: authReducer,
+        home: homeReducer,
     },
 });

@@ -103,13 +103,23 @@ const SignUp = () => {
             make sure it matches the name on your goverment ID.
           </Text>
           <View>
-            <TextInput
+            {/* <TextInput
               className="border border-gray-300 rounded-md px-4 text-sm font-pregular py-3 w-full"
               placeholder="Select a date"
               value={formData.dob}
               onPressIn={() => setShowDatePicker(true)}
               editable={false} // Make TextInput non-editable
-            />
+            /> */}
+            <TouchableOpacity
+              className="border border-gray-300 rounded-md px-4 text-sm font-pregular py-3 w-full"
+              onPress={() => setShowDatePicker(true)}
+            >
+              {formData.dob ? (
+                <Text>{formData.dob}</Text>
+              ) : (
+                <Text>Select DOB</Text>
+              )}
+            </TouchableOpacity>
             {showDatePicker && (
               <DateTimePicker
                 testID="dateTimePicker"

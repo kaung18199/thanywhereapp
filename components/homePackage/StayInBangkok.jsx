@@ -157,7 +157,7 @@ const StayInBangkok = () => {
     };
 
     fetchData();
-  }, [priceRange, place]);
+  }, [place, priceRange]);
 
   const percent = (lowest_walk_in_price, lowest_room_price) => {
     if (

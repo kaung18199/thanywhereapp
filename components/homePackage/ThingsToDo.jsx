@@ -4,8 +4,8 @@ import { CachedImage } from "../../helpers/image";
 import axios from "../../axiosConfig";
 import { icons } from "../../constants";
 import { useRef } from "react";
-// import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-// import { clearAppData } from "../../helpers/database";
+import { setThingToDo } from "../../redux/stores/homeSlice";
+import { useSelector, useDispatch } from "react-redux";
 import { Modal } from "react-native";
 import LoadingThingToDo from "../LoadingCart/LoadingThingToDo";
 
@@ -92,12 +92,15 @@ const category = [
 
 const ThingsToDo = () => {
   const [data, setData] = useState(null);
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [city, setCity] = useState(null);
   const [cityLoading, setCityLoading] = useState(true);
   const [cityId, setCityId] = useState(null);
   const [categoryId, setCategoryId] = useState(null);
   const [cityName, setCityName] = useState(null);
+
+  const thingToDo = useSelector((state) => state.home.thingToDo);
 
   // for modal
   // ... existing state variables ...
@@ -110,13 +113,20 @@ const ThingsToDo = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
+      if (thingToDo == null || categoryId != null || cityId != null) {
+        try {
+          setLoading(true);
+          const result = await getListAction({ categoryId, cityId });
+          dispatch(setThingToDo(result));
+          setData(result);
+        } catch (error) {
+          console.error("Error setting data:", error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
         setLoading(true);
-        const result = await getListAction({ categoryId, cityId });
-        setData(result);
-      } catch (error) {
-        console.error("Error setting data:", error);
-      } finally {
+        setData(thingToDo);
         setLoading(false);
       }
     };

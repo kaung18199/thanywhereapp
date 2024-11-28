@@ -35,9 +35,6 @@ export default function ListVantour({ setStickyHeader }) {
 
   const { height: screenHeight } = useWindowDimensions();
 
-  const memoizedPage = useMemo(() => page, [page]);
-  const memoizedVantourData = useMemo(() => vantourData, [vantourData]);
-
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const handleScroll = Animated.event(
@@ -83,6 +80,7 @@ export default function ListVantour({ setStickyHeader }) {
       setRefreshing(true);
       setVantourData([]);
       setPage(1);
+      setStop(true);
       await getListing({ page: 1 });
     } catch (error) {
       console.log(error);
@@ -93,9 +91,9 @@ export default function ListVantour({ setStickyHeader }) {
 
   const handleEndReached = useCallback(async () => {
     if (!stop) {
-      setPage(page + 1);
       try {
         setLoading(true);
+        setPage(page + 1);
         await getListing({ page: page });
       } catch (error) {
         console.log(error);
@@ -123,20 +121,20 @@ export default function ListVantour({ setStickyHeader }) {
     ) : null;
   };
 
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        setPage(1);
-        setVantourData([]);
-        await getListing({ page: 1 });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchInitialData();
+  // useEffect(() => {
+  //   const fetchInitialData = async () => {
+  //     try {
+  //       setPage(1);
+  //       setVantourData([]);
+  //       await getListing({ page: page });
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchInitialData();
 
-    // fetchVantourData();
-  }, []);
+  //   // fetchVantourData();
+  // }, []);
 
   const endReachedThreshold = refreshing || loading ? Number.MAX_VALUE : 0.5;
 
