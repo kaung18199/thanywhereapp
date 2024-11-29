@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import dayjs from "dayjs"; // For date manipulation
+import {
+  ChevronRightIcon,
+  ChevronLeftIcon,
+} from "react-native-heroicons/outline";
 
 export default function CustomCalendar({ setSelectedConfirmDate }) {
   const [currentMonth, setCurrentMonth] = useState(dayjs());
@@ -23,10 +27,14 @@ export default function CustomCalendar({ setSelectedConfirmDate }) {
         </Text>
         <View className=" flex-row items-center justify-end gap-x-8">
           <TouchableOpacity onPress={handlePrevMonth}>
-            <Text style={styles.navText}>{"<"}</Text>
+            <View style={styles.navText}>
+              <ChevronLeftIcon size={20} color={"#FF601B"} />
+            </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleNextMonth}>
-            <Text style={styles.navText}>{">"}</Text>
+            <View style={styles.navText}>
+              <ChevronRightIcon size={20} color={"#FF601B"} />
+            </View>
           </TouchableOpacity>
         </View>
       </View>

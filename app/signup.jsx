@@ -17,7 +17,7 @@ const HeaderLeftCustom = () => {
   const router = useRouter();
   return (
     <View style={{ marginLeft: 4 }}>
-      <TouchableOpacity onPress={() => router.push("/home")}>
+      <TouchableOpacity onPress={() => router.back()}>
         <ChevronLeftIcon size={18} color="#FF601B" />
       </TouchableOpacity>
     </View>
@@ -75,9 +75,9 @@ const SignUp = () => {
           <Text className=" font-pmedium text-lg pb-4">
             Welcome to ThanyWhere
           </Text>
-          <View className=" flex flex-col justify-start items-center border border-gray-300 rounded-md">
+          <View className=" flex flex-col justify-start items-center border border-gray-300 rounded-xl">
             <TextInput
-              className=" border-b border-gray-300 rounded-md px-4 text-sm font-pregular py-3 w-full"
+              className=" border-b border-gray-300 rounded-xl px-4 text-sm font-pregular py-3 w-full"
               placeholder="First name"
               keyboardType="name" // Show email-specific keyboard
               value={formData.first_name}
@@ -88,7 +88,7 @@ const SignUp = () => {
               autoCorrect={false} // Disable autocorrect
             />
             <TextInput
-              className="  rounded-md px-4 text-sm font-pregular py-3 w-full"
+              className="  rounded-xl px-4 text-sm font-pregular py-3 w-full"
               placeholder="Last Name"
               keyboardType="name" // Show email-specific keyboard
               value={formData.last_name}
@@ -104,14 +104,14 @@ const SignUp = () => {
           </Text>
           <View>
             {/* <TextInput
-              className="border border-gray-300 rounded-md px-4 text-sm font-pregular py-3 w-full"
+              className="border border-gray-300 rounded-xl px-4 text-sm font-pregular py-3 w-full"
               placeholder="Select a date"
               value={formData.dob}
               onPressIn={() => setShowDatePicker(true)}
               editable={false} // Make TextInput non-editable
             /> */}
             <TouchableOpacity
-              className="border border-gray-300 rounded-md px-4 text-sm font-pregular py-3 w-full"
+              className="border border-gray-300 rounded-xl px-4 text-sm font-pregular py-3 w-full"
               onPress={() => setShowDatePicker(true)}
             >
               {formData.dob ? (
@@ -125,7 +125,7 @@ const SignUp = () => {
                 testID="dateTimePicker"
                 value={formData.dob ? new Date(formData.dob) : new Date()}
                 mode="date"
-                className="bg-white border border-gray-300 rounded-md px-4 text-sm font-pregular py-3 w-full"
+                className="bg-white border border-gray-300 rounded-xl px-4 text-sm font-pregular py-3 w-full"
                 display="inline"
                 onChange={onChangeDate}
               />
@@ -136,7 +136,7 @@ const SignUp = () => {
               shared with other people who use thanywhere.
             </Text>
             <TextInput
-              className=" border border-gray-300 rounded-md px-4 text-sm font-pregular py-3 w-full"
+              className=" border border-gray-300 rounded-xl px-4 text-sm font-pregular py-3 w-full"
               placeholder="Enter your email"
               keyboardType="email-address" // Show email-specific keyboard
               value={formData.email}
@@ -150,9 +150,9 @@ const SignUp = () => {
               we'll email you trip confirmations and receipts.
             </Text>
           </View>
-          <View className=" flex flex-col justify-start items-center border border-gray-300 rounded-md">
+          <View className=" flex flex-col justify-start items-center border border-gray-300 rounded-xl">
             <TextInput
-              className="  rounded-md px-4 text-sm font-pregular py-3 w-full border-b border-gray-300"
+              className="  rounded-xl px-4 text-sm font-pregular py-3 w-full border-b border-gray-300"
               placeholder="Enter your password"
               secureTextEntry // Hides the input for passwords
               value={formData.password}
@@ -161,7 +161,7 @@ const SignUp = () => {
               }
             />
             <TextInput
-              className="  rounded-md px-4 text-sm font-pregular py-3 w-full"
+              className="  rounded-xl px-4 text-sm font-pregular py-3 w-full"
               placeholder="Confirm your password"
               secureTextEntry // Hides the input for passwords
               value={formData.password_confirmation}
@@ -180,14 +180,14 @@ const SignUp = () => {
           <View>
             <TouchableOpacity
               onPress={handleLogin}
-              className="bg-[#FF601B]  rounded-md px-4 py-3 flex justify-center items-center"
+              className="bg-[#FF601B]  rounded-xl px-4 py-3 flex justify-center items-center"
             >
               <Text className=" text-white font-psemibold ">Sign up</Text>
             </TouchableOpacity>
           </View>
           <View>
             <TouchableOpacity
-              className="bg-white border border-gray-300 rounded-md px-4 py-3 mt-3 flex justify-center items-center"
+              className="bg-white border border-gray-300 rounded-xl px-4 py-3 mt-3 flex justify-center items-center"
               onPress={() => router.push("/login")}
             >
               <Text className=" text-gray-600 font-psemibold ">

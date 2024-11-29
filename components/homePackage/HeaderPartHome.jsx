@@ -43,7 +43,7 @@ const HeaderPart = ({ children, style }) => {
               gap: 10,
             }}
           >
-            <TouchableOpacity onPress={() => router.push("/home")}>
+            <TouchableOpacity onPress={() => router.back()}>
               <Image
                 source={icons.logo}
                 tintColor="#ffffff"

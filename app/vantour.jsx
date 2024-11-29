@@ -11,12 +11,12 @@ import {
   Text,
   Image,
   ScrollView,
-  ActivityIndicator,
+  Animated,
   StyleSheet,
   Dimensions,
   TextInput,
 } from "react-native";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { getListCity } from "../redux/stores/citySlice";
 import { useDispatch } from "react-redux";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
@@ -32,7 +32,11 @@ import LoadingCity from "../components/LoadingCart/LoadingCity";
 import CustomCalendar from "../components/Layout/CustomCalendar";
 
 const Vantour = () => {
+  const animatedOpacity = useRef(new Animated.Value(1)).current; // Initial opacity is 1
+  const animatedHeight = useRef(new Animated.Value(360)).current; // Initial height is 300
+
   const dispatch = useDispatch();
+  const router = useRouter();
   const [stickyHeader, setStickyHeader] = useState(false);
   const { height: screenHeight } = Dimensions.get("window");
   const [selectedConfirmDate, setSelectedConfirmDate] = useState(null);
@@ -77,11 +81,29 @@ const Vantour = () => {
     );
   };
 
+  const goExploreAction = () => {
+    // Navigate to explore page
+    router.push({
+      pathname: "/result/vantour/[vantour]",
+      params: { cityId: chooseDestination, pickupDate: selectedConfirmDate },
+    });
+  };
+
   useEffect(() => {
     handleClosePreps();
-
-    // getFunction();
   }, []);
+
+  useEffect(() => {
+    Animated.timing(animatedOpacity, {
+      toValue: stickyHeader ? 0 : 1,
+      duration: 300, // Duration in ms
+    }).start();
+
+    Animated.timing(animatedHeight, {
+      toValue: stickyHeader ? 0 : 360, // Adjust to your header height
+      duration: 300, // Duration in ms
+    }).start();
+  }, [stickyHeader]);
 
   useEffect(() => {
     getCityAction(city_name);
@@ -89,6 +111,7 @@ const Vantour = () => {
 
   const bottomSheetRef = useRef(null);
   const bottomSheetRef2 = useRef(null);
+  const bottomSheetRef3 = useRef(null);
   const snapPoints = useMemo(() => ["1%", "95%"], []);
 
   const handleClosePreps = () => bottomSheetRef.current?.close();
@@ -99,11 +122,18 @@ const Vantour = () => {
   const handle2OpenPreps = () => bottomSheetRef2.current?.expand();
   const handle2IndexPreps = () => bottomSheetRef2.current?.snapToIndex(4);
 
+  const handle3ClosePreps = () => bottomSheetRef3.current?.close();
+  const handle3OpenPreps = () => bottomSheetRef3.current?.expand();
+  const handle3IndexPreps = () => bottomSheetRef3.current?.snapToIndex(4);
+
   // callbacks
   const handleSheetChanges = useCallback((index) => {
     console.log("handleSheetChanges", index);
   }, []);
   const handleSheet2Changes = useCallback((index) => {
+    console.log("handleSheetChanges", index);
+  }, []);
+  const handleSheet3Changes = useCallback((index) => {
     console.log("handleSheetChanges", index);
   }, []);
 
@@ -116,7 +146,14 @@ const Vantour = () => {
           }}
         />
       </View>
-      {!stickyHeader && (
+
+      <Animated.View
+        style={{
+          opacity: animatedOpacity,
+          height: animatedHeight,
+          overflow: "hidden",
+        }}
+      >
         <HeaderPart>
           <View style={{ paddingHorizontal: 16 }}>
             <Text
@@ -158,13 +195,13 @@ const Vantour = () => {
                 icon={icons.destiantionicon}
               />
               <SearchPart
-                text="choose activity type *"
-                handleIndexPreps={() => console.log("choose activity type")}
+                text="select destination (optional) *"
+                handleIndexPreps={() => handle3OpenPreps()}
                 icon={icons.attractionicon}
               />
               <View style={{ width: "100%" }}>
                 <TouchableOpacity
-                  onPress={() => console.log("explore")}
+                  onPress={() => goExploreAction()}
                   style={{
                     backgroundColor: "#FF601B",
                     borderRadius: 50,
@@ -188,7 +225,8 @@ const Vantour = () => {
             </View>
           </View>
         </HeaderPart>
-      )}
+      </Animated.View>
+
       <View style={{ flex: 1 }}>
         <ListVantour setStickyHeader={setStickyHeader} />
       </View>
@@ -381,19 +419,20 @@ const Vantour = () => {
           </View>
         </BottomSheetView>
       </BottomSheet>
-      {/* <BottomSheet
+      <BottomSheet
         index={0}
-        ref={bottomSheetRef}
-        onChange={handleSheetChanges}
+        ref={bottomSheetRef3}
+        onChange={handleSheet3Changes}
         snapPoints={snapPoints}
         enablePanDownToClose={true}
+        style={styles.bottomSheet}
       >
         <BottomSheetView
           style={{
             flex: 1,
             alignItems: "center",
             justifyContent: "flex-start",
-            padding: 16,
+            padding: 16, // Ensure it appears above other components
           }}
         >
           <View
@@ -411,12 +450,12 @@ const Vantour = () => {
             >
               <Text style={{ opacity: 0 }}>......</Text>
               <Text
-                style={{ fontSize: 14, color: "#FF601B" }}
+                style={{ fontSize: 14, color: "#000000" }}
                 className=" font-psemibold"
               >
-                Select a destination
+                select destinations (optional)
               </Text>
-              <TouchableOpacity onPress={() => handleClosePreps()}>
+              <TouchableOpacity onPress={() => handle3ClosePreps()}>
                 <Image
                   source={icons.close}
                   style={{ width: 10, height: 10 }}
@@ -426,8 +465,29 @@ const Vantour = () => {
               </TouchableOpacity>
             </View>
           </View>
+          <CustomCalendar setSelectedConfirmDate={setSelectedConfirmDate} />
+          <View className="absolute bottom-0 left-0 py-8 px-6 border-t border-gray-100 right-0 flex-1 flex-row justify-between items-center">
+            <Text className=" font-pbold text-lg text-secondary">
+              {selectedConfirmDate
+                ? selectedConfirmDate
+                : "Please select a date"}
+            </Text>
+
+            <TouchableOpacity
+              onPress={() => {
+                if (selectedConfirmDate) {
+                  handle3ClosePreps();
+                }
+              }}
+              className=" bg-secondary py-3 rounded-full w-28"
+            >
+              <Text className=" font-psemibold text-sm text-white text-center">
+                Confirm
+              </Text>
+            </TouchableOpacity>
+          </View>
         </BottomSheetView>
-      </BottomSheet> */}
+      </BottomSheet>
     </SafeAreaView>
   );
 };

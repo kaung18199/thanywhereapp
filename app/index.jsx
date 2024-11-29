@@ -16,6 +16,7 @@ const Index = () => {
   // Initial position off the screen
   const ring1padding = useSharedValue(0);
   const ring2padding = useSharedValue(0);
+  const logoSize = useSharedValue(0);
   let [loading, setLoading] = useState(false);
 
   const router = useRouter();
@@ -28,12 +29,17 @@ const Index = () => {
   useEffect(() => {
     ring1padding.value = 0;
     ring2padding.value = 0;
+    logoSize.value = 0;
     setTimeout(
       () => (ring1padding.value = withSpring(ring1padding.value + hp(5))),
       100
     );
     setTimeout(
       () => (ring2padding.value = withSpring(ring2padding.value + hp(5.5))),
+      300
+    );
+    setTimeout(
+      () => (logoSize.value = withSpring(logoSize.value + hp(20))),
       300
     );
     setTimeout(() => {
@@ -46,13 +52,13 @@ const Index = () => {
     <SafeAreaView className="  h-full relative">
       <ScrollView contentContainerStyle={{ height: "100%" }}>
         <TouchableOpacity onPress={() => router.push("/home")}>
-          <View className="w-full justify-center items-center h-full px-4 space-y-4 bg-secondary-100/30">
+          <View className="w-full justify-center items-center h-full px-4 space-y-4 bg-white">
             <Animated.View
-              className=" bg-white/20 rounded-full"
+              className=" bg-secondary/5 rounded-full"
               style={{ padding: ring2padding }}
             >
               <Animated.View
-                className=" bg-white/30 rounded-full"
+                className=" bg-secondary/10 rounded-full"
                 style={{ padding: ring1padding }}
               >
                 <Image

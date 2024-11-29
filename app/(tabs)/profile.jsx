@@ -6,17 +6,20 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React from "react";
+import React, { useCallback } from "react";
 import { icons } from "../../constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect } from "react";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
+import { CachedImage } from "../../helpers/image";
 import Toast from "react-native-toast-message";
 import toastConfig from "../../helpers/toastConfig";
 import {
+  ArrowDownLeftIcon,
   ArrowLeftStartOnRectangleIcon,
   BookOpenIcon,
   ChatBubbleLeftRightIcon,
+  CursorArrowRippleIcon,
   DocumentDuplicateIcon,
   PencilSquareIcon,
   PhoneIcon,
@@ -24,8 +27,6 @@ import {
   TicketIcon,
 } from "react-native-heroicons/outline";
 import { useState } from "react";
-
-const router = useRouter();
 
 const items = [
   {
@@ -67,7 +68,7 @@ const items = [
     icon: () => {
       return <ArrowLeftStartOnRectangleIcon size={18} color="#000000" />;
     },
-    action: async () => {
+    action: async (logoutAction) => {
       try {
         await AsyncStorage.removeItem("token");
         await AsyncStorage.removeItem("user");
@@ -81,7 +82,7 @@ const items = [
           visibilityTime: 3000,
         });
         setTimeout(() => {
-          router.push("/login");
+          logoutAction();
         }, 5000);
       } catch (error) {
         console.error("Logout error:", error);
@@ -117,6 +118,11 @@ const itemSec = [
 ];
 
 const ItemBox = ({ item }) => {
+  const router = useRouter();
+  const logoutAction = () => {
+    router.push("/login");
+  };
+
   return (
     <View
       className={`relative  py-2 ${
@@ -125,7 +131,7 @@ const ItemBox = ({ item }) => {
     >
       <TouchableOpacity
         className="flex flex-row items-center"
-        onPress={item.action}
+        onPress={() => item.action(logoutAction)}
       >
         {item.icon()}
         <Text className=" font-pmedium text-sm ml-2">{item.name}</Text>
@@ -166,23 +172,18 @@ const Profile = () => {
     console.log("====================================");
 
     if (!token) {
-      router.push("/login"); // push to login page
       setIsToken(false);
-    } else {
-      setIsToken(true);
     }
   };
 
-  // const handleLogout = async () => {
-  //   await AsyncStorage.removeItem("token");
-  //   await AsyncStorage.removeItem("user");
-  //   setIsToken(false);
-  //   router.push("/login");
-  // };
-
-  useEffect(() => {
-    checkToken();
-  }, []);
+  // useEffect(() => {
+  //   checkToken();
+  // }, []);
+  useFocusEffect(
+    useCallback(() => {
+      checkToken();
+    }, [])
+  );
 
   return (
     <SafeAreaView className=" w-full h-full ">
@@ -191,16 +192,11 @@ const Profile = () => {
           {/* <View className=" py-4 bg-white flex justify-center items-center">
           <Text className=" font-psemibold text-[#FF601B]">Profile</Text>
         </View> */}
-          <View className="gap-4 pt-4">
+          <View className="gap-4 pt-6">
             <View className=" w-full flex justify-center items-center shadow-sm">
-              <Image
-                source={{
-                  url: "https://media.istockphoto.com/id/1451587807/vector/user-profile-icon-vector-avatar-or-person-icon-profile-picture-portrait-symbol-vector.jpg?s=612x612&w=0&k=20&c=yDJ4ITX1cHMh25Lt1vI1zBn2cAKKAlByHBvPJ8gEiIg=",
-                }}
-                resizeMode="covered"
-                className=" rounded-full  "
-                width={120}
-                height={120}
+              <CachedImage
+                uri={"https://cdn-icons-png.flaticon.com/128/6084/6084290.png"}
+                style={{ width: 120, height: 120 }}
               />
             </View>
             <View className="gap-y-2 pb-10">
@@ -249,17 +245,24 @@ const Profile = () => {
           <Toast config={toastConfig} />
         </ScrollView>
       ) : (
-        <View className=" w-full h-full flex justify-center items-center">
+        <View className=" w-full h-full flex justify-center items-center gap-y-4">
+          <CachedImage
+            uri={"https://cdn-icons-png.flaticon.com/128/17745/17745512.png"}
+            style={{ width: 120, height: 120 }}
+          />
           <Text className=" font-pmedium text-sm text-gray-600">
             You are not logged in , please
           </Text>
           <TouchableOpacity
-            className="mt-4 bg-[#FF601B] px-8 py-2 rounded-xl text-white font-psemibold"
+            className=" flex flex-row justify-center items-center gap-x-2"
             onPress={() => {
               router.push("/login"); // push to login page
             }}
           >
-            <Text className=" font-psemibold text-white">Login</Text>
+            <Text className=" font-psemibold text-secondary text-lg">
+              Login
+            </Text>
+            <CursorArrowRippleIcon size={20} color="#FF601B" />
           </TouchableOpacity>
         </View>
       )}

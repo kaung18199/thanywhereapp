@@ -15,8 +15,8 @@ const TabIcon = ({ icon, color, name, focused }) => {
       />
       <Text
         className={`${
-          focused ? "font-psemibold" : "font-pregular"
-        } text-center whitespace-nowrap line-clamp-1 font-pregular`}
+          focused ? "font-pregular" : "font-pregular"
+        } text-center whitespace-nowrap w-10 font-pregular`}
         style={{ color: color, fontSize: 10 }}
       >
         {name}
@@ -80,7 +80,7 @@ const TabsLayout = () => {
               <TabIcon
                 icon={icons.wishlistsfootericon}
                 color={color}
-                name="wishlists"
+                name="wish"
                 focused={focused}
               />
             ),
@@ -117,7 +117,7 @@ const TabsLayout = () => {
               <TabIcon
                 icon={icons.profilefootericon}
                 color={color}
-                name="account"
+                name="profile"
                 focused={focused}
               />
             ),

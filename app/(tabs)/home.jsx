@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, SafeAreaView, Image, FlatList } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import { icons } from "../../constants";
+import { icons, images } from "../../constants";
 import HeaderPart from "../../components/homePackage/HeaderPartHome";
 import HomeAllProduct from "../../components/homePackage/HomeAllProduct";
 import ReadAboutDestiantion from "../../components/homePackage/ReadAboutDestiantion";
@@ -17,6 +17,7 @@ import TopDestinationToRead from "../../components/homePackage/TopDestinationToR
 
 const Home = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
   const [isFirstTime, setIsFirstTime] = useState(null);
 
   useEffect(() => {
@@ -25,6 +26,12 @@ const Home = () => {
       setIsFirstTime(isNewUser === "true");
     };
     checkFirstTimeUser();
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
   }, []);
 
   const handleLanguageSelect = async (language) => {
@@ -102,18 +109,44 @@ const Home = () => {
   ];
 
   return (
+    // <SafeAreaView className="flex-1">
+    //   {!isLoading ? {isFirstTime && (
+    //     <LanguageSelectionModal
+    //       visible={isFirstTime}
+    //       onSelectLanguage={handleLanguageSelect}
+    //     />
+    //   )}
+    //   <FlatList
+    //     data={sections}
+    //     renderItem={renderItem}
+    //     keyExtractor={(item) => item.key}
+    //   /> : <View className="flex-1 justify-center items-center"></View>}
+    // </SafeAreaView>
     <SafeAreaView className="flex-1">
-      {isFirstTime && (
-        <LanguageSelectionModal
-          visible={isFirstTime}
-          onSelectLanguage={handleLanguageSelect}
-        />
+      {!isLoading ? (
+        <>
+          {isFirstTime && (
+            <LanguageSelectionModal
+              visible={isFirstTime}
+              onSelectLanguage={handleLanguageSelect}
+            />
+          )}
+          <FlatList
+            data={sections}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.key}
+          />
+        </>
+      ) : (
+        <View className="flex-1 justify-center items-center bg-white">
+          <Image
+            source={icons.logo}
+            resizeMode="cover"
+            className="absolute w-[100px] h-[100px] rounded-lg"
+            style={{ zIndex: 0 }}
+          />
+        </View>
       )}
-      <FlatList
-        data={sections}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.key}
-      />
     </SafeAreaView>
   );
 };

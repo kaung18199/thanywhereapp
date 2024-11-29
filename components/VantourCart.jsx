@@ -79,7 +79,7 @@ const VantourCart = ({ item }) => {
                 uri={
                   item?.cover_image
                     ? item?.cover_image
-                    : "https://img.freepik.com/free-photo/abstract-textured-backgound_1258-30576.jpg?t=st=1730589697~exp=1730593297~hmac=fcac11d660a2c87242409664e4e8bf25de2f964c16334084e744579ef2f41136&w=1380"
+                    : "https://cdn-icons-png.flaticon.com/128/14005/14005478.png"
                 }
                 style={{ width: "100%", height: "100%", borderRadius: 15 }}
               />

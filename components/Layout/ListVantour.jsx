@@ -16,6 +16,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   useWindowDimensions,
+  TouchableOpacity,
 } from "react-native";
 import { icons } from "../../constants";
 import EmptyState from "../EmptyState";
@@ -28,8 +29,6 @@ import LoadingVantour from "../LoadingCart/LoadingVantour";
 export default function ListVantour({ setStickyHeader }) {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const [city_id, setCityId] = useState("");
   const [vantourData, setVantourData] = useState([]);
   const [stop, setStop] = useState(false);
 
@@ -43,7 +42,7 @@ export default function ListVantour({ setStickyHeader }) {
       useNativeDriver: false,
       listener: (event) => {
         const offsetY = event.nativeEvent.contentOffset.y;
-        setStickyHeader(offsetY > 100); // Switch header after 100px
+        setStickyHeader(offsetY > 5); // Switch header after 100px
       },
     }
   );
@@ -105,11 +104,17 @@ export default function ListVantour({ setStickyHeader }) {
     <View
       style={{
         paddingVertical: 8,
-        paddingHorizontal: 14,
         backgroundColor: "#FFFFFF",
       }}
+      className=" flex-row justify-between  items-center"
     >
-      <Text className=" font-psemibold  text-base">Van tours Packages</Text>
+      <Text className=" font-psemibold  text-base pl-3">
+        Van tours Packages
+      </Text>
+      <TouchableOpacity onPress={onRefresh} className=" pr-3">
+        {/* <Text className=" font-psemibold  text-xs pr-3">refresh</Text> */}
+        <ArrowPathIcon size={20} color="#FF601B" />
+      </TouchableOpacity>
     </View>
   );
 
@@ -150,9 +155,8 @@ export default function ListVantour({ setStickyHeader }) {
         stickyHeaderIndices={[0]}
         onScroll={handleScroll}
         scrollEventThrottle={20}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
         onEndReached={handleEndReached}
         onEndReachedThreshold={endReachedThreshold}
         ListFooterComponent={renderFooter}

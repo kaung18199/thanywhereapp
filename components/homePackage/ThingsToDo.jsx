@@ -191,7 +191,11 @@ const ThingsToDo = () => {
     >
       <View style={{ position: "relative" }} className="">
         <CachedImage
-          uri={item.cover_image}
+          uri={
+            item.cover_image
+              ? item.cover_image
+              : "https://cdn-icons-png.flaticon.com/128/14005/14005478.png"
+          }
           style={{ width: 185, height: 100, borderRadius: 15 }}
         />
 
