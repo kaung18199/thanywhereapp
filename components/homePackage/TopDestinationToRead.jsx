@@ -166,7 +166,7 @@ const TopDestinationToRead = () => {
           style={{ fontSize: 16, fontWeight: "600", color: "#FF601B" }}
           className=" font-psemibold"
         >
-          top destination to read
+          Top destination to read
         </Text>
         <TouchableOpacity onPress={() => console.log("see more")}>
           <Text

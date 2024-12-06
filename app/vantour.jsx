@@ -30,6 +30,8 @@ import SearchPart from "../components/Layout/SearchPart";
 import debounce from "lodash.debounce";
 import LoadingCity from "../components/LoadingCart/LoadingCity";
 import CustomCalendar from "../components/Layout/CustomCalendar";
+import Toast from "react-native-toast-message";
+import toastConfig from "../helpers/toastConfig";
 
 const Vantour = () => {
   const animatedOpacity = useRef(new Animated.Value(1)).current; // Initial opacity is 1
@@ -39,18 +41,32 @@ const Vantour = () => {
   const router = useRouter();
   const [stickyHeader, setStickyHeader] = useState(false);
   const { height: screenHeight } = Dimensions.get("window");
+
+  // select time
   const [selectedConfirmDate, setSelectedConfirmDate] = useState(null);
 
+  // search city
   const [city, setCity] = useState(null);
   const [city_name, setCityName] = useState(null);
   const [cityLoading, setCityLoading] = useState(true);
-
   const [chooseDestination, setChooseDestination] = useState("");
   const [chooseDestination_name, setChooseDestinationName] = useState("");
+
+  // search destination
+  const [destination, setDestination] = useState(null);
+  const [destination_search, setDestinationSearch] = useState(null);
+  const [destination_id, setDestinationId] = useState(null);
+  const [destination_name, setDestinationName] = useState(null);
+  const [destinationLoading, setDestinationLoading] = useState(true);
 
   const handleInputChange = (value) => {
     setCityName(value);
     getCityAction(value);
+  }; // Debounce delay of 500ms
+
+  const handleInputDestinationChange = (value) => {
+    setDestinationSearch(value);
+    getDestinationAction(value);
   }; // Debounce delay of 500ms
 
   const getCityAction = useCallback(
@@ -63,12 +79,39 @@ const Vantour = () => {
         setCity(res.data.data);
       } catch (error) {
         setCityLoading(false);
-        setCity = null;
+        setCity(null);
       } finally {
         setCityLoading(false);
       }
     }, 500),
     []
+  );
+
+  const getDestinationAction = useCallback(
+    debounce(async (search) => {
+      setDestinationLoading(true);
+      try {
+        let data = {
+          search: search,
+        };
+        if (chooseDestination) {
+          data.city_id = chooseDestination;
+        }
+        const res = await axios.get("/destinations?limit=20", {
+          params: data,
+        });
+        setDestination(res.data.data);
+        console.log("====================================");
+        console.log(res.data.data, "this is the destination");
+        console.log("====================================");
+      } catch (error) {
+        setDestinationLoading(false);
+        setDestination(null);
+      } finally {
+        setDestinationLoading(false);
+      }
+    }, 500),
+    [chooseDestination]
   );
 
   const loadingCitys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -83,10 +126,26 @@ const Vantour = () => {
 
   const goExploreAction = () => {
     // Navigate to explore page
-    router.push({
-      pathname: "/result/vantour/[vantour]",
-      params: { cityId: chooseDestination, pickupDate: selectedConfirmDate },
-    });
+    if (chooseDestination != "") {
+      router.push({
+        pathname: "/result/vantour/[vantour]",
+        params: {
+          cityId: chooseDestination,
+          cityName: chooseDestination_name,
+          pickupDate: selectedConfirmDate,
+          destinationId: destination_id,
+          destinationName: destination_name,
+        },
+      });
+    } else {
+      Toast.show({
+        type: "error",
+        text1: "Oww !",
+        text2: "Please choose a destination",
+        position: "top",
+        visibilityTime: 3000,
+      });
+    }
   };
 
   useEffect(() => {
@@ -108,6 +167,10 @@ const Vantour = () => {
   useEffect(() => {
     getCityAction(city_name);
   }, []);
+
+  useEffect(() => {
+    getDestinationAction();
+  }, [chooseDestination]);
 
   const bottomSheetRef = useRef(null);
   const bottomSheetRef2 = useRef(null);
@@ -163,7 +226,7 @@ const Vantour = () => {
                 fontFamily: "Poppins-Medium",
               }}
             >
-              van tour packages
+              Van tour packages
             </Text>
             <Text
               style={{
@@ -195,7 +258,11 @@ const Vantour = () => {
                 icon={icons.destiantionicon}
               />
               <SearchPart
-                text="select destination (optional) *"
+                text={
+                  destination_name
+                    ? destination_name
+                    : "select destination (optional) *"
+                }
                 handleIndexPreps={() => handle3OpenPreps()}
                 icon={icons.attractionicon}
               />
@@ -432,12 +499,14 @@ const Vantour = () => {
             flex: 1,
             alignItems: "center",
             justifyContent: "flex-start",
-            padding: 16, // Ensure it appears above other components
+            zIndex: 3,
           }}
         >
           <View
-            style={{ width: "100%" }}
-            className=" border-b border-[#000000]/20"
+            style={{
+              width: "100%",
+            }}
+            className=" border-b border-gray-100"
           >
             <View
               style={{
@@ -445,6 +514,8 @@ const Vantour = () => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 paddingBottom: 16,
+                paddingTop: 16,
+                paddingHorizontal: 16,
                 width: "100%",
               }}
             >
@@ -453,7 +524,7 @@ const Vantour = () => {
                 style={{ fontSize: 14, color: "#000000" }}
                 className=" font-psemibold"
               >
-                select destinations (optional)
+                Select destinations ( options * )
               </Text>
               <TouchableOpacity onPress={() => handle3ClosePreps()}>
                 <Image
@@ -464,30 +535,77 @@ const Vantour = () => {
                 />
               </TouchableOpacity>
             </View>
-          </View>
-          <CustomCalendar setSelectedConfirmDate={setSelectedConfirmDate} />
-          <View className="absolute bottom-0 left-0 py-8 px-6 border-t border-gray-100 right-0 flex-1 flex-row justify-between items-center">
-            <Text className=" font-pbold text-lg text-secondary">
-              {selectedConfirmDate
-                ? selectedConfirmDate
-                : "Please select a date"}
-            </Text>
-
-            <TouchableOpacity
-              onPress={() => {
-                if (selectedConfirmDate) {
-                  handle3ClosePreps();
-                }
-              }}
-              className=" bg-secondary py-3 rounded-full w-28"
+            <View
+              className=" bg-gray-50 border border-gray-100 px-4  flex flex-row justify-between items-center rounded-full"
+              style={{ marginHorizontal: 16, marginBottom: 10 }}
             >
-              <Text className=" font-psemibold text-sm text-white text-center">
-                Confirm
-              </Text>
-            </TouchableOpacity>
+              <Image
+                source={icons.search}
+                resizeMethod="contain"
+                className=" w-5 h-5"
+                tintColor="#FF601B"
+              />
+              <TextInput
+                className="  text-sm font-pregular w-full pt-4 ml-4"
+                placeholder={destination_name ?? "search"}
+                keyboardType="" // Show email-specific keyboard
+                value={destination_search}
+                onChangeText={handleInputDestinationChange}
+                autoCapitalize="none" // No automatic capitalization
+                autoCorrect={false} // Disable autocorrect
+              />
+            </View>
           </View>
+          {destinationLoading ? (
+            loadingCitys.map((item) => <LoadingCity key={item} />)
+          ) : (
+            <ScrollView className=" px-6 w-full">
+              {destination?.map((item, index) => (
+                <TouchableOpacity
+                  key={item.id}
+                  onPress={() => {
+                    console.log("====================================");
+                    setDestinationId(item.id);
+                    setDestinationName(item.name);
+                    handle3ClosePreps();
+                    console.log("====================================");
+                  }}
+                >
+                  <View
+                    className={`rounded-full py-4 gap-x-2 w-full flex-1 flex-row justify-start items-center ${
+                      destination_id == item.id
+                        ? "border-b border-secondary"
+                        : ""
+                    }`}
+                  >
+                    <Image
+                      source={icons.locationPin}
+                      resizeMode="contain"
+                      className="w-6 h-6 "
+                      tintColor="#FF601B"
+                    />
+                    <View>
+                      <Text
+                        style={{ fontSize: 16 }}
+                        className=" font-psemibold text-secondary"
+                      >
+                        {item.name}
+                      </Text>
+                      <Text
+                        style={{ fontSize: 10 }}
+                        className=" font-pregular text-secondary"
+                      >
+                        {item?.city?.name}
+                      </Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          )}
         </BottomSheetView>
       </BottomSheet>
+      <Toast config={toastConfig} />
     </SafeAreaView>
   );
 };

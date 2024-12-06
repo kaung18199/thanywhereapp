@@ -52,7 +52,7 @@ const HomeAllProduct = () => {
           className=" tracking-wide font-psemibold text-secondary "
           style={{ fontSize: 14 }}
         >
-          all products
+          All products
         </Text>
       </View>
 

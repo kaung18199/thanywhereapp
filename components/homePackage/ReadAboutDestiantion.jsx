@@ -89,7 +89,7 @@ const ReadAboutDestination = () => {
           style={{ fontSize: 16, fontWeight: "600", color: "#FF601B" }}
           className=" font-psemibold"
         >
-          read about destinations
+          Read about destinations
         </Text>
       </View>
       <FlatList

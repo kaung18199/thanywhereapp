@@ -301,7 +301,7 @@ const StayInPattaya = () => {
             style={{ fontSize: 16, fontWeight: "600", color: "#FF601B" }}
             className=" font-psemibold mr-2"
           >
-            stays in pattaya
+            Stays in pattaya
           </Text>
           {place != "" && (
             <View className=" rounded-full bg-secondary/10 text-center">

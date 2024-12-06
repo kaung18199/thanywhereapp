@@ -108,7 +108,7 @@ export default function ListVantour({ setStickyHeader }) {
       }}
       className=" flex-row justify-between  items-center"
     >
-      <Text className=" font-psemibold  text-base pl-3">
+      <Text className=" font-psemibold  text-base pl-6">
         Van tours Packages
       </Text>
       <TouchableOpacity onPress={onRefresh} className=" pr-3">
@@ -125,21 +125,6 @@ export default function ListVantour({ setStickyHeader }) {
       </View>
     ) : null;
   };
-
-  // useEffect(() => {
-  //   const fetchInitialData = async () => {
-  //     try {
-  //       setPage(1);
-  //       setVantourData([]);
-  //       await getListing({ page: page });
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   fetchInitialData();
-
-  //   // fetchVantourData();
-  // }, []);
 
   const endReachedThreshold = refreshing || loading ? Number.MAX_VALUE : 0.5;
 

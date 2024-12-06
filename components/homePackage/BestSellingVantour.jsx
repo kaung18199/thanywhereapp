@@ -227,7 +227,7 @@ const BestSellingVantour = () => {
           style={{ fontSize: 16, fontWeight: "600", color: "#FF601B" }}
           className=" font-psemibold"
         >
-          best selling van tours
+          Best selling van tours
         </Text>
         {/* <TouchableOpacity onPress={() => console.log("see more")}>
           <Text

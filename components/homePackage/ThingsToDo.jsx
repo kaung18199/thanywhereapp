@@ -359,7 +359,7 @@ const ThingsToDo = () => {
           style={{ fontSize: 14, fontWeight: "600", color: "#FF601B" }}
           className=" font-psemibold"
         >
-          things to do in {cityName ? cityName : "bangkok"}
+          Things to do in {cityName ? cityName : "bangkok"}
         </Text>
         <TouchableOpacity onPress={handleOpenModal}>
           <Text

@@ -52,7 +52,7 @@ const Home = () => {
                 Expore Thailand.
               </Text>
               <Text className="text-white text-sm font-pregular">
-                bringing you over 140 partners and counting.
+                Bringing you over 140 partners and counting.
               </Text>
             </View>
             <View className=" bg-white px-4 py-4 flex flex-row mt-5 mb-1  justify-between items-center rounded-full">
