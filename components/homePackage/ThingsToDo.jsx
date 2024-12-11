@@ -174,11 +174,8 @@ const ThingsToDo = () => {
 
   // Function to render each item
   const renderItem = (item) => (
-    <TouchableOpacity
+    <View
       key={item.id.toString()}
-      onPress={() => {
-        console.log(`Pressed ${item.name}`);
-      }}
       style={{
         marginRight: 8,
         width: 200,
@@ -327,7 +324,7 @@ const ThingsToDo = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 
   const loadingItem = (item, text) => {

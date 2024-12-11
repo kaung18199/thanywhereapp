@@ -29,19 +29,15 @@ const Carousel = ({ list, showButtom }) => {
   return (
     <View>
       {!show ? (
-        <View className=" relative rounded-b-[20px] overflow-hidden">
+        <View className=" relative overflow-hidden" style={{ width: width }}>
           <FlatList
             ref={flatListRef}
-            data={list ? list : []}
+            data={list || []}
             renderItem={({ item }) => (
               <View>
-                {/* <Image
-                  source={{ uri: item.image }}
-                  style={{ width: width, height: 350 }}
-                /> */}
                 <CachedImage
                   uri={item.image}
-                  style={{ width: width, height: 350 }}
+                  style={{ width: width, height: 380 }}
                 />
               </View>
             )}
@@ -50,15 +46,14 @@ const Carousel = ({ list, showButtom }) => {
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item, index) => index.toString()}
             onMomentumScrollEnd={(event) => {
-              const index = Math.floor(
+              const index = Math.round(
                 event.nativeEvent.contentOffset.x / width
-              );
-              console.log(event.nativeEvent.contentOffset.x, width);
-              setCurrentPage(index);
+              ); // Use Math.round for better accuracy
+              setCurrentPage(index); // Directly update the state with the calculated index
             }}
           />
           {showButtom && (
-            <View className=" absolute bottom-4 right-28 flex-row justify-center bg-gray-800/60 rounded-3xl w-[100px] gap-x-3 px-2 py-1.5 items-center">
+            <View className=" absolute bottom-8 right-24 flex-row justify-center bg-gray-800/60 rounded-3xl w-[100px] gap-x-3 px-2 py-1.5 items-center">
               <TouchableOpacity onPress={() => setShow(true)}>
                 <Text className=" text-white text-sm text-nowrap">
                   see images
@@ -66,33 +61,29 @@ const Carousel = ({ list, showButtom }) => {
               </TouchableOpacity>
             </View>
           )}
-          <View className=" absolute bottom-4 right-6 flex-row justify-center bg-gray-800/60 rounded-3xl w-[65px] gap-x-3 px-2 py-1.5 items-center">
+          <View className=" absolute bottom-8 right-4 flex-row justify-center bg-gray-800/60 rounded-3xl w-[65px] gap-x-3 px-2 py-1.5 items-center">
             <Text className=" text-white text-sm">{currentPage + 1}</Text>
             <Text className=" text-white text-sm">|</Text>
             <Text className=" text-white text-sm">{list?.length}</Text>
           </View>
+          <View className=" absolute -bottom-4 left-0 flex-row justify-center bg-white rounded-3xl w-full  items-center h-[30px]"></View>
         </View>
       ) : (
         <View className=" relative">
-          <TouchableOpacity
-            onPress={() => setShow(false)}
-            className=" absolute top-4 right-4 z-20 flex-row justify-center bg-gray-800/60 rounded-3xl w-[130px] gap-x-3 px-2 py-1.5 items-center"
-          >
-            <Text className=" text-white text-sm text-nowrap">
-              Close images View
-            </Text>
-          </TouchableOpacity>
           <View className=" flex-col gap-y-1">
             {list?.map((item, index) => (
               <TouchableOpacity
                 activeOpacity={0.7}
+                onPress={() => setShow(false)}
                 key={index}
-                className={`  w-full h-[350px] `}
+                className={` h-[350px] `}
+                style={{ width: width }}
               >
                 <CachedImage
                   uri={item.image}
                   resizeMode="cover"
-                  className=" w-full h-full mx-auto"
+                  className="h-full mx-auto"
+                  style={{ width: width }}
                 />
               </TouchableOpacity>
             ))}

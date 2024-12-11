@@ -16,6 +16,7 @@ import HTML from "react-native-render-html";
 import { icons } from "../../constants";
 import { useRef } from "react";
 import LoadingCart from "../LoadingCart/LoadingCart";
+import { router } from "expo-router";
 
 const filterCityList = [
   {
@@ -106,7 +107,7 @@ const BestSellingVantour = () => {
     >
       <TouchableOpacity
         onPress={() => {
-          console.log(`Pressed ${item.name}`);
+          router.push(`/detail/vantour/${item.id}`);
         }}
       >
         <View
@@ -229,14 +230,6 @@ const BestSellingVantour = () => {
         >
           Best selling van tours
         </Text>
-        {/* <TouchableOpacity onPress={() => console.log("see more")}>
-          <Text
-            style={{ fontSize: 10, color: "#000000" }}
-            className=" font-pregular"
-          >
-            see more
-          </Text>
-        </TouchableOpacity> */}
       </View>
       <ScrollView
         horizontal

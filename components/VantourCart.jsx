@@ -46,7 +46,7 @@ const VantourCart = ({ item }) => {
     <View style={{ backgroundColor: "white" }} key={item.id.toString()}>
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={() => console.log("hello")}
+        onPress={() => router.push("/detail/vantour/" + item.id)}
         style={{ position: "relative" }}
       >
         <View

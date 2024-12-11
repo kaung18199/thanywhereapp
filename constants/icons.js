@@ -29,10 +29,14 @@ import wishlistsfootericon from "../assets/icons/wishlists icon no fill.png";
 import tripsfootericon from "../assets/icons/trips icon no fill.png";
 import profilefootericon from "../assets/icons/profile icon no filled.png";
 import nexticon from "../assets/icons/next.png";
+import timeCalendar from "../assets/icons/calendar_833593 1.png";
+import roomDoor from "../assets/icons/Group 533.png";
 
 export default {
     play,
     bookmark,
+    roomDoor,
+    timeCalendar,
     home,
     plus,
     profile,

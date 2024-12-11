@@ -15,6 +15,9 @@ import travelwithtrust from "../assets/images/travel with trust.png";
 import discoverthailand from "../assets/images/discover thailand.png";
 import getbestprice from "../assets/images/get best prices.png";
 import growingwithyou from "../assets/images/growing with you.png";
+import car1 from "../assets/images/15-removebg-preview.png";
+import car2 from "../assets/images/16-removebg-preview.png";
+import car3 from "../assets/images/17-removebg-preview.png";
 
 export default {
   brpllo,
@@ -34,5 +37,8 @@ export default {
   discoverthailand,
   getbestprice,
   growingwithyou,
+  car1,
+  car2,
+  car3,
   // Add more images here as needed.
 };
