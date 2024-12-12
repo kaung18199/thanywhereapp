@@ -25,9 +25,7 @@
       },
       "package": "com.kaung312.thanywhere",
       "permissions": ["INTERNET"],
-      "config": {
-        "cleartext": true
-      }
+      "config": {}
     },
     "web": {
       "favicon": "./assets/favicon.png",
