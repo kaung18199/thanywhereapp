@@ -1,66 +1,76 @@
+import { Ionicons } from "@expo/vector-icons";
 import {
-  View,
-  Text,
+  router,
+  useLocalSearchParams,
+  useNavigation,
+  useRouter,
+} from "expo-router";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  ChevronRightIcon,
+  MapPinIcon,
+  MinusIcon,
+  PlusIcon,
+  StarIcon,
+} from "react-native-heroicons/solid";
+import {
+  Dimensions,
+  Image,
   SafeAreaView,
   ScrollView,
-  Image,
-  TouchableOpacity,
   Share,
-  Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import axios from "../../../axiosConfig";
+import { icons } from "../../../constants";
 import ImageCarousel from "../../../components/ImageCarousel";
-import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
-import { useDispatch } from "react-redux";
-import { getHotelDetail } from "../../../redux/stores/hotelSlice";
-// import * as Animatable from "react-native-animatable";
-import { FontAwesome5, Ionicons } from "@expo/vector-icons";
-import CustomButton from "../../../components/CustomButton";
-import RoomList from "../../../components/RoomList";
-import CustomBottomSheet from "../../../components/CustomBottomSheet";
-import EmptyState from "../../../components/EmptyState";
-import Animated, {
-  SlideInDown,
-  SlideInUp,
-  useScrollViewOffset,
-} from "react-native-reanimated";
 import { CachedImage } from "../../../helpers/image";
+import { images } from "../../../constants";
+import RenderHTML from "react-native-render-html";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import Whattime from "../../../components/detailPackage/Whattime";
+import Howbook from "../../../components/detailPackage/Howbook";
+import HowPayment from "../../../components/detailPackage/HowPayment";
+import { WebView } from "react-native-webview";
 
-const HotelDetail = () => {
-  const { id } = useLocalSearchParams();
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
-  const [hotel, setHotel] = useState(null);
-  const scrollRef = useRef(null);
+const HotelDetailPage = () => {
   const navigation = useNavigation();
+  const { id } = useLocalSearchParams();
+  const [loading, setLoading] = useState(false);
+  const [detail, setDetail] = useState({});
+  const [imagesCover, setImagesCover] = useState([]);
+  const [otherPackage, setOtherPackage] = useState(null);
+  const [showMore, setShowMore] = useState(false);
+
   const router = useRouter();
 
+  const [faq, setFaq] = useState([1]);
+
+  const contentWidth = Dimensions.get("window").width;
+
   const bottomSheetRef = useRef(null);
+  const snapPoints = useMemo(() => ["1%", "95%"], []);
+
   const handleClosePreps = () => bottomSheetRef.current?.close();
   const handleOpenPreps = () => bottomSheetRef.current?.expand();
   const handleIndexPreps = () => bottomSheetRef.current?.snapToIndex(4);
 
-  const [roomData, setRoomData] = useState("");
-  const modalOpenFunction = (data) => {
-    setRoomData(data);
-    handleIndexPreps();
-  };
-
-  const getFunction = async (id) => {
-    try {
-      setLoading(true);
-      const data = await dispatch(getHotelDetail(id));
-      setHotel(data.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleSheetChanges = useCallback((index) => {
+    console.log("handleSheetChanges", index);
+  }, []);
 
   useEffect(() => {
     handleClosePreps();
-    getFunction(id);
   }, []);
 
   const shareListingg = async () => {
@@ -74,23 +84,78 @@ const HotelDetail = () => {
     }
   };
 
-  // const scrollOffset = useScrollViewOffset(scrollRef);
+  const percent = (a, b) => {
+    if (a && b && a !== "null") {
+      const calculatedPercent = (
+        ((Number(a) - Number(b)) / Number(a)) *
+        100
+      ).toFixed(0); // Round to 0 decimal places
+      return `${calculatedPercent}`;
+    } else {
+      return `0`;
+    }
+  };
+
+  const getDetail = async () => {
+    try {
+      setLoading(true);
+      setImagesCover([]);
+      const data = await axios.get(`/hotels/${id}`);
+
+      setDetail(data.data.data);
+
+      setImagesCover(data.data.data.images);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getOtherPackage = async (id) => {
+    try {
+      const res = await axios.get(
+        `/hotels?order_by=top_selling_products&city_id=${id}`
+      );
+      setOtherPackage(res.data.data);
+      console.log(res.data.data, "this is another");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getDetail(id);
+  }, [id]);
+
+  useEffect(() => {
+    getOtherPackage(detail?.city?.id);
+  }, [detail]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerTitle: () => {
+        return (
+          <View className=" flex-row justify-start ml-4 items-center space-x-2">
+            <Text className="text-sm font-psemibold"></Text>
+          </View>
+        );
+      },
+      headerTransparent: true,
+
       headerRight: () => {
         return (
           <View className=" flex-row justify-center items-center gap-2">
             <TouchableOpacity
               activeOpacity={0.7}
-              className="bg-white p-2 rounded-full border border-[#ff5f1b33]"
+              className="bg-white p-2 rounded-full "
             >
               <Ionicons name="heart-outline" size={18} color={"#FF601B"} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={shareListingg}
               activeOpacity={0.7}
-              className="bg-white p-2 rounded-full border border-[#ff5f1b33]"
+              className="bg-white p-2 rounded-full "
             >
               <Ionicons name="share-outline" size={18} color={"#FF601B"} />
             </TouchableOpacity>
@@ -103,7 +168,7 @@ const HotelDetail = () => {
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => router.back()}
-              className="bg-white p-2 rounded-full border border-[#ff5f1b33]"
+              className="bg-white p-2 rounded-full "
             >
               <Ionicons name="chevron-back" size={18} color={"#FF601B"} />
             </TouchableOpacity>
@@ -114,227 +179,487 @@ const HotelDetail = () => {
   }, []);
 
   return (
-    <View>
+    <SafeAreaView>
       {loading ? (
-        <View className=" h-full justify-center items-center">
-          <EmptyState title="loading Hotel Detail" subtitle="please wait ..." />
+        <View className=" w-full h-full flex justify-center bg-white items-center">
+          <Image
+            source={icons.logo}
+            resizeMode="contain"
+            className="w-20 h-20"
+          />
         </View>
       ) : (
-        <View className=" relative h-full">
-          <Animated.ScrollView ref={scrollRef} scrollEventThrottle={16}>
-            <ImageCarousel list={hotel?.images} showButtom={false} />
-            <View className=" px-4 pt-5  ">
-              <View
-                className=" bg-white rounded-xl overflow-hidden pt-4 pb-6 pl-4 pr-8"
-                style={{
-                  elevation: 2, // Add elevation for shadow on Android
-                  shadowColor: "#000000", // Add shadow properties for iOS
-                  shadowOffset: {
-                    width: 0,
-                    height: 0.5, // Negative height to create a shadow on the top
-                  },
-                  shadowOpacity: 0.5,
-                  shadowRadius: 4,
-                }}
-              >
-                <Text className=" text-lg font-psemibold text-secondary-200 pb-4">
-                  {hotel?.name}
-                </Text>
-                <View className="w-full flex-1 flex-row flex-wrap justify-between items-between gap-3">
-                  <View className=" gap-3">
-                    <View className=" flex-row gap-2 justify-start items-start  ">
-                      <Ionicons
-                        name="location-outline"
-                        size={16}
-                        color={"#FF601B"}
-                      />
-                      <Text className=" text-sm font-pregular text-gray-700">
-                        {hotel?.city?.name}
+        <View className=" h-full relative">
+          <ScrollView className=" bg-white h-full ">
+            <View className=" pb-[120px]">
+              {imagesCover.length > 0 ? (
+                <ImageCarousel list={imagesCover} showButtom={false} />
+              ) : (
+                <View className=" h-40 flex justify-center items-center bg-secondary/50 relative">
+                  <Image
+                    source={icons.logo}
+                    resizeMode="contain"
+                    className="w-28 h-28"
+                  />
+                  <View className=" absolute -bottom-4 left-0 flex-row justify-center bg-white rounded-3xl w-full  items-center h-[30px]"></View>
+                </View>
+              )}
+              <View className="  ">
+                <View className=" border-b-8 border-black-100/10  pb-4">
+                  <Text className=" font-psemibold text-lg text-secondary px-4">
+                    {detail?.name}
+                  </Text>
+                  <View className=" flex-row justify-between items-center space-x-2">
+                    <View className=" flex-row flex justify-start items-center gap-x-1 pl-4">
+                      {Array.from({ length: detail?.rating }, (_, index) => (
+                        <StarIcon key={index} color={"#FF601B"} size={10} />
+                      ))}
+                    </View>
+                    <View className=" flex-row items-center gap-x-2 pt-2 px-4">
+                      <MapPinIcon color={"#FF601B"} size={15} />
+                      <Text className=" text-secondary font-psemibold text-xs">
+                        {detail?.city?.name}, {detail?.place}
                       </Text>
                     </View>
-                    <View className=" flex-row gap-2 justify-start items-start">
-                      <Ionicons
-                        name="location-outline"
-                        size={16}
-                        color={"#FF601B"}
-                      />
-                      <Text className=" text-sm font-pregular text-gray-700">
-                        {hotel?.place}
+                  </View>
+                  {detail?.location_map && (
+                    <View className=" px-4 pt-4 gap-y-2">
+                      <Text className=" font-psemibold text-lg text-black border-l-4 border-secondary pl-3">
+                        Location
                       </Text>
+                      <View className=" overflow-hidden h-[200px]">
+                        <WebView
+                          originWhitelist={["*"]}
+                          source={{
+                            html: `<iframe src="${detail?.location_map}" width="1000" height="500" style="border:0; border-radius: 50px" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`,
+                          }}
+                        />
+                      </View>
+                      <Text className=" font-pregular text-xs">
+                        {detail?.location_map_title}
+                      </Text>
+                    </View>
+                  )}
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    className=" pt-4 px-2"
+                  >
+                    {detail?.destinations?.map((destination) => (
+                      <TouchableOpacity
+                        key={destination.id}
+                        activeOpacity={0.7}
+                        className="w-[200px]"
+                        onPress={() => console.log("hello")}
+                      >
+                        <CachedImage
+                          uri={destination.feature_img}
+                          style={{ width: 180, height: 100, borderRadius: 10 }}
+                        />
+                        <Text
+                          className=" text-sm text-black/80 font-psemibold pl-4 pt-2 w-[180px]"
+                          numberOfLines={1}
+                        >
+                          {destination.name}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                </View>
+                <View className=" border-b-8 border-black-100/10 pb-6">
+                  <View className=" flex-row justify-between items-center px-4 py-4">
+                    <Text className=" font-psemibold text-lg text-black border-l-4 border-secondary pl-3">
+                      Select Options
+                    </Text>
+                  </View>
+
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    className=" pt-2 px-4 pb-4"
+                  >
+                    {detail?.rooms?.map((room) => (
+                      <TouchableOpacity
+                        key={room.id}
+                        activeOpacity={0.7}
+                        className="w-[200px] border rounded-2xl border-black/10 mr-4 p-1"
+                        onPress={() => console.log("hello")}
+                      >
+                        <View className="relative">
+                          {room.images.length != 0 ? (
+                            <CachedImage
+                              uri={room.images[0].image}
+                              style={{
+                                width: 190,
+                                height: 100,
+                                borderRadius: 10,
+                              }}
+                            />
+                          ) : (
+                            <Image
+                              source={{
+                                uri: "https://cdn-icons-png.flaticon.com/128/14005/14005478.png",
+                              }}
+                              style={{
+                                width: 190,
+                                height: 100,
+                                borderRadius: 10,
+                              }}
+                            />
+                          )}
+                          {(room?.owner_price ||
+                            room?.owner_price != null ||
+                            room?.owner_price !== room?.room_price) && (
+                            <View
+                              style={{
+                                backgroundColor: "#ff1c1c",
+                                width: "auto",
+                                paddingHorizontal: 8,
+                                borderRadius: 16,
+                                position: "absolute",
+                                bottom: -8,
+                                right: 8,
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  paddingVertical: 2,
+                                  textAlign: "center",
+                                  color: "white",
+                                  fontSize: 12,
+                                }}
+                              >
+                                {percent(room?.owner_price, room?.room_price)}%
+                                OFF
+                              </Text>
+                            </View>
+                          )}
+                        </View>
+                        <Text
+                          className=" text-sm text-black/80  font-psemibold pl-2 pt-4"
+                          numberOfLines={1}
+                        >
+                          {room?.name}
+                        </Text>
+                        <View className=" flex-row justify-start gap-x-1 py-1 items-center">
+                          <Text className=" text-2xl font-pbold text-black/80 pl-4 pt-1 ">
+                            ฿ {room?.room_price}
+                          </Text>
+                          <Text className=" text-xs font-pregular text-black/80  pt-1 line-through ">
+                            ฿ {room?.owner_price}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    className="px-4 pb-4"
+                  >
+                    <View className=" mr-4 border border-secondary rounded-2xl p-4">
+                      <Text className=" text-secondary text-xs font-pmedium">
+                        Extra Bed
+                      </Text>
+                      <Text className=" text-secondary text-xs font-pmedium">
+                        +400 ฿ per pax
+                      </Text>
+                    </View>
+                    <View className=" mr-4 border border-gray-100/60 rounded-2xl p-4">
+                      <Text className=" text-gray-600 text-xs font-pmedium">
+                        Breakfast Includes
+                      </Text>
+                      <Text className=" text-gray-600 text-xs font-pmedium">
+                        +-- ฿ per pax
+                      </Text>
+                    </View>
+                  </ScrollView>
+                  <View className=" px-6 pb-2">
+                    <Text className=" text-base font-psemibold">
+                      Popular Amenties
+                    </Text>
+                  </View>
+                  {detail?.facilities &&
+                    detail?.facilities.map(function (item) {
+                      return (
+                        <View className=" px-6 pb-2" key={item.id}>
+                          <View className=" flex-row justify-start items-center gap-x-4">
+                            <CachedImage
+                              uri={item.image}
+                              style={{ width: 16, height: 16 }}
+                            />
+                            <Text className=" font-pregular text-sm">
+                              {item.name}
+                            </Text>
+                          </View>
+                        </View>
+                      );
+                    })}
+                </View>
+                <View className=" border-b-8 border-black-100/10 pb-6">
+                  <View className=" flex-row justify-between items-center px-4 pt-4">
+                    <Text className=" font-psemibold text-lg text-black border-l-4 border-secondary pl-3">
+                      About the Hotel
+                    </Text>
+                  </View>
+                  <View
+                    className={` px-6 ${
+                      showMore ? "" : "h-32 overflow-hidden"
+                    }`}
+                  >
+                    <RenderHTML
+                      contentWidth={contentWidth}
+                      source={{ html: detail?.full_description || "" }}
+                    />
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => setShowMore(!showMore)}
+                    className=" mt-2 px-6"
+                  >
+                    <Text className=" font-pregular text-xs text-secondary">
+                      {showMore ? "Show Less" : "Show More"}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <View className=" px-4 pt-6 pb-2">
+                    <Text className=" font-psemibold text-lg text-black border-l-4 border-secondary pl-3">
+                      Nearby Places
+                    </Text>
+                    <View className=" pt-4">
+                      {detail?.nearby_places &&
+                        detail?.nearby_places.map((a, index) => (
+                          <View
+                            className=" pb-2 flex-row justify-between items-center"
+                            key={index}
+                          >
+                            <View className=" flex-row justify-start items-center gap-x-4">
+                              <Image
+                                source={icons.locationPin}
+                                style={{ width: 16, height: 16 }}
+                              />
+                              <Text className=" font-pregular text-sm">
+                                {a.name}
+                              </Text>
+                            </View>
+                            <Text className=" font-pregular text-xs">
+                              {a.distance}
+                            </Text>
+                          </View>
+                        ))}
                     </View>
                   </View>
 
-                  <View className=" gap-3">
-                    <View className=" flex-row gap-2 justify-start items-start">
-                      {/* <Ionicons
-                        name="location-outline"
-                        size={16}
-                        color={"#FF601B"}
-                      /> */}
-                      <FontAwesome5 name="hotel" size={14} color={"#FF601B"} />
-                      <Text className=" text-sm font-pregular text-gray-700">
-                        {hotel?.rooms?.length} rooms
-                      </Text>
-                    </View>
-                    <View className=" flex-row gap-2 justify-start items-start">
-                      <Ionicons
-                        name="star-outline"
-                        size={16}
-                        color={"#FF601B"}
-                      />
-                      <Text className=" text-sm text-green-700 font-pmedium">
-                        Direct Partner{" "}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </View>
-            {hotel?.facilities.length > 0 && (
-              <View className=" px-4 pt-4  ">
-                <View
-                  className=" bg-white rounded-xl overflow-hidden p-4"
-                  style={{
-                    // Adjust as needed
-                    shadowColor: "#000", // iOS
-                    shadowOffset: { width: 0, height: 2 }, // iOS
-                    shadowOpacity: 0.04, // iOS
-                    shadowRadius: 3.84, // iOS
-                    elevation: 1.05, // Android
-                    borderRadius: 4.84, // Android
-                  }}
-                >
-                  <View className=" flex-row justify-between items-center">
-                    <Text className=" text-lg font-pmedium text-gray-700 pb-2">
-                      Facilities
+                  <View className=" flex-row justify-between items-center px-4 pt-6 pb-2">
+                    <Text className=" font-psemibold text-lg text-black border-l-4 border-secondary pl-3">
+                      FAQS
                     </Text>
-                    <Text className=" text-sm font-pregular text-gray-700 pb-2 pr-4">
-                      scroll right for see all
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => {
+                      handleOpenPreps();
+                      setFaq(1);
+                    }}
+                    className=" px-6 pt-2 pb-4 border-b border-gray-100/50 flex-row justify-between items-center"
+                  >
+                    <Text className=" font-pmedium text-sm text-black">
+                      What time can you checkin & checkout?
+                    </Text>
+                    <ChevronRightIcon size={20} color="black" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      handleOpenPreps();
+                      setFaq(2);
+                    }}
+                    className=" px-6 pt-4 pb-4 border-b border-gray-100/50 flex-row justify-between items-center"
+                  >
+                    <Text className=" font-pmedium text-sm text-black">
+                      How to book this hotel?
+                    </Text>
+                    <ChevronRightIcon size={20} color="black" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      handleOpenPreps();
+                      setFaq(3);
+                    }}
+                    className=" px-6 pt-4 pb-4 border-b border-gray-100/50 flex-row justify-between items-center"
+                  >
+                    <Text className=" font-pmedium text-sm text-black">
+                      How do I make a payment?
+                    </Text>
+                    <ChevronRightIcon size={20} color="black" />
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <View className=" flex-row justify-between items-center px-4 pt-4">
+                    <Text className=" font-psemibold text-lg text-black border-l-4 border-secondary pl-3">
+                      Other Packages in{" "}
+                      {detail?.cities != null && detail?.cities[0].name}
                     </Text>
                   </View>
                   <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    className=" pt-2 ml-4"
+                    className=" pt-4 px-2"
                   >
-                    {hotel?.facilities?.map((item, index) => (
+                    {otherPackage?.map((a) => (
                       <TouchableOpacity
+                        key={a.id}
                         activeOpacity={0.7}
-                        key={index}
-                        className={`  rounded-xl  w-auto flex-nowrap  mr-2 py-1.5 font-pregular gap-y-2`}
+                        className="w-[200px] gap-y-1"
+                        onPress={() => router.push(`/detail/hotel/${a.id}`)}
                       >
-                        {/* <Image
-                          source={{ uri: item.image }}
-                          resizeMode="contain"
-                          className=" w-[30px] h-[30px] mx-auto"
-                        /> */}
                         <CachedImage
-                          uri={item.image}
-                          resizeMode="contain"
-                          className=" w-[30px] h-[30px] mx-auto"
+                          uri={a?.images?.[0]?.image}
+                          style={{ width: 180, height: 100, borderRadius: 10 }}
                         />
-                        <Text className=" text-xs font-pregular">
-                          {item.name}
+                        <Text
+                          className=" text-sm text-black/80 font-psemibold pl-4 pt-4 w-[180px]"
+                          numberOfLines={1}
+                        >
+                          {a.name}
+                        </Text>
+                        <Text className=" pl-4 font-pmedium text-xs text-secondary">
+                          {a?.city?.name}, {a?.place}
+                        </Text>
+                        <Text className=" pl-4 font-pmedium text-xs">
+                          starting price
+                        </Text>
+                        <Text className=" pl-4 font-pmedium text-lg">
+                          ฿ {a?.lowest_room_price}
                         </Text>
                       </TouchableOpacity>
                     ))}
                   </ScrollView>
                 </View>
               </View>
-            )}
-            <View className=" px-4 pt-4">
-              <View
-                className=" bg-white rounded-xl overflow-hidden pt-4 pb-6 pl-4 pr-8"
-                style={{
-                  // Adjust as needed
-                  shadowColor: "#000", // iOS
-                  shadowOffset: { width: 0, height: 2 }, // iOS
-                  shadowOpacity: 0.04, // iOS
-                  shadowRadius: 3.84, // iOS
-                  elevation: 1.05, // Android
-                  borderRadius: 4.84, // Android
-                }}
-              >
-                <Text className=" text-lg font-pmedium text-gray-700 pb-4">
-                  About Hotel
-                </Text>
-                <View className="w-full ">
-                  <Text className=" text-sm py-2 font-pregular text-gray-700 leading-[20px]">
-                    {hotel?.description}
-                  </Text>
+            </View>
+          </ScrollView>
+          <View className=" bg-white absolute bottom-0 border-t border-gray-100/50 left-0 right-0">
+            <View className=" flex-row justify-between items-center px-6 pt-4 pb-2">
+              <View className=" flex-row justify-center items-center gap-x-2">
+                <View className=" flex-row justify-center items-center gap-x-2 border border-gray-200 bg-gray-100/50 rounded-md p-1">
+                  <MinusIcon size={20} color="gray" />
+                </View>
+                <Text className=" px-2 py-1 ">1</Text>
+
+                <View className=" flex-row justify-center items-center gap-x-2 border border-gray-200 bg-gray-100/50 rounded-md p-1">
+                  <PlusIcon size={20} color="gray" />
                 </View>
               </View>
-            </View>
-            <View className=" px-4 pt-4 pb-20">
-              <View
-                className=" bg-white rounded-xl overflow-hidden pt-4 pb-1 pl-4 pr-4"
-                style={{
-                  // Adjust as needed
-                  shadowColor: "#000", // iOS
-                  shadowOffset: { width: 0, height: 2 }, // iOS
-                  shadowOpacity: 0.04, // iOS
-                  shadowRadius: 3.84, // iOS
-                  elevation: 2.05, // Android
-                  borderRadius: 4.84, // Android
-                }}
-              >
-                <Text className=" text-lg font-pmedium text-gray-700 pb-4">
-                  Rooms
-                </Text>
-                {/* <Button title="open" onPress={handleOpenPreps} />
-                <Button title="close" onPress={handleClosePreps} />
-                <Button title="index2" onPress={handleIndexPreps} /> */}
-                <RoomList
-                  rooms={hotel?.rooms}
-                  modalOpen={modalOpenFunction}
-                  closeModal={handleClosePreps}
-                />
-              </View>
-            </View>
-          </Animated.ScrollView>
-          <Animated.View
-            entering={SlideInDown.delay(500)
-              .duration(1000)
-              .springify()
-              .damping(16)}
-            className=" bg-white px-4 w-full absolute bottom-0  h-[60px] flex-row justify-between items-center rounded-t-[20px]"
-            style={{
-              elevation: 2, // Add elevation for shadow on Android
-              shadowColor: "#000000", // Add shadow properties for iOS
-              shadowOffset: {
-                width: 0,
-                height: -0.5, // Negative height to create a shadow on the top
-              },
-              shadowOpacity: 0.2,
-              shadowRadius: 4,
-            }}
-          >
-            <View>
-              <Text className=" text-lg font-psemibold text-secondary">
-                {hotel?.lowest_room_price} thb
-                <Text className=" text-sm font-pmedium text-gray-400">
-                  /night
-                </Text>
+              <Text className=" font-pbold text-2xl text-secondary ">
+                ฿ {detail?.lowest_room_price}
               </Text>
             </View>
-            <View className=" my-auto">
-              <CustomButton
-                title="Book now"
-                handlePress={() => {}}
-                containerStyle="w-auto px-6 py-2 "
-                textStyles="text-base"
-              />
+            <View className=" flex-row px-2 pt-2 pb-4 justify-center items-center gap-x-4">
+              <TouchableOpacity
+                activeOpacity={0.7}
+                className=" bg-white border border-gray-100 w-[180px] py-3 rounded-3xl flex justify-center items-center px-4  "
+              >
+                <Text className=" font-psemibold text-sm text-gray-500">
+                  Add to Cart
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                className=" bg-secondary border border-secondary w-[180px] py-3 rounded-3xl flex justify-center items-center px-4  "
+              >
+                <Text className=" font-psemibold text-sm text-white">
+                  Book Now
+                </Text>
+              </TouchableOpacity>
             </View>
-          </Animated.View>
-          {/* <CustomBottomSheet
-            id={roomData}
-            ref={bottomSheetRef}
-            handleClosePreps={handleClosePreps}
-          /> */}
+          </View>
         </View>
       )}
-    </View>
+      <BottomSheet
+        index={0}
+        ref={bottomSheetRef}
+        onChange={handleSheetChanges}
+        snapPoints={snapPoints}
+        enablePanDownToClose={true}
+        style={styles.bottomSheet}
+      >
+        <BottomSheetView
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "flex-start",
+            zIndex: 3,
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+            }}
+            className=" border-b border-gray-100"
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingBottom: 16,
+                paddingTop: 16,
+                paddingHorizontal: 16,
+                width: "100%",
+              }}
+            >
+              <Text style={{ opacity: 0 }}>......</Text>
+              {faq == 1 && (
+                <Text
+                  style={{ fontSize: 14, color: "#000000" }}
+                  className=" font-psemibold"
+                >
+                  What time can you checkin & checkout?
+                </Text>
+              )}
+              {faq == 2 && (
+                <Text
+                  style={{ fontSize: 14, color: "#000000" }}
+                  className=" font-psemibold"
+                >
+                  How to book this hotel?
+                </Text>
+              )}
+              {faq == 3 && (
+                <Text
+                  style={{ fontSize: 14, color: "#000000" }}
+                  className=" font-psemibold"
+                >
+                  How do I make a payment?
+                </Text>
+              )}
+              <TouchableOpacity onPress={() => handleClosePreps()}>
+                <Image
+                  source={icons.close}
+                  style={{ width: 10, height: 10 }}
+                  resizeMode="contain"
+                  tintColor="#000000"
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View>
+            {faq == 1 && (
+              <ScrollView className="">
+                <Whattime />
+              </ScrollView>
+            )}
+            {faq == 2 && <Howbook />}
+            {faq == 3 && <HowPayment />}
+          </View>
+        </BottomSheetView>
+      </BottomSheet>
+    </SafeAreaView>
   );
 };
 
-export default HotelDetail;
+const styles = StyleSheet.create({
+  bottomSheet: {
+    zIndex: 100,
+  },
+});
+
+export default HotelDetailPage;

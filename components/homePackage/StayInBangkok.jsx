@@ -16,6 +16,7 @@ import axios from "../../axiosConfig";
 import HTML from "react-native-render-html";
 import { icons } from "../../constants";
 import LoadingCart from "../LoadingCart/LoadingCart";
+import { useRouter } from "expo-router";
 
 const priceOptions = [
   {
@@ -134,6 +135,8 @@ const StayInBangkok = () => {
   const [place, setPlace] = useState("");
   const [loadingData, setLoadingData] = useState(false);
 
+  const router = useRouter();
+
   const loadingCarts = [1, 2, 3, 4, 5, 6, 7, 8];
 
   const [modalVisible, setModalVisible] = useState(false); // Add state for modal visibility
@@ -188,9 +191,7 @@ const StayInBangkok = () => {
     >
       <TouchableOpacity
         key={item.id.toString()}
-        onPress={() => {
-          console.log(`Pressed ${item.name}`);
-        }}
+        onPress={() => router.push("/detail/hotel/" + item.id)}
       >
         <View
           style={{

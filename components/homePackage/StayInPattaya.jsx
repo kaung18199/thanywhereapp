@@ -16,6 +16,7 @@ import axios from "../../axiosConfig";
 import HTML from "react-native-render-html";
 import { icons } from "../../constants";
 import LoadingCart from "../LoadingCart/LoadingCart";
+import { useRouter } from "expo-router";
 
 const priceOptions = [
   {
@@ -92,6 +93,8 @@ const StayInPattaya = () => {
   const [place, setPlace] = useState("");
   const [loadingData, setLoadingData] = useState(false);
 
+  const router = useRouter();
+
   const [modalVisible, setModalVisible] = useState(false); // Add state for modal visibility
 
   const handleOpenModal = () => setModalVisible(true); // Open modal
@@ -146,9 +149,7 @@ const StayInPattaya = () => {
     >
       <TouchableOpacity
         key={item.id.toString()}
-        onPress={() => {
-          console.log(`Pressed ${item.name}`);
-        }}
+        onPress={() => router.push("/detail/hotel/" + item.id)}
       >
         <View
           style={{

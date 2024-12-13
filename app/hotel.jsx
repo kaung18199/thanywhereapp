@@ -32,6 +32,7 @@ import LoadingCity from "../components/LoadingCart/LoadingCity";
 import CustomCalendar from "../components/Layout/CustomCalendar";
 import Toast from "react-native-toast-message";
 import toastConfig from "../helpers/toastConfig";
+import ListHotel from "../components/Layout/ListHotel";
 
 const Hotel = () => {
   const animatedOpacity = useRef(new Animated.Value(1)).current; // Initial opacity is 1
@@ -44,6 +45,10 @@ const Hotel = () => {
 
   // select time
   const [selectedConfirmDate, setSelectedConfirmDate] = useState(null);
+
+  // select time condition
+  const [selectedTimeCondition, setSelectedTimeCondition] = useState(null);
+  const [selectedConfirmOutDate, setSelectedConfirmOutDate] = useState(null);
 
   // search city
   const [city, setCity] = useState(null);
@@ -64,19 +69,22 @@ const Hotel = () => {
     getCityAction(value);
   }; // Debounce delay of 500ms
 
-  const handleInputDestinationChange = (value) => {
-    setDestinationSearch(value);
-    getDestinationAction(value);
-  }; // Debounce delay of 500ms
+  // const handleInputDestinationChange = (value) => {
+  //   setDestinationSearch(value);
+  // getDestinationAction(value);
+  // }; // Debounce delay of 500ms
 
   const getCityAction = useCallback(
     debounce(async (search) => {
       setCityLoading(true);
       try {
-        const res = await axios.get("/cities?limit=20", {
+        const res = await axios.get("/hotel-cities?limit=20", {
           params: { search: search },
         });
         setCity(res.data.data);
+        console.log("====================================");
+        console.log(res.data.data, "this is data");
+        console.log("====================================");
       } catch (error) {
         setCityLoading(false);
         setCity(null);
@@ -85,33 +93,6 @@ const Hotel = () => {
       }
     }, 500),
     []
-  );
-
-  const getDestinationAction = useCallback(
-    debounce(async (search) => {
-      setDestinationLoading(true);
-      try {
-        let data = {
-          search: search,
-        };
-        if (chooseDestination) {
-          data.city_id = chooseDestination;
-        }
-        const res = await axios.get("/destinations?limit=20", {
-          params: data,
-        });
-        setDestination(res.data.data);
-        console.log("====================================");
-        console.log(res.data.data, "this is the destination");
-        console.log("====================================");
-      } catch (error) {
-        setDestinationLoading(false);
-        setDestination(null);
-      } finally {
-        setDestinationLoading(false);
-      }
-    }, 500),
-    [chooseDestination]
   );
 
   const loadingCitys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -128,13 +109,11 @@ const Hotel = () => {
     // Navigate to explore page
     if (chooseDestination != "") {
       router.push({
-        pathname: "/result/vantour/[vantour]",
+        pathname: "/result/hotel/[hotel]",
         params: {
           cityId: chooseDestination,
           cityName: chooseDestination_name,
-          pickupDate: selectedConfirmDate,
-          destinationId: destination_id,
-          destinationName: destination_name,
+          place: destination_name,
         },
       });
     } else {
@@ -168,9 +147,9 @@ const Hotel = () => {
     getCityAction(city_name);
   }, []);
 
-  useEffect(() => {
-    getDestinationAction();
-  }, [chooseDestination]);
+  // useEffect(() => {
+  //   getDestinationAction();
+  // }, [chooseDestination]);
 
   const bottomSheetRef = useRef(null);
   const bottomSheetRef2 = useRef(null);
@@ -199,6 +178,14 @@ const Hotel = () => {
   const handleSheet3Changes = useCallback((index) => {
     console.log("handleSheetChanges", index);
   }, []);
+
+  // change array
+  const changeArray = (value) => {
+    return Object.entries(value).map(([key, value]) => ({
+      id: Number(key),
+      name: value,
+    }));
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
@@ -243,7 +230,7 @@ const Hotel = () => {
                 text={
                   chooseDestination_name
                     ? chooseDestination_name
-                    : "choose stay"
+                    : "choose stay city"
                 }
                 handleIndexPreps={() => handleOpenPreps()}
                 icon={icons.locationPin}
@@ -253,15 +240,23 @@ const Hotel = () => {
                   text={
                     selectedConfirmDate ? selectedConfirmDate : "check in date"
                   }
-                  handleIndexPreps={() => handle2OpenPreps()}
+                  handleIndexPreps={() => {
+                    handle2OpenPreps();
+                    setSelectedTimeCondition("checkIn");
+                  }}
                   style="w-1/2"
                   icon={icons.timeCalendar}
                 />
                 <SearchPart
                   text={
-                    selectedConfirmDate ? selectedConfirmDate : "check out date"
+                    selectedConfirmOutDate
+                      ? selectedConfirmOutDate
+                      : "check out date"
                   }
-                  handleIndexPreps={() => handle2OpenPreps()}
+                  handleIndexPreps={() => {
+                    handle2OpenPreps();
+                    setSelectedTimeCondition("checkOut");
+                  }}
                   style="w-1/2"
                   icon={icons.timeCalendar}
                 />
@@ -270,7 +265,7 @@ const Hotel = () => {
                 text={
                   destination_name
                     ? destination_name
-                    : "select destination (optional) *"
+                    : "select location (optional) *"
                 }
                 handleIndexPreps={() => handle3OpenPreps()}
                 icon={icons.roomDoor}
@@ -304,7 +299,7 @@ const Hotel = () => {
       </Animated.View>
 
       <View style={{ flex: 1 }}>
-        <ListVantour setStickyHeader={setStickyHeader} />
+        <ListHotel setStickyHeader={setStickyHeader} />
       </View>
 
       <BottomSheet
@@ -388,8 +383,14 @@ const Hotel = () => {
                     console.log("====================================");
                     setChooseDestination(item.id);
                     setChooseDestinationName(item.name);
+                    setDestinationLoading(true);
+                    setDestination(changeArray(item.places));
+                    setDestinationLoading(false);
                     handleClosePreps();
-                    console.log("====================================");
+                    console.log(
+                      item.places,
+                      "===================================="
+                    );
                   }}
                 >
                   <View
@@ -460,7 +461,9 @@ const Hotel = () => {
                 style={{ fontSize: 14, color: "#000000" }}
                 className=" font-psemibold"
               >
-                Check In Date
+                {selectedTimeCondition == "checkIn"
+                  ? "Check In Date"
+                  : " Check Out Date"}
               </Text>
               <TouchableOpacity onPress={() => handle2ClosePreps()}>
                 <Image
@@ -472,27 +475,56 @@ const Hotel = () => {
               </TouchableOpacity>
             </View>
           </View>
-          <CustomCalendar setSelectedConfirmDate={setSelectedConfirmDate} />
-          <View className="absolute bottom-0 left-0 py-8 px-6 border-t border-gray-100 right-0 flex-1 flex-row justify-between items-center">
-            <Text className=" font-pbold text-lg text-secondary">
-              {selectedConfirmDate
-                ? selectedConfirmDate
-                : "Please select a date"}
-            </Text>
+          {selectedTimeCondition == "checkIn" ? (
+            <>
+              <CustomCalendar setSelectedConfirmDate={setSelectedConfirmDate} />
+              <View className="absolute bottom-0 left-0 py-8 px-6 border-t border-gray-100 right-0 flex-1 flex-row justify-between items-center">
+                <Text className=" font-pbold text-lg text-secondary">
+                  {selectedConfirmDate
+                    ? selectedConfirmDate
+                    : "Please select a date"}
+                </Text>
 
-            <TouchableOpacity
-              onPress={() => {
-                if (selectedConfirmDate) {
-                  handle2ClosePreps();
-                }
-              }}
-              className=" bg-secondary py-3 rounded-full w-28"
-            >
-              <Text className=" font-psemibold text-sm text-white text-center">
-                Confirm
-              </Text>
-            </TouchableOpacity>
-          </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (selectedConfirmDate) {
+                      handle2ClosePreps();
+                    }
+                  }}
+                  className=" bg-secondary py-3 rounded-full w-28"
+                >
+                  <Text className=" font-psemibold text-sm text-white text-center">
+                    Confirm
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          ) : (
+            <>
+              <CustomCalendar
+                setSelectedConfirmDate={setSelectedConfirmOutDate}
+              />
+              <View className="absolute bottom-0 left-0 py-8 px-6 border-t border-gray-100 right-0 flex-1 flex-row justify-between items-center">
+                <Text className=" font-pbold text-lg text-secondary">
+                  {setSelectedConfirmOutDate
+                    ? setSelectedConfirmOutDate
+                    : "Please select a date"}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (setSelectedConfirmOutDate) {
+                      handle2ClosePreps();
+                    }
+                  }}
+                  className=" bg-secondary py-3 rounded-full w-28"
+                >
+                  <Text className=" font-psemibold text-sm text-white text-center">
+                    Confirm
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
         </BottomSheetView>
       </BottomSheet>
       <BottomSheet
@@ -522,7 +554,7 @@ const Hotel = () => {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                paddingBottom: 16,
+                paddingBottom: 2,
                 paddingTop: 16,
                 paddingHorizontal: 16,
                 width: "100%",
@@ -533,7 +565,7 @@ const Hotel = () => {
                 style={{ fontSize: 14, color: "#000000" }}
                 className=" font-psemibold"
               >
-                Select destinations ( options * )
+                Select location ( options * )
               </Text>
               <TouchableOpacity onPress={() => handle3ClosePreps()}>
                 <Image
@@ -544,25 +576,10 @@ const Hotel = () => {
                 />
               </TouchableOpacity>
             </View>
-            <View
-              className=" bg-gray-50 border border-gray-100 px-4  flex flex-row justify-between items-center rounded-full"
-              style={{ marginHorizontal: 16, marginBottom: 10 }}
-            >
-              <Image
-                source={icons.search}
-                resizeMethod="contain"
-                className=" w-5 h-5"
-                tintColor="#FF601B"
-              />
-              <TextInput
-                className="  text-sm font-pregular w-full pt-4 ml-4"
-                placeholder={destination_name ?? "search"}
-                keyboardType="" // Show email-specific keyboard
-                value={destination_search}
-                onChangeText={handleInputDestinationChange}
-                autoCapitalize="none" // No automatic capitalization
-                autoCorrect={false} // Disable autocorrect
-              />
+            <View className=" pb-4">
+              <Text className=" text-xs text-center font-pregular text-secondary">
+                need to choose city first .
+              </Text>
             </View>
           </View>
           {destinationLoading ? (
@@ -575,6 +592,7 @@ const Hotel = () => {
                   onPress={() => {
                     console.log("====================================");
                     setDestinationId(item.id);
+                    console.log(destination_id, "this is id");
                     setDestinationName(item.name);
                     handle3ClosePreps();
                     console.log("====================================");
@@ -604,7 +622,7 @@ const Hotel = () => {
                         style={{ fontSize: 10 }}
                         className=" font-pregular text-secondary"
                       >
-                        {item?.city?.name}
+                        {chooseDestination_name}
                       </Text>
                     </View>
                   </View>

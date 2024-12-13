@@ -579,7 +579,7 @@ const VantourDetailPage = () => {
                 ฿ {detail?.lowest_car_price}
               </Text>
             </View>
-            <View className=" flex-row px-2 pb-4 justify-center items-center gap-x-4">
+            <View className=" flex-row px-2 pb-4 justify-center items-center gap-x-4 pt-2">
               <TouchableOpacity
                 activeOpacity={0.7}
                 className=" bg-white border border-gray-100 w-[180px] py-3 rounded-3xl flex justify-center items-center px-4  "
