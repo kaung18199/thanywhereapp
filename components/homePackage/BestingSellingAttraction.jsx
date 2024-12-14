@@ -17,12 +17,14 @@ import HTML from "react-native-render-html";
 import { icons } from "../../constants";
 import { useRef } from "react";
 import LoadingCart from "../LoadingCart/LoadingCart";
+import { useRouter } from "expo-router";
 
 const getListAction = async ({ categoryId, cityId }) => {
   let data = {
     city_id: cityId != "" ? cityId : 2,
     order_by: "top_selling_products",
     category_id: categoryId != "" ? categoryId : "",
+    show_only: 1,
   };
   const res = await axios.get("/entrance-tickets", { params: data });
   return res.data;
@@ -113,7 +115,7 @@ const BestSellingAttraction = () => {
   const [cityId, setCityId] = useState(null);
   const [categoryId, setCategoryId] = useState(null);
   const [cityName, setCityName] = useState(null);
-
+  const router = useRouter();
   const scrollViewRef = useRef(null);
 
   // ... existing state variables ...
@@ -187,7 +189,7 @@ const BestSellingAttraction = () => {
       <TouchableOpacity
         key={item.id.toString()}
         onPress={() => {
-          console.log(`Pressed ${item.name}`);
+          router.push("/detail/attraction/" + item.id);
         }}
       >
         <View

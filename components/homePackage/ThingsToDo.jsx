@@ -8,6 +8,7 @@ import { setThingToDo } from "../../redux/stores/homeSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { Modal } from "react-native";
 import LoadingThingToDo from "../LoadingCart/LoadingThingToDo";
+import { useRouter } from "expo-router";
 
 // Async function to fetch data
 const getListAction = async ({ categoryId, cityId }) => {
@@ -99,7 +100,7 @@ const ThingsToDo = () => {
   const [cityId, setCityId] = useState(null);
   const [categoryId, setCategoryId] = useState(null);
   const [cityName, setCityName] = useState(null);
-
+  const router = useRouter();
   const thingToDo = useSelector((state) => state.home.thingToDo);
 
   // for modal
@@ -276,7 +277,7 @@ const ThingsToDo = () => {
 
           <TouchableOpacity
             onPress={() => {
-              console.log(`Pressed ${item.name}`);
+              router.push("/detail/attraction/" + item.id);
             }}
             style={{
               flexDirection: "row",
@@ -318,7 +319,7 @@ const ThingsToDo = () => {
                 style={{ color: "#FFFFFF", fontSize: 12, textAlign: "center" }}
                 className=" font-pmedium"
               >
-                book
+                view
               </Text>
             </View>
           </TouchableOpacity>

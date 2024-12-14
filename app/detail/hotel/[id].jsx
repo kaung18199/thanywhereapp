@@ -42,6 +42,7 @@ import Whattime from "../../../components/detailPackage/Whattime";
 import Howbook from "../../../components/detailPackage/Howbook";
 import HowPayment from "../../../components/detailPackage/HowPayment";
 import { WebView } from "react-native-webview";
+import { Modal } from "react-native";
 
 const HotelDetailPage = () => {
   const navigation = useNavigation();
@@ -51,6 +52,12 @@ const HotelDetailPage = () => {
   const [imagesCover, setImagesCover] = useState([]);
   const [otherPackage, setOtherPackage] = useState(null);
   const [showMore, setShowMore] = useState(false);
+  const [youtubeLink, setYouTubeLink] = useState(null);
+
+  const [modalVisible, setModalVisible] = useState(false); // Add state for modal visibility
+
+  const handleOpenModal = () => setModalVisible(true); // Open modal
+  const handleCloseModal = () => setModalVisible(false); // Close modal
 
   const router = useRouter();
 
@@ -124,8 +131,22 @@ const HotelDetailPage = () => {
     }
   };
 
+  const getYoutubeLink = () => {
+    if (detail?.youtube_link != null) {
+      return `https://www.youtube.com/embed/${
+        detail?.youtube_link[0]?.en_link
+          ? detail.youtube_link[0]?.en_link
+          : detail.youtube_link[0]?.mm_link
+      }`;
+    } else {
+      return "empty";
+    }
+  };
+
   useEffect(() => {
     getDetail(id);
+
+    handleCloseModal();
   }, [id]);
 
   useEffect(() => {
@@ -206,9 +227,41 @@ const HotelDetailPage = () => {
               )}
               <View className="  ">
                 <View className=" border-b-8 border-black-100/10  pb-4">
-                  <Text className=" font-psemibold text-lg text-secondary px-4">
-                    {detail?.name}
-                  </Text>
+                  <View
+                    className=" relative px-4"
+                    style={{ width: contentWidth }}
+                  >
+                    <Text className=" font-psemibold text-lg text-secondary">
+                      {detail?.name}
+                    </Text>
+                    {detail?.youtube_link &&
+                      (detail?.youtube_link[0]?.mm_link ||
+                        detail?.youtube_link[0]?.en_link) && (
+                        <View className=" absolute right-4 top-2 ">
+                          <TouchableOpacity
+                            className="flex-row justify-end items-center gap-x-1"
+                            onPress={() => {
+                              handleOpenModal();
+                              setYouTubeLink(getYoutubeLink());
+                            }}
+                          >
+                            <Image
+                              source={{
+                                uri: "https://cdn-icons-png.flaticon.com/128/18546/18546874.png",
+                              }}
+                              style={{
+                                width: 10,
+                                height: 10,
+                                tintColor: "#08d14b",
+                              }}
+                            />
+                            <Text className=" text-xs text-green-600 font-psemibold">
+                              see video
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+                  </View>
                   <View className=" flex-row justify-between items-center space-x-2">
                     <View className=" flex-row flex justify-start items-center gap-x-1 pl-4">
                       {Array.from({ length: detail?.rating }, (_, index) => (
@@ -240,31 +293,6 @@ const HotelDetailPage = () => {
                       </Text>
                     </View>
                   )}
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    className=" pt-4 px-2"
-                  >
-                    {detail?.destinations?.map((destination) => (
-                      <TouchableOpacity
-                        key={destination.id}
-                        activeOpacity={0.7}
-                        className="w-[200px]"
-                        onPress={() => console.log("hello")}
-                      >
-                        <CachedImage
-                          uri={destination.feature_img}
-                          style={{ width: 180, height: 100, borderRadius: 10 }}
-                        />
-                        <Text
-                          className=" text-sm text-black/80 font-psemibold pl-4 pt-2 w-[180px]"
-                          numberOfLines={1}
-                        >
-                          {destination.name}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </ScrollView>
                 </View>
                 <View className=" border-b-8 border-black-100/10 pb-6">
                   <View className=" flex-row justify-between items-center px-4 py-4">
@@ -495,7 +523,7 @@ const HotelDetailPage = () => {
                   <View className=" flex-row justify-between items-center px-4 pt-4">
                     <Text className=" font-psemibold text-lg text-black border-l-4 border-secondary pl-3">
                       Other Packages in{" "}
-                      {detail?.cities != null && detail?.cities[0].name}
+                      {detail?.city != null && detail?.city.name}
                     </Text>
                   </View>
                   <ScrollView
@@ -571,8 +599,70 @@ const HotelDetailPage = () => {
               </TouchableOpacity>
             </View>
           </View>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible} // Use modal visibility state
+            onRequestClose={handleCloseModal} // Handle back button
+          >
+            <ScrollView
+              contentContainerStyle={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "rgba(0, 0, 0, 0.2)",
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  backgroundColor: "white",
+                  borderRadius: 10,
+                  padding: 4,
+                }}
+              >
+                <Text className="px-2 pb-2 pt-4 text-secondary font-psemibold">
+                  {detail?.name} video
+                </Text>
+
+                <View
+                  className="mt-2 "
+                  style={{
+                    maxHeight: 400,
+                    minHeight: 300,
+                    width: contentWidth,
+                    overflow: "hidden",
+                  }}
+                >
+                  {/* <Text>{youtubeLink}</Text> */}
+                  <WebView
+                    originWhitelist={["*"]}
+                    source={{
+                      html: `<iframe
+                        style="border:0; border-radius: 50px; width: 98%; height: 100%;"
+                        src="${youtubeLink}"
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen
+                      ></iframe>`,
+                    }}
+                  />
+                </View>
+                <TouchableOpacity
+                  onPress={handleCloseModal}
+                  style={{ marginTop: 10, marginBottom: 10 }}
+                >
+                  <Text style={{ textAlign: "center", color: "#FF601B" }}>
+                    Close
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          </Modal>
         </View>
       )}
+
       <BottomSheet
         index={0}
         ref={bottomSheetRef}

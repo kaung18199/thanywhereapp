@@ -20,10 +20,10 @@ import LoadingVantour from "../../../components/LoadingCart/LoadingVantour";
 import HeaderPart from "../../../components/Layout/HeaderPart";
 import debounce from "lodash.debounce";
 import { useEffect } from "react";
-import HotelCart from "../../../components/HotelCart";
 import { useRef } from "react";
+import AttractionCart from "../../../components/AttractionCart";
 
-export default function ListHotelResult() {
+export default function ListAttractionResult() {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -31,8 +31,8 @@ export default function ListHotelResult() {
   const [vantourData, setVantourData] = useState([]);
   const [stop, setStop] = useState(false);
   const [total, setTotal] = useState(0);
-  const { data, cityId, cityName, place } = useLocalSearchParams();
-  const [typeValue, setTypeValue] = useState("");
+  const { data, cityId, cityName } = useLocalSearchParams();
+  const [typeValue, setTypeValue] = useState(null);
   const [typeName, setTypeName] = useState("");
 
   const { height: screenHeight } = useWindowDimensions();
@@ -45,24 +45,48 @@ export default function ListHotelResult() {
 
   const type = [
     {
-      id: 1,
-      name: "budget ( < 1200)",
-      value: "0-1200",
+      id: "",
+      name: "all",
     },
     {
-      id: 2,
-      name: "standard ( 1200 - 1800)",
-      value: "1200-1800",
+      id: 32,
+      name: "amusement park",
     },
     {
-      id: 3,
-      name: "premium ( 1800 - 3000 )",
-      value: "1800-3000",
+      id: 40,
+      name: "dinner cruises",
     },
     {
-      id: 4,
-      name: "luxury ( 3000+ )",
-      value: "3000-100000",
+      id: 31,
+      name: "water parks",
+    },
+    {
+      id: 17,
+      name: "safari",
+    },
+    {
+      id: 16,
+      name: "museums",
+    },
+    {
+      id: 29,
+      name: "theme parks",
+    },
+    {
+      id: 54,
+      name: "buffet",
+    },
+    {
+      id: 42,
+      name: "island tours",
+    },
+    {
+      id: 39,
+      name: "shows",
+    },
+    {
+      id: 22,
+      name: "skywalks",
     },
   ];
 
@@ -71,14 +95,11 @@ export default function ListHotelResult() {
     if (search) {
       data.search = search;
     }
-    if (typeValue != "") {
-      data.price_range = typeValue;
+    if (typeValue != null) {
+      data.category_id = typeValue;
     }
     if (cityId) {
       data.city_id = cityId;
-    }
-    if (place) {
-      data.place = place;
     }
     return data;
   };
@@ -93,9 +114,12 @@ export default function ListHotelResult() {
         console.log("====================================");
         console.log(params, "this is params");
         console.log("====================================");
-        const res = await axios.get("/hotels?order_by=top_selling_products", {
-          params: params,
-        });
+        const res = await axios.get(
+          "/entrance-tickets?order_by=top_selling_products&show_only=1",
+          {
+            params: params,
+          }
+        );
         const newData = res?.data?.data.filter(
           (item) => !vantourData.some((v) => v.id === item.id)
         ); // Prevent duplicates
@@ -135,6 +159,13 @@ export default function ListHotelResult() {
     }
   };
 
+  useEffect(() => {
+    if (typeValue != null) {
+      setStop(true);
+      onRefresh();
+    }
+  }, [typeValue]);
+
   const handleEndReached = useCallback(async () => {
     if (!stop) {
       try {
@@ -168,7 +199,7 @@ export default function ListHotelResult() {
       <Animated.FlatList
         data={vantourData || []}
         keyExtractor={(item, index) => `${item.id}_${index}`}
-        renderItem={({ item }) => <HotelCart item={item} />}
+        renderItem={({ item }) => <AttractionCart item={item} />}
         contentContainerStyle={styles.contentContainer}
         ListHeaderComponent={
           <>
@@ -184,7 +215,7 @@ export default function ListHotelResult() {
                   }}
                   numberOfLines={1}
                 >
-                  Over {total} Hotels in {cityName}, {place}
+                  Over {total} Hotels in {cityName}, {typeName ? typeName : ""}
                 </Text>
 
                 <TextInput
@@ -209,7 +240,7 @@ export default function ListHotelResult() {
                       <TouchableOpacity
                         key={item.id}
                         onPress={() => {
-                          setTypeValue(item.value);
+                          setTypeValue(item.id);
                           setTypeName(item.name);
                           onRefresh();
                           scrollViewRef.current.scrollTo({
@@ -222,7 +253,7 @@ export default function ListHotelResult() {
                       >
                         <View
                           className={`rounded-full px-4 py-1 mr-2 ${
-                            typeValue === item.value
+                            typeValue === item.id
                               ? "border-white bg-white"
                               : "border-gray-50"
                           }`}
@@ -230,7 +261,7 @@ export default function ListHotelResult() {
                         >
                           <Text
                             className={
-                              typeValue === item.value
+                              typeValue === item.id
                                 ? "text-secondary"
                                 : " text-gray-50 "
                             }

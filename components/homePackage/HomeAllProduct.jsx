@@ -15,7 +15,7 @@ const data = [
   {
     icon: icons.attractionicon,
     text: "attraction tickets",
-    state: false,
+    state: true,
     link: "/attraction",
   },
   {

@@ -6,7 +6,7 @@ import {
   ScrollView,
   useWindowDimensions,
 } from "react-native";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "expo-router";
 import icons from "../constants/icons";
 import * as Animatable from "react-native-animatable";
@@ -29,22 +29,24 @@ const HotelCart = ({ item }) => {
     },
   };
 
-  const calculatePercent = (lowest_walk_in_price, lowest_room_price) => {
-    if (
-      lowest_walk_in_price &&
-      lowest_room_price &&
-      lowest_walk_in_price !== "null"
-    ) {
-      const result = (
-        ((Number(lowest_walk_in_price) - Number(lowest_room_price)) /
-          Number(lowest_walk_in_price)) *
-        100
-      ).toFixed(0); // Round to 2 decimal places if necessary
-      return `${result}`;
-    } else {
-      return `0`;
+  const calculatePercent = useCallback(
+    (lowest_walk_in_price, lowest_room_price) => {
+      if (
+        lowest_walk_in_price &&
+        lowest_room_price &&
+        lowest_walk_in_price !== "null"
+      ) {
+        const result = (
+          ((Number(lowest_walk_in_price) - Number(lowest_room_price)) /
+            Number(lowest_walk_in_price)) *
+          100
+        ).toFixed(0); // Round to 2 decimal places if necessary
+        return `${result}`;
+      } else {
+        return `0`;
+      }
     }
-  };
+  );
 
   // Truncate HTML content to a specific character count
   const truncateHtml = (html, maxChars) => {

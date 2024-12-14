@@ -1,68 +1,62 @@
+import { Ionicons } from "@expo/vector-icons";
 import {
-  View,
-  Text,
+  router,
+  useLocalSearchParams,
+  useNavigation,
+  useRouter,
+} from "expo-router";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  ChevronRightIcon,
+  MapPinIcon,
+  MinusIcon,
+  PlusIcon,
+  StarIcon,
+  TagIcon,
+} from "react-native-heroicons/solid";
+import {
+  Dimensions,
+  Image,
   SafeAreaView,
   ScrollView,
-  Image,
-  TouchableOpacity,
   Share,
-  Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import axios from "../../../axiosConfig";
+import { icons } from "../../../constants";
 import ImageCarousel from "../../../components/ImageCarousel";
-import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
-import { useDispatch } from "react-redux";
-import { getAttractionDetail } from "../../../redux/stores/attractionSlice";
-// import * as Animatable from "react-native-animatable";
-import { FontAwesome5, Ionicons } from "@expo/vector-icons";
-import CustomButton from "../../../components/CustomButton";
-// import RoomList from "../../../components/RoomList";
-import CustomBottomSheet from "../../../components/CustomBottomSheet";
-import EmptyState from "../../../components/EmptyState";
-import Animated, {
-  SlideInDown,
-  SlideInUp,
-  useScrollViewOffset,
-} from "react-native-reanimated";
-import TicketList from "../../../components/TicketList";
-import CustomBottomTicket from "../../../components/CustomBottomTicket";
+import { CachedImage } from "../../../helpers/image";
+import { WebView } from "react-native-webview";
+import { Modal } from "react-native";
 
-const AttractionDetail = () => {
-  const { id } = useLocalSearchParams();
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
-  const [attraction, setAttraction] = useState(null);
-  const scrollRef = useRef(null);
+const AttractionDetailPage = () => {
   const navigation = useNavigation();
+  const { id } = useLocalSearchParams();
+  const [loading, setLoading] = useState(false);
+  const [detail, setDetail] = useState({});
+  const [imagesCover, setImagesCover] = useState([]);
+  const [otherPackage, setOtherPackage] = useState(null);
+  const [showMore, setShowMore] = useState(false);
+  const [youtubeLink, setYouTubeLink] = useState(null);
+
+  const [modalVisible, setModalVisible] = useState(false); // Add state for modal visibility
+
+  const handleOpenModal = () => setModalVisible(true); // Open modal
+  const handleCloseModal = () => setModalVisible(false); // Close modal
+
   const router = useRouter();
 
-  const bottomSheetRef = useRef(null);
-  const handleClosePreps = () => bottomSheetRef.current?.close();
-  const handleOpenPreps = () => bottomSheetRef.current?.expand();
-  const handleIndexPreps = () => bottomSheetRef.current?.snapToIndex(4);
-
-  const [ticketId, setTicketId] = useState("");
-  const modalOpenFunction = (data) => {
-    setTicketId(data);
-    handleIndexPreps();
-  };
-
-  const getFunction = async (id) => {
-    try {
-      setLoading(true);
-      const data = await dispatch(getAttractionDetail(id));
-      setAttraction(data.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    handleClosePreps();
-    getFunction(id);
-  }, []);
+  const contentWidth = Dimensions.get("window").width;
 
   const shareListingg = async () => {
     try {
@@ -75,23 +69,92 @@ const AttractionDetail = () => {
     }
   };
 
-  // const scrollOffset = useScrollViewOffset(scrollRef);
+  const percent = (a, b) => {
+    if (a && b && a !== "null") {
+      const calculatedPercent = (
+        ((Number(a) - Number(b)) / Number(a)) *
+        100
+      ).toFixed(0); // Round to 0 decimal places
+      return `${calculatedPercent}`;
+    } else {
+      return `0`;
+    }
+  };
+
+  const getDetail = async () => {
+    try {
+      setLoading(true);
+      setImagesCover([]);
+      const data = await axios.get(`/entrance-tickets/${id}`);
+
+      setDetail(data.data.data);
+
+      setImagesCover(data.data.data.images);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getOtherPackage = async (id) => {
+    try {
+      const res = await axios.get(
+        `/entrance-tickets?order_by=top_selling_products&show_only=1&city_id=${id}`
+      );
+      setOtherPackage(res.data.data);
+      console.log(res.data.data, "this is another");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getYoutubeLink = () => {
+    if (detail?.youtube_link != null) {
+      return `https://www.youtube.com/embed/${
+        detail?.youtube_link[0]?.en_link
+          ? detail.youtube_link[0]?.en_link
+          : detail.youtube_link[0]?.mm_link
+      }`;
+    } else {
+      return "empty";
+    }
+  };
+
+  useEffect(() => {
+    getDetail(id);
+
+    handleCloseModal();
+  }, [id]);
+
+  useEffect(() => {
+    getOtherPackage(detail?.cities && detail?.cities[0]?.id);
+  }, [detail]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerTitle: () => {
+        return (
+          <View className=" flex-row justify-start ml-4 items-center space-x-2">
+            <Text className="text-sm font-psemibold"></Text>
+          </View>
+        );
+      },
+      headerTransparent: true,
+
       headerRight: () => {
         return (
           <View className=" flex-row justify-center items-center gap-2">
             <TouchableOpacity
               activeOpacity={0.7}
-              className="bg-white p-2 rounded-full border border-[#ff5f1b33]"
+              className="bg-white p-2 rounded-full "
             >
               <Ionicons name="heart-outline" size={18} color={"#FF601B"} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={shareListingg}
               activeOpacity={0.7}
-              className="bg-white p-2 rounded-full border border-[#ff5f1b33]"
+              className="bg-white p-2 rounded-full "
             >
               <Ionicons name="share-outline" size={18} color={"#FF601B"} />
             </TouchableOpacity>
@@ -104,7 +167,7 @@ const AttractionDetail = () => {
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => router.back()}
-              className="bg-white p-2 rounded-full border border-[#ff5f1b33]"
+              className="bg-white p-2 rounded-full "
             >
               <Ionicons name="chevron-back" size={18} color={"#FF601B"} />
             </TouchableOpacity>
@@ -115,192 +178,399 @@ const AttractionDetail = () => {
   }, []);
 
   return (
-    <View>
+    <SafeAreaView>
       {loading ? (
-        <View className=" h-full justify-center items-center">
-          <EmptyState
-            title="loading Attraction Detail"
-            subtitle="please wait ..."
+        <View className=" w-full h-full flex justify-center bg-white items-center">
+          <Image
+            source={icons.logo}
+            resizeMode="contain"
+            className="w-20 h-20"
           />
         </View>
       ) : (
-        <View className=" relative h-full">
-          <Animated.ScrollView ref={scrollRef} scrollEventThrottle={16}>
-            <ImageCarousel list={attraction?.images} showButtom={false} />
-            <View className=" px-4 pt-5  ">
-              <View
-                className=" bg-white rounded-xl overflow-hidden pt-4 pb-6 pl-4 pr-8"
-                style={{
-                  elevation: 2, // Add elevation for shadow on Android
-                  shadowColor: "#000000", // Add shadow properties for iOS
-                  shadowOffset: {
-                    width: 0,
-                    height: 0.5, // Negative height to create a shadow on the top
-                  },
-                  shadowOpacity: 0.5,
-                  shadowRadius: 4,
-                }}
-              >
-                <Text className=" text-lg font-psemibold text-secondary-200 pb-4">
-                  {attraction?.name}
-                </Text>
-                <View className="w-full flex-1 flex-row flex-wrap justify-between items-between gap-3">
-                  <View className=" gap-3">
-                    <View className=" flex-row justify-start items-start gap-2">
-                      <Ionicons
-                        name="location-outline"
-                        size={14}
-                        color={"#FF601B"}
-                      />
-                      <View
-                        className=" text-xs font-pregular text-gray-600 flex-row justify-start items-center flex-wrap gap-2"
-                        numberOfLines={2}
+        <View className=" h-full relative">
+          <ScrollView className=" bg-white h-full ">
+            <View className=" pb-[120px]">
+              {imagesCover.length > 0 ? (
+                <ImageCarousel list={imagesCover} showButtom={false} />
+              ) : (
+                <View className=" h-40 flex justify-center items-center bg-secondary/50 relative">
+                  <Image
+                    source={icons.logo}
+                    resizeMode="contain"
+                    className="w-28 h-28"
+                  />
+                  <View className=" absolute -bottom-4 left-0 flex-row justify-center bg-white rounded-3xl w-full  items-center h-[30px]"></View>
+                </View>
+              )}
+              <View className="  ">
+                <View className=" border-b-8 border-black-100/10  pb-4">
+                  <View
+                    className=" relative px-4"
+                    style={{ width: contentWidth }}
+                  >
+                    <Text className=" font-psemibold text-lg text-secondary">
+                      {detail?.name}
+                    </Text>
+                    {detail?.youtube_link &&
+                      (detail?.youtube_link[0]?.mm_link ||
+                        detail?.youtube_link[0]?.en_link) && (
+                        <View className=" absolute right-4 top-2 ">
+                          <TouchableOpacity
+                            className="flex-row justify-end items-center gap-x-1"
+                            onPress={() => {
+                              handleOpenModal();
+                              setYouTubeLink(getYoutubeLink());
+                            }}
+                          >
+                            <Image
+                              source={{
+                                uri: "https://cdn-icons-png.flaticon.com/128/18546/18546874.png",
+                              }}
+                              style={{
+                                width: 10,
+                                height: 10,
+                                tintColor: "#08d14b",
+                              }}
+                            />
+                            <Text className=" text-xs text-green-600 font-psemibold">
+                              see video
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+                  </View>
+                  <View className=" flex-row justify-between items-center space-x-2">
+                    <View className=" flex-row items-center gap-x-2 pt-2 px-4">
+                      <MapPinIcon color={"#FF601B"} size={15} />
+                      {detail?.cities && (
+                        <Text className=" text-secondary font-psemibold text-xs">
+                          {detail?.cities[0]?.name}
+                        </Text>
+                      )}
+                    </View>
+                    <View className=" flex-row items-center gap-x-2 pt-2 px-4">
+                      <TagIcon color={"#FF601B"} size={15} />
+                      {detail?.categories &&
+                        detail?.categories.map((category, index) => (
+                          <Text
+                            className={` text-secondary font-psemibold text-xs ${
+                              index > 1 ? "hidden" : ""
+                            }`}
+                            key={category.id}
+                          >
+                            {category.name},
+                          </Text>
+                        ))}
+                    </View>
+                  </View>
+                  {detail?.location_map && (
+                    <View className=" px-4 pt-4 gap-y-2">
+                      <Text className=" font-psemibold text-lg text-black border-l-4 border-secondary pl-3">
+                        Location
+                      </Text>
+                      <View className=" overflow-hidden h-[200px]">
+                        <WebView
+                          originWhitelist={["*"]}
+                          source={{
+                            html: `<iframe src="${detail?.location_map}" width="1000" height="500" style="border:0; border-radius: 50px" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`,
+                          }}
+                        />
+                      </View>
+                      <Text className=" font-pregular text-xs">
+                        {detail?.location_map_title}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+                <View className=" border-b-8 border-black-100/10 pb-6">
+                  <View className=" flex-row justify-between items-center px-4 py-4">
+                    <Text className=" font-psemibold text-lg text-black border-l-4 border-secondary pl-3">
+                      Select Options
+                    </Text>
+                  </View>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    className="pl-4 pb-4 "
+                  >
+                    <View className=" px-2 mr-2 py-1.5 rounded-lg border border-black/10">
+                      <Text className=" font-pmedium text-sm text-black-100/80">
+                        Choose date
+                      </Text>
+                    </View>
+                    <View className=" px-2 mr-2 py-1.5 rounded-lg border border-black/10">
+                      <Text className=" font-pmedium text-sm text-black-100/80">
+                        Today
+                      </Text>
+                    </View>
+                    <View className=" px-2 mr-2 py-1.5 rounded-lg border border-black/10">
+                      <Text className=" font-pmedium text-sm text-black-100/80">
+                        Tomorrow
+                      </Text>
+                    </View>
+                    <View className=" px-2 mr-2 py-1.5 rounded-lg border border-black/10">
+                      <Text className=" font-pmedium text-sm text-black-100/80">
+                        -- / -- / 2025
+                      </Text>
+                    </View>
+                  </ScrollView>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    className=" pt-2 px-4 pb-4"
+                  >
+                    {detail?.variations?.map((room) => (
+                      <TouchableOpacity
+                        key={room.id}
+                        activeOpacity={0.7}
+                        className="w-[200px] border rounded-2xl border-black/10 mr-4 p-1"
+                        onPress={() => console.log("hello")}
                       >
-                        {attraction?.cities.length > 0 &&
-                          attraction?.cities.map((city) => (
+                        <View className="relative">
+                          {(room?.owner_price ||
+                            room?.owner_price != null ||
+                            room?.owner_price !== room?.price) && (
                             <View
-                              key={city.id}
-                              className=" text-xs text-gray-600 bg-secondary/20 px-1.5 py-0.5 rounded-lg"
+                              style={{
+                                backgroundColor: "#ff1c1c",
+                                width: "auto",
+                                paddingHorizontal: 8,
+                                borderRadius: 16,
+                                position: "absolute",
+                                bottom: -8,
+                                right: 8,
+                              }}
                             >
-                              <Text className=" text-gray-600 text-xs">
-                                {city.name}
+                              <Text
+                                style={{
+                                  paddingVertical: 2,
+                                  textAlign: "center",
+                                  color: "white",
+                                  fontSize: 12,
+                                }}
+                              >
+                                {percent(room?.owner_price, room?.price)}% OFF
                               </Text>
                             </View>
-                          ))}
-                      </View>
-                    </View>
-                    {attraction?.place && (
-                      <View className=" flex-row gap-2 justify-start items-start">
-                        <Ionicons
-                          name="location-outline"
-                          size={16}
-                          color={"#FF601B"}
-                        />
-                        <Text className=" text-sm font-pregular text-gray-700">
-                          {attraction?.place}
+                          )}
+                        </View>
+                        <Text
+                          className=" text-sm text-black/80  font-psemibold pl-2 pt-4"
+                          numberOfLines={1}
+                        >
+                          {room?.name}
                         </Text>
-                      </View>
-                    )}
+                        <View>
+                          {room?.including_services &&
+                            JSON.parse(room.including_services).map(
+                              (service, index) => (
+                                <View
+                                  className=" flex-row px-4 justify-start gap-x-2 py-1 items-center"
+                                  key={index}
+                                >
+                                  <Text className=" w-2 h-2 bg-secondary rounded-full">
+                                    .
+                                  </Text>
+                                  <Text
+                                    className=" text-xs font-pregular text-black/80"
+                                    numberOfLines={1}
+                                  >
+                                    {service}
+                                  </Text>
+                                </View>
+                              )
+                            )}
+                        </View>
+                        <View className=" flex-row justify-start gap-x-1 py-1 items-center">
+                          <Text className=" text-2xl font-pbold text-black/80 pl-4 pt-1 ">
+                            ฿ {room?.price}
+                          </Text>
+                          <Text className=" text-xs font-pregular text-black/80  pt-1 line-through ">
+                            ฿ {room?.owner_price}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                </View>
+                <View className=" border-b-8 border-black-100/10 pb-6">
+                  <View className=" flex-row justify-between items-center px-4 pt-4">
+                    <Text className=" font-psemibold text-lg text-black border-l-4 border-secondary pl-3">
+                      Package Summary
+                    </Text>
                   </View>
-
-                  <View className=" gap-3">
-                    <View className=" flex-row gap-2 justify-start items-start">
-                      <Ionicons
-                        name="ticket-outline"
-                        size={14}
-                        color={"#FF601B"}
-                      />
-                      <Text className=" text-sm font-pregular text-gray-700">
-                        {attraction?.variations?.length} TICKETS
-                      </Text>
-                    </View>
-                    <View className=" flex-row gap-2 justify-start items-start">
-                      <Ionicons
-                        name="star-outline"
-                        size={16}
-                        color={"#FF601B"}
-                      />
-                      <Text className=" text-sm text-green-700 font-pmedium">
-                        Avaliable Now !{" "}
-                      </Text>
-                    </View>
+                  <View className={` px-6 ${showMore ? "" : " "}`}>
+                    {/* <RenderHTML
+                      contentWidth={contentWidth}
+                      source={{ html: detail?.description || "" }}
+                    /> */}
+                    <Text className=" text-sm font-pregular pt-4">
+                      {detail?.description}
+                    </Text>
                   </View>
+                  <TouchableOpacity
+                    onPress={() => setShowMore(!showMore)}
+                    className=" mt-2 px-6"
+                  >
+                    <Text className=" font-pregular text-xs text-secondary">
+                      {showMore ? "Show Less" : "Show More"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <View className=" flex-row justify-between items-center px-4 pt-4">
+                    <Text className=" font-psemibold text-lg text-black border-l-4 border-secondary pl-3">
+                      Other Packages in{" "}
+                      {detail?.cities && detail?.cities[0].name}
+                    </Text>
+                  </View>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    className=" pt-4 px-2"
+                  >
+                    {otherPackage?.map((a) => (
+                      <TouchableOpacity
+                        key={a.id}
+                        activeOpacity={0.7}
+                        className="w-[200px] gap-y-1"
+                        onPress={() =>
+                          router.push(`/detail/attraction/${a.id}`)
+                        }
+                      >
+                        <CachedImage
+                          uri={a?.cover_image}
+                          style={{ width: 180, height: 100, borderRadius: 10 }}
+                        />
+                        <Text
+                          className=" text-sm text-black/80 font-psemibold pl-4 pt-4 w-[180px]"
+                          numberOfLines={1}
+                        >
+                          {a.name}
+                        </Text>
+                        <Text className=" pl-4 font-pmedium text-xs text-secondary">
+                          {a?.cities[0]?.name}, {a?.categories[0]?.name}
+                        </Text>
+                        <Text className=" pl-4 font-pmedium text-xs">
+                          starting price
+                        </Text>
+                        <Text className=" pl-4 font-pmedium text-lg">
+                          ฿ {a?.lowest_variation_price}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
                 </View>
               </View>
             </View>
+          </ScrollView>
+          <View className=" bg-white absolute bottom-0 border-t border-gray-100/50 left-0 right-0">
+            <View className=" flex-row justify-between items-center px-6 pt-4 pb-2">
+              <View className=" flex-row justify-center items-center gap-x-2">
+                <View className=" flex-row justify-center items-center gap-x-2 border border-gray-200 bg-gray-100/50 rounded-md p-1">
+                  <MinusIcon size={20} color="gray" />
+                </View>
+                <Text className=" px-2 py-1 ">1</Text>
 
-            <View className=" px-4 pt-4">
-              <View
-                className=" bg-white rounded-xl overflow-hidden pt-4 pb-6 pl-4 pr-8"
-                style={{
-                  // Adjust as needed
-                  shadowColor: "#000", // iOS
-                  shadowOffset: { width: 0, height: 2 }, // iOS
-                  shadowOpacity: 0.04, // iOS
-                  shadowRadius: 3.84, // iOS
-                  elevation: 1.05, // Android
-                  borderRadius: 4.84, // Android
-                }}
-              >
-                <Text className=" text-lg font-pmedium text-gray-700 pb-4">
-                  About Attraction Ticket
-                </Text>
-                <View className="w-full ">
-                  <Text className=" text-sm py-2 font-pregular text-gray-700 leading-[20px]">
-                    {attraction?.description}
-                  </Text>
+                <View className=" flex-row justify-center items-center gap-x-2 border border-gray-200 bg-gray-100/50 rounded-md p-1">
+                  <PlusIcon size={20} color="gray" />
                 </View>
               </View>
-            </View>
-            <View className=" px-4 pt-4 pb-20">
-              <View
-                className=" bg-white rounded-xl overflow-hidden pt-4 pb-1 pl-4 pr-4"
-                style={{
-                  // Adjust as needed
-                  shadowColor: "#000", // iOS
-                  shadowOffset: { width: 0, height: 2 }, // iOS
-                  shadowOpacity: 0.04, // iOS
-                  shadowRadius: 3.84, // iOS
-                  elevation: 2.05, // Android
-                  borderRadius: 4.84, // Android
-                }}
-              >
-                <Text className=" text-lg font-pmedium text-gray-700 pb-4">
-                  Ticket Variations
-                </Text>
-
-                {attraction?.variations.length > 0 && (
-                  <TicketList
-                    tickets={attraction?.variations}
-                    modalOpen={modalOpenFunction}
-                    closeModal={handleClosePreps}
-                  />
-                  // <Text>Hello</Text>
-                )}
-              </View>
-            </View>
-          </Animated.ScrollView>
-          <Animated.View
-            entering={SlideInDown.delay(1000).duration(500)}
-            className=" bg-white px-4 w-full absolute bottom-0  h-[60px] flex-row justify-between items-center rounded-t-[20px]"
-            style={{
-              elevation: 2, // Add elevation for shadow on Android
-              shadowColor: "#000000", // Add shadow properties for iOS
-              shadowOffset: {
-                width: 0,
-                height: -0.5, // Negative height to create a shadow on the top
-              },
-              shadowOpacity: 0.2,
-              shadowRadius: 4,
-            }}
-          >
-            <View>
-              <Text className=" text-base font-psemibold text-secondary">
-                {/* {attraction?.lowest_room_price} thb
-                <Text className=" text-sm font-pmedium text-gray-400">
-                  /night
-                </Text> */}
-                Booking at Messenger
+              <Text className=" font-pbold text-2xl text-secondary ">
+                ฿ {detail?.lowest_variation_price}
               </Text>
             </View>
-            <View className=" my-auto">
-              <CustomButton
-                title="Book now"
-                handlePress={() => {}}
-                containerStyle="w-auto px-6 py-2 "
-                textStyles="text-base"
-              />
+            <View className=" flex-row px-2 pt-2 pb-4 justify-center items-center gap-x-4">
+              <TouchableOpacity
+                activeOpacity={0.7}
+                className=" bg-white border border-gray-100 w-[180px] py-3 rounded-3xl flex justify-center items-center px-4  "
+              >
+                <Text className=" font-psemibold text-sm text-gray-500">
+                  Add to Cart
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                className=" bg-secondary border border-secondary w-[180px] py-3 rounded-3xl flex justify-center items-center px-4  "
+              >
+                <Text className=" font-psemibold text-sm text-white">
+                  Book Now
+                </Text>
+              </TouchableOpacity>
             </View>
-          </Animated.View>
-          {/* <CustomBottomTicket
-            id={ticketId}
-            ref={bottomSheetRef}
-            handleClosePreps={handleClosePreps}
-          /> */}
+          </View>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible} // Use modal visibility state
+            onRequestClose={handleCloseModal} // Handle back button
+          >
+            <ScrollView
+              contentContainerStyle={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "rgba(0, 0, 0, 0.2)",
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  backgroundColor: "white",
+                  borderRadius: 10,
+                  padding: 4,
+                }}
+              >
+                <Text className="px-2 pb-2 pt-4 text-secondary font-psemibold">
+                  {detail?.name} video
+                </Text>
+
+                <View
+                  className="mt-2 "
+                  style={{
+                    maxHeight: 400,
+                    minHeight: 300,
+                    width: contentWidth,
+                    overflow: "hidden",
+                  }}
+                >
+                  {/* <Text>{youtubeLink}</Text> */}
+                  <WebView
+                    originWhitelist={["*"]}
+                    source={{
+                      html: `<iframe
+                        style="border:0; border-radius: 50px; width: 98%; height: 100%;"
+                        src="${youtubeLink}"
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen
+                      ></iframe>`,
+                    }}
+                  />
+                </View>
+                <TouchableOpacity
+                  onPress={handleCloseModal}
+                  style={{ marginTop: 10, marginBottom: 10 }}
+                >
+                  <Text style={{ textAlign: "center", color: "#FF601B" }}>
+                    Close
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          </Modal>
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
-export default AttractionDetail;
+const styles = StyleSheet.create({
+  bottomSheet: {
+    zIndex: 100,
+  },
+});
+
+export default AttractionDetailPage;
