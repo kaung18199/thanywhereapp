@@ -1,6 +1,9 @@
 import { Stack, useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Button, TextInput } from "react-native";
+import axios from "../axiosConfig";
+import Toast from "react-native-toast-message";
+import toastConfig from "../helpers/toastConfig";
 import {
   Image,
   SafeAreaView,
@@ -12,6 +15,7 @@ import { ChevronLeftIcon } from "react-native-heroicons/outline";
 import DateTimePicker, {
   DateTimePickerAndroid,
 } from "@react-native-community/datetimepicker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HeaderLeftCustom = () => {
   const router = useRouter();
@@ -47,10 +51,106 @@ const SignUp = () => {
     }
   };
 
-  const handleLogin = () => {
-    // Handle login logic here
-    console.log("Email:", formData.email);
-    console.log("Password:", formData.password);
+  // const handleLogin = () => {
+  //   // Handle login logic here
+  //   const frmData = {
+  //     email: formData.email,
+  //     password: formData.password,
+  //     first_name: formData.first_name,
+  //     last_name: formData.last_name,
+  //     phone_number: formData.phone_number,
+  //     dob: formData.dob,
+  //     password_confirmation: formData.password_confirmation,
+  //   };
+
+  //   // console.log(frmData, "this is a signed in user");
+  // };
+
+  const handleLogin = async () => {
+    try {
+      // Handle login logic here
+      const frmData = {
+        email: formData.email,
+        password: formData.password,
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        phone_number: formData.phone_number,
+        dob: formData.dob,
+        password_confirmation: formData.password_confirmation,
+      };
+      const res = await axios.post(
+        "https://api-blog.thanywhere.com/api/v2/register",
+        frmData, // data goes here as the second parameter
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+
+      console.log(res.data, "this is response");
+
+      if (res.data.message == "User registered successfully") {
+        setFormData({
+          email: "",
+          password: "",
+          first_name: "",
+          last_name: "",
+          phone_number: "",
+          dob: "",
+          password_confirmation: "",
+        });
+        // await AsyncStorage.setItem("token", res.data.data.token);
+        // await AsyncStorage.setItem("user", JSON.stringify(res.data.data.user));
+        Toast.show({
+          type: "success",
+          text1: "Resgistration success",
+          text2: "Welcome to ThanyWhere 👋",
+          position: "top",
+          visibilityTime: 3000,
+        });
+        setTimeout(() => {
+          router.push("/login");
+        }, 5000);
+      } else {
+        setFormData({
+          email: "",
+          password: "",
+          first_name: "",
+          last_name: "",
+          phone_number: "",
+          dob: "",
+          password_confirmation: "",
+        });
+        Toast.show({
+          type: "error",
+          text1: "Oww !",
+          text2: "Please check your email and password",
+          position: "top",
+          visibilityTime: 3000,
+        });
+        // await AsyncStorage.removeItem("token");
+        // await AsyncStorage.removeItem("user");
+      }
+    } catch (error) {
+      // await AsyncStorage.removeItem("token");
+      // await AsyncStorage.removeItem("user");
+      if (error.response) {
+        console.log("Server responded with an error:", error.response.data);
+        Toast.show({
+          type: "error",
+          text1: "Oww !",
+          text2: error.response.data.message,
+          position: "top",
+          visibilityTime: 3000,
+        });
+      } else if (error.request) {
+        console.log("Request made but no response received:", error.request);
+      } else {
+        console.log("Error in setting up the request:", error.message);
+      }
+    }
   };
 
   return (
@@ -149,6 +249,21 @@ const SignUp = () => {
             <Text className=" text-xs font-pregular py-4">
               we'll email you trip confirmations and receipts.
             </Text>
+            <TextInput
+              className=" border border-gray-300 rounded-xl px-4 text-sm font-pregular py-3 w-full"
+              placeholder="Enter your phone number"
+              keyboardType="phone" // Show email-specific keyboard
+              value={formData.phone_number}
+              onChangeText={(phone_number) =>
+                setFormData({ ...formData, phone_number: phone_number })
+              }
+              autoCapitalize="none" // No automatic capitalization
+              autoCorrect={false} // Disable autocorrect
+            />
+            <Text className=" text-xs font-pregular py-4">
+              we'll phone number will remind you trip confirmations and
+              receipts.
+            </Text>
           </View>
           <View className=" flex flex-col justify-start items-center border border-gray-300 rounded-xl">
             <TextInput
@@ -197,6 +312,7 @@ const SignUp = () => {
           </View>
         </View>
       </ScrollView>
+      <Toast config={toastConfig} />
     </SafeAreaView>
   );
 };
