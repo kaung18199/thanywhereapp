@@ -20,11 +20,19 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const HeaderLeftCustom = () => {
   const router = useRouter();
   return (
-    <View style={{ marginLeft: 4 }}>
-      <TouchableOpacity onPress={() => router.back()}>
-        <ChevronLeftIcon size={18} color="#FF601B" />
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity
+      onPress={() => router.back()}
+      style={{
+        height: 48, // Ensures the touch area is 48dp
+        width: 48, // Ensures the touch area is 48dp
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} // Optional, to further increase tappable area
+    >
+      <ChevronLeftIcon size={24} color="#FF601B" />
+      {/* Icon size set independently */}
+    </TouchableOpacity>
   );
 };
 
@@ -122,7 +130,7 @@ const Login = () => {
           </Text>
           <View className=" flex flex-col justify-start items-center border border-gray-300 rounded-xl">
             <TextInput
-              className=" border-b border-gray-300 rounded-xl px-4 text-sm font-pregular py-3 w-full"
+              className=" border-b border-gray-300 rounded-xl px-6 text-sm font-pregular py-5 w-full"
               placeholder="Enter your email"
               keyboardType="email-address" // Show email-specific keyboard
               value={formData.email}
@@ -133,7 +141,7 @@ const Login = () => {
               autoCorrect={false} // Disable autocorrect
             />
             <TextInput
-              className="  rounded-xl px-4 text-sm font-pregular py-3 w-full"
+              className="  rounded-xl px-6 text-sm font-pregular py-5 w-full"
               placeholder="Enter your password"
               secureTextEntry // Hides the input for passwords
               value={formData.password}
@@ -149,14 +157,14 @@ const Login = () => {
           <View>
             <TouchableOpacity
               onPress={handleLogin}
-              className="bg-[#FF601B]  rounded-xl px-4 py-3 flex justify-center items-center"
+              className="bg-[#FF601B]  rounded-xl px-6 py-4 flex justify-center items-center"
             >
               <Text className=" text-white font-psemibold ">Login</Text>
             </TouchableOpacity>
           </View>
           <View>
             <TouchableOpacity
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 mt-3 flex justify-center items-center"
+              className="bg-white border border-gray-300 rounded-xl px-6 py-4 mt-3 flex justify-center items-center"
               onPress={() => router.push("/signup")}
             >
               <Text className=" text-gray-600 font-psemibold ">
@@ -167,7 +175,7 @@ const Login = () => {
 
           <View className="border-b border-gray-300 mt-6"></View>
           <View>
-            <TouchableOpacity className="bg-gray-200 border border-gray-300 rounded-xl px-4 py-3 mt-3 flex justify-center items-center">
+            <TouchableOpacity className="bg-gray-200 border border-gray-300 rounded-xl px-6 py-4 mt-5 flex justify-center items-center">
               <Text className=" text-gray-600 font-psemibold ">
                 continue with google
               </Text>

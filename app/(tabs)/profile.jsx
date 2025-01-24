@@ -254,7 +254,7 @@ const Profile = () => {
             You are not logged in , please
           </Text>
           <TouchableOpacity
-            className=" flex flex-row justify-center items-center gap-x-2"
+            className=" flex flex-row justify-center items-center px-6 py-4  gap-x-2"
             onPress={() => {
               router.push("/login"); // push to login page
             }}

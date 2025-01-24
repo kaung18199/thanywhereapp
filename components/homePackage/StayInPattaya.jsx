@@ -315,12 +315,9 @@ const StayInPattaya = () => {
             </View>
           )}
         </View>
-        <TouchableOpacity onPress={handleOpenModal}>
-          <Text
-            style={{ fontSize: 10 }}
-            className="text-secondary font-psemibold"
-          >
-            filter place
+        <TouchableOpacity onPress={handleOpenModal} style={{ padding: 4 }}>
+          <Text className="text-secondary font-psemibold text-sm py-2">
+            filter
           </Text>
         </TouchableOpacity>
       </View>
@@ -352,7 +349,11 @@ const StayInPattaya = () => {
               style={{ borderWidth: 1 }}
             >
               <Text
-                className={priceRange === item.value ? "text-secondary" : ""}
+                className={
+                  priceRange === item.value
+                    ? "text-secondary font-pregular"
+                    : ""
+                }
                 style={{ fontSize: 10 }}
               >
                 {item.name}
@@ -425,13 +426,37 @@ const StayInPattaya = () => {
               <Text className=" text-secondary font-psemibold">
                 Choose Place
               </Text>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => {
                   handleCloseModal();
                   setPlace("");
                 }}
               >
                 <Text style={{ textAlign: "center", color: "#FF601B" }}>
+                  Clean
+                </Text>
+              </TouchableOpacity> */}
+              <TouchableOpacity
+                onPress={() => {
+                  handleCloseModal();
+                  setPlace("");
+                }}
+                style={{
+                  height: 48,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#FFFFFF",
+                  borderRadius: 10,
+                }}
+              >
+                <Text
+                  className=" font-pregular"
+                  style={{
+                    textAlign: "center",
+                    color: "#FF601B",
+                    fontSize: 14,
+                  }}
+                >
                   Clean
                 </Text>
               </TouchableOpacity>
@@ -464,9 +489,7 @@ const StayInPattaya = () => {
                   >
                     {item}
                   </Text>
-                  <TouchableOpacity
-                    onPress={() => console.log(`Checkbox for ${item.name}`)}
-                  >
+                  <View>
                     <View
                       style={{
                         width: 20,
@@ -481,15 +504,37 @@ const StayInPattaya = () => {
                     >
                       {/* Placeholder for checkbox */}
                     </View>
-                  </TouchableOpacity>
+                  </View>
                 </TouchableOpacity>
               ))}
             </ScrollView>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={handleCloseModal}
               style={{ marginTop: 10 }}
             >
               <Text style={{ textAlign: "center", color: "#FF601B" }}>
+                Close
+              </Text>
+            </TouchableOpacity> */}
+            <TouchableOpacity
+              onPress={handleCloseModal}
+              style={{
+                marginTop: 10,
+                height: 48,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#FFFFFF",
+                borderRadius: 10,
+              }}
+            >
+              <Text
+                className=" font-pregular"
+                style={{
+                  textAlign: "center",
+                  color: "#FF601B",
+                  fontSize: 14,
+                }}
+              >
                 Close
               </Text>
             </TouchableOpacity>

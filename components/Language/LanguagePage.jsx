@@ -64,7 +64,7 @@ const LanguageSelectionModal = ({ visible, onSelectLanguage }) => {
             </View>
             <View className="gap-y-3">
               <TouchableOpacity
-                className={`flex-row justify-between items-center px-2 py-1.5  border border-secondary rounded-lg ${
+                className={`flex-row justify-between items-center px-2 py-3  border border-secondary rounded-lg ${
                   chooseLanguage === "english"
                     ? "bg-secondary/20"
                     : "bg-transparent"
@@ -80,7 +80,7 @@ const LanguageSelectionModal = ({ visible, onSelectLanguage }) => {
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
-                className={`flex-row justify-between items-center px-2 py-1.5  border border-secondary rounded-lg ${
+                className={`flex-row justify-between items-center px-2 py-3  border border-secondary rounded-lg ${
                   chooseLanguage === "myanmar"
                     ? "bg-secondary/20"
                     : "bg-transparent"
@@ -96,11 +96,11 @@ const LanguageSelectionModal = ({ visible, onSelectLanguage }) => {
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
-                className={`flex-row justify-between w-[100px] mx-auto items-center px-2 py-2 bg-secondary border border-secondary rounded-lg `}
+                className={`flex-row justify-between w-full mx-auto items-center px-2 py-3 bg-secondary border border-secondary rounded-lg `}
                 onPress={() => choose()}
               >
                 <View className=" text-center w-full">
-                  <Text className="text-sm text-white text-center font-psemibold">
+                  <Text className=" text-white text-center font-psemibold">
                     choose
                   </Text>
                 </View>

@@ -244,11 +244,8 @@ const ThingsToDo = () => {
           </Text>
           <View style={{ flexDirection: "row" }}>
             {item.cities.map((city) => (
-              <TouchableOpacity
+              <View
                 key={city.id.toString()}
-                onPress={() => {
-                  console.log(`Pressed ${city.name}`);
-                }}
                 style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
               >
                 <View
@@ -265,7 +262,7 @@ const ThingsToDo = () => {
                     {city.name}
                   </Text>
                 </View>
-              </TouchableOpacity>
+              </View>
             ))}
           </View>
           <Text
@@ -359,12 +356,9 @@ const ThingsToDo = () => {
         >
           Things to do in {cityName ? cityName : "bangkok"}
         </Text>
-        <TouchableOpacity onPress={handleOpenModal}>
-          <Text
-            style={{ fontSize: 10 }}
-            className="text-secondary font-psemibold"
-          >
-            filter city
+        <TouchableOpacity onPress={handleOpenModal} style={{ padding: 4 }}>
+          <Text className="text-secondary font-psemibold text-sm py-2">
+            filter
           </Text>
         </TouchableOpacity>
       </View>
@@ -398,7 +392,11 @@ const ThingsToDo = () => {
                   style={{ borderWidth: 1 }}
                 >
                   <Text
-                    className={categoryId === item.id ? "text-secondary" : ""}
+                    className={
+                      categoryId === item.id
+                        ? "text-secondary font-pregular"
+                        : "font-pregular"
+                    }
                     style={{ fontSize: 10 }}
                   >
                     {item.name}
@@ -431,12 +429,12 @@ const ThingsToDo = () => {
                 }}
               >
                 <View
-                  className="w-full rounded-full px-4 py-2 "
+                  className="w-full rounded-full px-4 py-3 "
                   style={{ borderWidth: 1, borderColor: "#dadada" }}
                 >
                   <Text
-                    className=" font-psemibold text-secondary text-center"
-                    style={{ fontSize: 10 }}
+                    className=" font-pmedium text-secondary text-center"
+                    style={{ fontSize: 12 }}
                   >
                     see more
                   </Text>
@@ -533,9 +531,7 @@ const ThingsToDo = () => {
                   >
                     {item.name}
                   </Text>
-                  <TouchableOpacity
-                    onPress={() => console.log(`Checkbox for ${item.name}`)}
-                  >
+                  <View>
                     <View
                       style={{
                         width: 20,
@@ -550,15 +546,26 @@ const ThingsToDo = () => {
                     >
                       {/* Placeholder for checkbox */}
                     </View>
-                  </TouchableOpacity>
+                  </View>
                 </TouchableOpacity>
               ))}
             </ScrollView>
+
             <TouchableOpacity
               onPress={handleCloseModal}
-              style={{ marginTop: 10 }}
+              style={{
+                marginTop: 10,
+                height: 48,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#FFFFFF",
+                borderRadius: 10,
+              }}
             >
-              <Text style={{ textAlign: "center", color: "#FF601B" }}>
+              <Text
+                className=" font-pregular"
+                style={{ textAlign: "center", color: "#FF601B", fontSize: 14 }}
+              >
                 Close
               </Text>
             </TouchableOpacity>

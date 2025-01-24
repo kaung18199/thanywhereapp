@@ -272,8 +272,39 @@ const AttractionDetailPage = () => {
                       <View className=" overflow-hidden h-[200px]">
                         <WebView
                           originWhitelist={["*"]}
+                          style={{ flex: 1 }}
                           source={{
-                            html: `<iframe src="${detail?.location_map}" width="1000" height="500" style="border:0; border-radius: 50px" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`,
+                            html: `
+                              <!DOCTYPE html>
+                              <html>
+                                <head>
+                                  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+                                  <style>
+                                    body {
+                                      margin: 0;
+                                      padding: 0;
+                                      display: flex;
+                                      justify-content: center;
+                                      align-items: center;
+                                    }
+                                    iframe {
+                                      width: 100%;
+                                      height: 200px;
+                                      border: 0;
+                                      border-radius: 20px; /* Adjust border-radius */
+                                    }
+                                  </style>
+                                </head>
+                                <body>
+                                  <iframe 
+                                    src="${detail?.location_map}" 
+                                    allowfullscreen="" 
+                                    loading="lazy" 
+                                    referrerpolicy="no-referrer-when-downgrade">
+                                  </iframe>
+                                </body>
+                              </html>
+                            `,
                           }}
                         />
                       </View>

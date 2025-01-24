@@ -475,47 +475,6 @@ const VantourDetailPage = () => {
                         </View>
                       );
                     })}
-                  <View className=" flex-row justify-between items-center px-4 pt-6 pb-2">
-                    <Text className=" font-psemibold text-lg text-black border-l-4 border-secondary pl-3">
-                      FAQS
-                    </Text>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => {
-                      handleOpenPreps();
-                      setFaq(1);
-                    }}
-                    className=" px-6 pt-2 pb-4 border-b border-gray-100/50 flex-row justify-between items-center"
-                  >
-                    <Text className=" font-pmedium text-sm text-black">
-                      What time can you pick us up?
-                    </Text>
-                    <ChevronRightIcon size={20} color="black" />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      handleOpenPreps();
-                      setFaq(2);
-                    }}
-                    className=" px-6 pt-4 pb-4 border-b border-gray-100/50 flex-row justify-between items-center"
-                  >
-                    <Text className=" font-pmedium text-sm text-black">
-                      How to book this tour?
-                    </Text>
-                    <ChevronRightIcon size={20} color="black" />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      handleOpenPreps();
-                      setFaq(3);
-                    }}
-                    className=" px-6 pt-4 pb-4 border-b border-gray-100/50 flex-row justify-between items-center"
-                  >
-                    <Text className=" font-pmedium text-sm text-black">
-                      How do I make a payment?
-                    </Text>
-                    <ChevronRightIcon size={20} color="black" />
-                  </TouchableOpacity>
                 </View>
                 <View>
                   <View className=" flex-row justify-between items-center px-4 pt-4">
@@ -600,85 +559,6 @@ const VantourDetailPage = () => {
           </View>
         </View>
       )}
-      <BottomSheet
-        index={0}
-        ref={bottomSheetRef}
-        onChange={handleSheetChanges}
-        snapPoints={snapPoints}
-        enablePanDownToClose={true}
-        style={styles.bottomSheet}
-      >
-        <BottomSheetView
-          style={{
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "flex-start",
-            zIndex: 3,
-          }}
-        >
-          <View
-            style={{
-              width: "100%",
-            }}
-            className=" border-b border-gray-100"
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                paddingBottom: 16,
-                paddingTop: 16,
-                paddingHorizontal: 16,
-                width: "100%",
-              }}
-            >
-              <Text style={{ opacity: 0 }}>......</Text>
-              {faq == 1 && (
-                <Text
-                  style={{ fontSize: 14, color: "#000000" }}
-                  className=" font-psemibold"
-                >
-                  What time can you pick us up?
-                </Text>
-              )}
-              {faq == 2 && (
-                <Text
-                  style={{ fontSize: 14, color: "#000000" }}
-                  className=" font-psemibold"
-                >
-                  How to book this tour?
-                </Text>
-              )}
-              {faq == 3 && (
-                <Text
-                  style={{ fontSize: 14, color: "#000000" }}
-                  className=" font-psemibold"
-                >
-                  How do I make a payment?
-                </Text>
-              )}
-              <TouchableOpacity onPress={() => handleClosePreps()}>
-                <Image
-                  source={icons.close}
-                  style={{ width: 10, height: 10 }}
-                  resizeMode="contain"
-                  tintColor="#000000"
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View>
-            {faq == 1 && (
-              <ScrollView className="">
-                <Whattime />
-              </ScrollView>
-            )}
-            {faq == 2 && <Howbook />}
-            {faq == 3 && <HowPayment />}
-          </View>
-        </BottomSheetView>
-      </BottomSheet>
     </SafeAreaView>
   );
 };

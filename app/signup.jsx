@@ -20,9 +20,19 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const HeaderLeftCustom = () => {
   const router = useRouter();
   return (
-    <View style={{ marginLeft: 4 }}>
-      <TouchableOpacity onPress={() => router.back()}>
-        <ChevronLeftIcon size={18} color="#FF601B" />
+    <View>
+      <TouchableOpacity
+        onPress={() => router.back()}
+        style={{
+          height: 48, // Ensures the touch area is 48dp
+          width: 48, // Ensures the touch area is 48dp
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} // Optional, to further increase tappable area
+      >
+        <ChevronLeftIcon size={24} color="#FF601B" />
+        {/* Icon size set independently */}
       </TouchableOpacity>
     </View>
   );
@@ -155,7 +165,7 @@ const SignUp = () => {
 
   return (
     <SafeAreaView>
-      <ScrollView>
+      <ScrollView className="">
         <View>
           <Stack.Screen
             options={{
@@ -177,7 +187,7 @@ const SignUp = () => {
           </Text>
           <View className=" flex flex-col justify-start items-center border border-gray-300 rounded-xl">
             <TextInput
-              className=" border-b border-gray-300 rounded-xl px-4 text-sm font-pregular py-3 w-full"
+              className=" border-b border-gray-300 rounded-xl px-6 text-sm font-pregular py-5 w-full"
               placeholder="First name"
               keyboardType="name" // Show email-specific keyboard
               value={formData.first_name}
@@ -188,7 +198,7 @@ const SignUp = () => {
               autoCorrect={false} // Disable autocorrect
             />
             <TextInput
-              className="  rounded-xl px-4 text-sm font-pregular py-3 w-full"
+              className="  rounded-xl px-6 text-sm font-pregular py-5 w-full"
               placeholder="Last Name"
               keyboardType="name" // Show email-specific keyboard
               value={formData.last_name}
@@ -203,24 +213,25 @@ const SignUp = () => {
             make sure it matches the name on your goverment ID.
           </Text>
           <View>
-            {/* <TextInput
-              className="border border-gray-300 rounded-xl px-4 text-sm font-pregular py-3 w-full"
-              placeholder="Select a date"
+            <TextInput
+              className="border border-gray-300 rounded-xl px-6 text-sm font-pregular py-5 w-full"
+              placeholder="DOB eg: 2000/01/01"
               value={formData.dob}
-              onPressIn={() => setShowDatePicker(true)}
-              editable={false} // Make TextInput non-editable
-            /> */}
-            <TouchableOpacity
-              className="border border-gray-300 rounded-xl px-4 text-sm font-pregular py-3 w-full"
+              onChangeText={(dob) => setFormData({ ...formData, dob: dob })}
+              autoCapitalize="none" // No automatic capitalization
+              autoCorrect={false} // Disable autocorrect
+            />
+            {/* <TouchableOpacity
+              className="border border-gray-300 rounded-xl px-6 text-sm font-pregular py-5 w-full"
               onPress={() => setShowDatePicker(true)}
             >
               {formData.dob ? (
-                <Text>{formData.dob}</Text>
+                <Text className=" text-sm font-pregular">{formData.dob}</Text>
               ) : (
-                <Text>Select DOB</Text>
+                <Text className=" text-sm font-pregular">Select DOB</Text>
               )}
-            </TouchableOpacity>
-            {showDatePicker && (
+            </TouchableOpacity> */}
+            {/* {showDatePicker && (
               <DateTimePicker
                 testID="dateTimePicker"
                 value={formData.dob ? new Date(formData.dob) : new Date()}
@@ -229,14 +240,14 @@ const SignUp = () => {
                 display="inline"
                 onChange={onChangeDate}
               />
-            )}
+            )} */}
             {/* display={Platform.OS === "ios" ? "inline" : "default"} */}
             <Text className=" text-xs font-pregular py-4">
               to sign up, you need to be at least 18 . your birthday won't be
               shared with other people who use thanywhere.
             </Text>
             <TextInput
-              className=" border border-gray-300 rounded-xl px-4 text-sm font-pregular py-3 w-full"
+              className=" border border-gray-300 rounded-xl px-6 text-sm font-pregular py-5 w-full"
               placeholder="Enter your email"
               keyboardType="email-address" // Show email-specific keyboard
               value={formData.email}
@@ -250,7 +261,7 @@ const SignUp = () => {
               we'll email you trip confirmations and receipts.
             </Text>
             <TextInput
-              className=" border border-gray-300 rounded-xl px-4 text-sm font-pregular py-3 w-full"
+              className=" border border-gray-300 rounded-xl px-6 text-sm font-pregular py-5 w-full"
               placeholder="Enter your phone number"
               keyboardType="phone" // Show email-specific keyboard
               value={formData.phone_number}
@@ -267,7 +278,7 @@ const SignUp = () => {
           </View>
           <View className=" flex flex-col justify-start items-center border border-gray-300 rounded-xl">
             <TextInput
-              className="  rounded-xl px-4 text-sm font-pregular py-3 w-full border-b border-gray-300"
+              className="  rounded-xl px-6 text-sm font-pregular py-5 w-full border-b border-gray-300"
               placeholder="Enter your password"
               secureTextEntry // Hides the input for passwords
               value={formData.password}
@@ -276,7 +287,7 @@ const SignUp = () => {
               }
             />
             <TextInput
-              className="  rounded-xl px-4 text-sm font-pregular py-3 w-full"
+              className="  rounded-xl px-6 text-sm font-pregular py-5 w-full"
               placeholder="Confirm your password"
               secureTextEntry // Hides the input for passwords
               value={formData.password_confirmation}
@@ -295,14 +306,14 @@ const SignUp = () => {
           <View>
             <TouchableOpacity
               onPress={handleLogin}
-              className="bg-[#FF601B]  rounded-xl px-4 py-3 flex justify-center items-center"
+              className="bg-[#FF601B]  rounded-xl px-6 py-4 flex justify-center items-center"
             >
               <Text className=" text-white font-psemibold ">Sign up</Text>
             </TouchableOpacity>
           </View>
-          <View>
+          <View className="pb-20">
             <TouchableOpacity
-              className="bg-white border border-gray-300 rounded-xl px-4 py-3 mt-3 flex justify-center items-center"
+              className="bg-white border border-gray-300 rounded-xl px-6 py-4 mt-3 flex justify-center items-center"
               onPress={() => router.push("/login")}
             >
               <Text className=" text-gray-600 font-psemibold ">

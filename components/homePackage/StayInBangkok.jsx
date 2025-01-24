@@ -357,12 +357,17 @@ const StayInBangkok = () => {
             </View>
           )}
         </View>
-        <TouchableOpacity onPress={handleOpenModal}>
+        {/* <TouchableOpacity onPress={handleOpenModal}>
           <Text
             style={{ fontSize: 10 }}
             className="text-secondary font-psemibold"
           >
             filter place
+          </Text>
+        </TouchableOpacity> */}
+        <TouchableOpacity onPress={handleOpenModal} style={{ padding: 4 }}>
+          <Text className="text-secondary font-psemibold text-sm py-2">
+            filter
           </Text>
         </TouchableOpacity>
       </View>
@@ -386,7 +391,7 @@ const StayInBangkok = () => {
             }}
           >
             <View
-              className={`rounded-full px-4 py-1 mr-2 ${
+              className={`rounded-full px-4 py-1 mr-2 font-pregular ${
                 priceRange === item.value
                   ? "border-secondary"
                   : "border-[#dadada]"
@@ -394,7 +399,11 @@ const StayInBangkok = () => {
               style={{ borderWidth: 1 }}
             >
               <Text
-                className={priceRange === item.value ? "text-secondary" : ""}
+                className={
+                  priceRange === item.value
+                    ? "text-secondary font-pregular"
+                    : "font-pregular"
+                }
                 style={{ fontSize: 10 }}
               >
                 {item.name}
@@ -474,17 +483,41 @@ const StayInBangkok = () => {
               padding: 16,
             }}
           >
-            <View className="flex-row justify-between items-center px-4 py-2">
+            <View className="flex-row justify-between items-center px-4 ">
               <Text className=" text-secondary font-psemibold">
                 Choose Place
               </Text>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => {
                   handleCloseModal();
                   setPlace("");
                 }}
               >
                 <Text style={{ textAlign: "center", color: "#FF601B" }}>
+                  Clean
+                </Text>
+              </TouchableOpacity> */}
+              <TouchableOpacity
+                onPress={() => {
+                  handleCloseModal();
+                  setPlace("");
+                }}
+                style={{
+                  height: 48,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#FFFFFF",
+                  borderRadius: 10,
+                }}
+              >
+                <Text
+                  className=" font-pregular"
+                  style={{
+                    textAlign: "center",
+                    color: "#FF601B",
+                    fontSize: 14,
+                  }}
+                >
                   Clean
                 </Text>
               </TouchableOpacity>
@@ -517,9 +550,7 @@ const StayInBangkok = () => {
                   >
                     {item}
                   </Text>
-                  <TouchableOpacity
-                    onPress={() => console.log(`Checkbox for ${item.name}`)}
-                  >
+                  <View>
                     <View
                       style={{
                         width: 20,
@@ -534,15 +565,37 @@ const StayInBangkok = () => {
                     >
                       {/* Placeholder for checkbox */}
                     </View>
-                  </TouchableOpacity>
+                  </View>
                 </TouchableOpacity>
               ))}
             </ScrollView>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={handleCloseModal}
               style={{ marginTop: 10 }}
             >
               <Text style={{ textAlign: "center", color: "#FF601B" }}>
+                Close
+              </Text>
+            </TouchableOpacity> */}
+            <TouchableOpacity
+              onPress={handleCloseModal}
+              style={{
+                marginTop: 10,
+                height: 48,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#FFFFFF",
+                borderRadius: 10,
+              }}
+            >
+              <Text
+                className=" font-pregular"
+                style={{
+                  textAlign: "center",
+                  color: "#FF601B",
+                  fontSize: 14,
+                }}
+              >
                 Close
               </Text>
             </TouchableOpacity>

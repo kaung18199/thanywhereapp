@@ -256,7 +256,11 @@ const BestSellingVantour = () => {
               style={{ borderWidth: 1 }}
             >
               <Text
-                className={cityId === item.id ? "text-secondary" : ""}
+                className={
+                  cityId === item.id
+                    ? "text-secondary font-pregular"
+                    : " font-pregular"
+                }
                 style={{ fontSize: 10 }}
               >
                 {item.name}

@@ -373,12 +373,17 @@ const BestSellingAttraction = () => {
             </View>
           )}
         </View>
-        <TouchableOpacity onPress={handleOpenModal}>
+        {/* <TouchableOpacity onPress={handleOpenModal}>
           <Text
             style={{ fontSize: 10 }}
             className="text-secondary font-psemibold"
           >
             filter city
+          </Text>
+        </TouchableOpacity> */}
+        <TouchableOpacity onPress={handleOpenModal} style={{ padding: 4 }}>
+          <Text className="text-secondary font-psemibold text-sm py-2">
+            filter
           </Text>
         </TouchableOpacity>
       </View>
@@ -525,9 +530,7 @@ const BestSellingAttraction = () => {
                   >
                     {item.name}
                   </Text>
-                  <TouchableOpacity
-                    onPress={() => console.log(`Checkbox for ${item.name}`)}
-                  >
+                  <View>
                     <View
                       style={{
                         width: 20,
@@ -542,15 +545,25 @@ const BestSellingAttraction = () => {
                     >
                       {/* Placeholder for checkbox */}
                     </View>
-                  </TouchableOpacity>
+                  </View>
                 </TouchableOpacity>
               ))}
             </ScrollView>
             <TouchableOpacity
               onPress={handleCloseModal}
-              style={{ marginTop: 10 }}
+              style={{
+                marginTop: 10,
+                height: 48,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#FFFFFF",
+                borderRadius: 10,
+              }}
             >
-              <Text style={{ textAlign: "center", color: "#FF601B" }}>
+              <Text
+                className=" font-pregular"
+                style={{ textAlign: "center", color: "#FF601B", fontSize: 14 }}
+              >
                 Close
               </Text>
             </TouchableOpacity>

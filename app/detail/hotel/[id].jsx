@@ -281,10 +281,47 @@ const HotelDetailPage = () => {
                         Location
                       </Text>
                       <View className=" overflow-hidden h-[200px]">
-                        <WebView
+                        {/* <WebView
                           originWhitelist={["*"]}
                           source={{
                             html: `<iframe src="${detail?.location_map}" width="1000" height="500" style="border:0; border-radius: 50px" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`,
+                          }}
+                        /> */}
+                        <WebView
+                          originWhitelist={["*"]}
+                          style={{ flex: 1 }}
+                          source={{
+                            html: `
+                              <!DOCTYPE html>
+                              <html>
+                                <head>
+                                  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+                                  <style>
+                                    body {
+                                      margin: 0;
+                                      padding: 0;
+                                      display: flex;
+                                      justify-content: center;
+                                      align-items: center;
+                                    }
+                                    iframe {
+                                      width: 100%;
+                                      height: 200px;
+                                      border: 0;
+                                      border-radius: 20px; /* Adjust border-radius */
+                                    }
+                                  </style>
+                                </head>
+                                <body>
+                                  <iframe 
+                                    src="${detail?.location_map}" 
+                                    allowfullscreen="" 
+                                    loading="lazy" 
+                                    referrerpolicy="no-referrer-when-downgrade">
+                                  </iframe>
+                                </body>
+                              </html>
+                            `,
                           }}
                         />
                       </View>
@@ -448,76 +485,33 @@ const HotelDetailPage = () => {
                       {showMore ? "Show Less" : "Show More"}
                     </Text>
                   </TouchableOpacity>
-
-                  <View className=" px-4 pt-6 pb-2">
-                    <Text className=" font-psemibold text-lg text-black border-l-4 border-secondary pl-3">
-                      Nearby Places
-                    </Text>
-                    <View className=" pt-4">
-                      {detail?.nearby_places &&
-                        detail?.nearby_places.map((a, index) => (
-                          <View
-                            className=" pb-2 flex-row justify-between items-center"
-                            key={index}
-                          >
-                            <View className=" flex-row justify-start items-center gap-x-4">
-                              <Image
-                                source={icons.locationPin}
-                                style={{ width: 16, height: 16 }}
-                              />
-                              <Text className=" font-pregular text-sm">
-                                {a.name}
-                              </Text>
-                            </View>
-                            <Text className=" font-pregular text-xs">
-                              {a.distance}
+                </View>
+                <View className="border-b-8 border-black-100/10 pb-6 pt-4 px-4">
+                  <Text className=" font-psemibold text-lg text-black border-l-4 border-secondary pl-3">
+                    Nearby Places
+                  </Text>
+                  <View className=" pt-4">
+                    {detail?.nearby_places &&
+                      detail?.nearby_places.map((a, index) => (
+                        <View
+                          className=" pb-2 flex-row justify-between items-center"
+                          key={index}
+                        >
+                          <View className=" flex-row justify-start items-center gap-x-4">
+                            <Image
+                              source={icons.locationPin}
+                              style={{ width: 16, height: 16 }}
+                            />
+                            <Text className=" font-pregular text-sm">
+                              {a.name}
                             </Text>
                           </View>
-                        ))}
-                    </View>
+                          <Text className=" font-pregular text-xs">
+                            {a.distance}
+                          </Text>
+                        </View>
+                      ))}
                   </View>
-
-                  <View className=" flex-row justify-between items-center px-4 pt-6 pb-2">
-                    <Text className=" font-psemibold text-lg text-black border-l-4 border-secondary pl-3">
-                      FAQS
-                    </Text>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => {
-                      handleOpenPreps();
-                      setFaq(1);
-                    }}
-                    className=" px-6 pt-2 pb-4 border-b border-gray-100/50 flex-row justify-between items-center"
-                  >
-                    <Text className=" font-pmedium text-sm text-black">
-                      What time can you checkin & checkout?
-                    </Text>
-                    <ChevronRightIcon size={20} color="black" />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      handleOpenPreps();
-                      setFaq(2);
-                    }}
-                    className=" px-6 pt-4 pb-4 border-b border-gray-100/50 flex-row justify-between items-center"
-                  >
-                    <Text className=" font-pmedium text-sm text-black">
-                      How to book this hotel?
-                    </Text>
-                    <ChevronRightIcon size={20} color="black" />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      handleOpenPreps();
-                      setFaq(3);
-                    }}
-                    className=" px-6 pt-4 pb-4 border-b border-gray-100/50 flex-row justify-between items-center"
-                  >
-                    <Text className=" font-pmedium text-sm text-black">
-                      How do I make a payment?
-                    </Text>
-                    <ChevronRightIcon size={20} color="black" />
-                  </TouchableOpacity>
                 </View>
                 <View>
                   <View className=" flex-row justify-between items-center px-4 pt-4">
@@ -662,86 +656,6 @@ const HotelDetailPage = () => {
           </Modal>
         </View>
       )}
-
-      <BottomSheet
-        index={0}
-        ref={bottomSheetRef}
-        onChange={handleSheetChanges}
-        snapPoints={snapPoints}
-        enablePanDownToClose={true}
-        style={styles.bottomSheet}
-      >
-        <BottomSheetView
-          style={{
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "flex-start",
-            zIndex: 3,
-          }}
-        >
-          <View
-            style={{
-              width: "100%",
-            }}
-            className=" border-b border-gray-100"
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                paddingBottom: 16,
-                paddingTop: 16,
-                paddingHorizontal: 16,
-                width: "100%",
-              }}
-            >
-              <Text style={{ opacity: 0 }}>......</Text>
-              {faq == 1 && (
-                <Text
-                  style={{ fontSize: 14, color: "#000000" }}
-                  className=" font-psemibold"
-                >
-                  What time can you checkin & checkout?
-                </Text>
-              )}
-              {faq == 2 && (
-                <Text
-                  style={{ fontSize: 14, color: "#000000" }}
-                  className=" font-psemibold"
-                >
-                  How to book this hotel?
-                </Text>
-              )}
-              {faq == 3 && (
-                <Text
-                  style={{ fontSize: 14, color: "#000000" }}
-                  className=" font-psemibold"
-                >
-                  How do I make a payment?
-                </Text>
-              )}
-              <TouchableOpacity onPress={() => handleClosePreps()}>
-                <Image
-                  source={icons.close}
-                  style={{ width: 10, height: 10 }}
-                  resizeMode="contain"
-                  tintColor="#000000"
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View>
-            {faq == 1 && (
-              <ScrollView className="">
-                <Whattime />
-              </ScrollView>
-            )}
-            {faq == 2 && <Howbook />}
-            {faq == 3 && <HowPayment />}
-          </View>
-        </BottomSheetView>
-      </BottomSheet>
     </SafeAreaView>
   );
 };
