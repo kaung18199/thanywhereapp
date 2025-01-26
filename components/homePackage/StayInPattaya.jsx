@@ -490,6 +490,19 @@ const StayInPattaya = () => {
                     {item}
                   </Text>
                   <View>
+                    {/* <View
+                      style={{
+                        width: 20,
+                        height: 20,
+                        borderWidth: 1,
+                        borderColor: "#757575",
+                        borderRadius: 30,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                      className={` ${place == item ? "bg-secondary" : ""}`}
+                    >
+                    </View> */}
                     <View
                       style={{
                         width: 20,
@@ -501,6 +514,13 @@ const StayInPattaya = () => {
                         alignItems: "center",
                       }}
                       className={` ${place == item ? "bg-secondary" : ""}`}
+                      accessibilityLabel={
+                        place == item
+                          ? `${item} selected`
+                          : `${item} not selected`
+                      }
+                      accessibilityRole="checkbox"
+                      accessibilityState={{ checked: place == item }}
                     >
                       {/* Placeholder for checkbox */}
                     </View>

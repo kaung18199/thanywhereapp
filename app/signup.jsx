@@ -21,7 +21,7 @@ const HeaderLeftCustom = () => {
   const router = useRouter();
   return (
     <View>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => router.back()}
         style={{
           height: 48, // Ensures the touch area is 48dp
@@ -32,7 +32,20 @@ const HeaderLeftCustom = () => {
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} // Optional, to further increase tappable area
       >
         <ChevronLeftIcon size={24} color="#FF601B" />
-        {/* Icon size set independently */}
+      </TouchableOpacity> */}
+      <TouchableOpacity
+        onPress={() => router.back()}
+        style={{
+          height: 48, // Ensures the touch area is 48dp
+          width: 48, // Ensures the touch area is 48dp
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} // Optional, to further increase tappable area
+        accessibilityLabel="Go back"
+        accessibilityRole="button"
+      >
+        <ChevronLeftIcon size={24} color="#FF601B" />
       </TouchableOpacity>
     </View>
   );

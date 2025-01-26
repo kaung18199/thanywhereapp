@@ -538,6 +538,19 @@ const ThingsToDo = () => {
                     {item.name}
                   </Text>
                   <View>
+                    {/* <View
+                      style={{
+                        width: 20,
+                        height: 20,
+                        borderWidth: 1,
+                        borderColor: "#757575",
+                        borderRadius: 30,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                      className={` ${cityId == item.id ? "bg-secondary" : ""}`}
+                    >
+                    </View> */}
                     <View
                       style={{
                         width: 20,
@@ -549,6 +562,13 @@ const ThingsToDo = () => {
                         alignItems: "center",
                       }}
                       className={` ${cityId == item.id ? "bg-secondary" : ""}`}
+                      accessibilityLabel={
+                        cityId == item.id
+                          ? `${item.id} selected`
+                          : `${item.id} not selected`
+                      }
+                      accessibilityRole="checkbox"
+                      accessibilityState={{ checked: cityId == item.id }}
                     >
                       {/* Placeholder for checkbox */}
                     </View>
