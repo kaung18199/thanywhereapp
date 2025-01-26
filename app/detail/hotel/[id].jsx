@@ -239,7 +239,7 @@ const HotelDetailPage = () => {
                         detail?.youtube_link[0]?.en_link) && (
                         <View className=" absolute right-4 top-2 ">
                           <TouchableOpacity
-                            className="flex-row justify-end items-center gap-x-1"
+                            className="flex-row justify-end items-center px-4 gap-x-1"
                             onPress={() => {
                               handleOpenModal();
                               setYouTubeLink(getYoutubeLink());
@@ -255,7 +255,7 @@ const HotelDetailPage = () => {
                                 tintColor: "#08d14b",
                               }}
                             />
-                            <Text className=" text-xs text-green-600 font-psemibold">
+                            <Text className=" text-sm text-green-600 font-psemibold">
                               see video
                             </Text>
                           </TouchableOpacity>

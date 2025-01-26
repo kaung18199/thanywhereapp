@@ -266,7 +266,12 @@ const ThingsToDo = () => {
             ))}
           </View>
           <Text
-            style={{ fontSize: 12, fontWeight: "500", paddingBottom: 4 }}
+            style={{
+              fontSize: 12,
+              fontWeight: "500",
+
+              paddingBottom: 2,
+            }}
             className=" font-pmedium"
           >
             starting price
@@ -280,6 +285,7 @@ const ThingsToDo = () => {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
+              paddingVertical: 4,
             }}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>

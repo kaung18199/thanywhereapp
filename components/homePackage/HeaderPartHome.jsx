@@ -43,15 +43,19 @@ const HeaderPart = ({ children, style }) => {
               gap: 10,
             }}
           >
-            <TouchableOpacity onPress={() => router.back()}>
+            <TouchableOpacity
+              onPress={() => router.back()}
+              className="flex flex-row pr-4 pt-1 justify-start items-center gap-x-2"
+            >
               <Image
                 source={icons.logo}
                 tintColor="#ffffff"
                 resizeMode="cover"
                 style={styles.logo}
               />
+
+              <Text style={styles.title}>THANYWHERE</Text>
             </TouchableOpacity>
-            <Text style={styles.title}>THANYWHERE</Text>
           </View>
           <View style={styles.languageContainer}>
             {language === "english" ? (
@@ -120,6 +124,7 @@ const styles = {
     alignItems: "center",
     gap: 4, // gap-1
     paddingRight: 6, // pr-1.5
+    paddingTop: 1,
   },
   languageImage: {
     width: 24, // w-6

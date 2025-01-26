@@ -168,14 +168,14 @@ const TopDestinationToRead = () => {
         >
           Top destination to read
         </Text>
-        <TouchableOpacity onPress={() => console.log("see more")}>
+        {/* <TouchableOpacity onPress={() => console.log("see more")}>
           <Text
             style={{ fontSize: 10, color: "#000000" }}
             className=" font-pregular"
           >
             see more
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       {!loading && data?.data ? (
