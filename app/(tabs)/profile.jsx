@@ -167,10 +167,6 @@ const Profile = () => {
       setUserData(parseUser);
     }
 
-    console.log("====================================");
-    console.log(user, token);
-    console.log("====================================");
-
     if (!token) {
       setIsToken(false);
     }

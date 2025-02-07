@@ -20,18 +20,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const HeaderLeftCustom = () => {
   const router = useRouter();
   return (
-    // <TouchableOpacity
-    //   onPress={() => router.back()}
-    //   style={{
-    //     height: 48, // Ensures the touch area is 48dp
-    //     width: 48, // Ensures the touch area is 48dp
-    //     justifyContent: "center",
-    //     alignItems: "center",
-    //   }}
-    //   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} // Optional, to further increase tappable area
-    // >
-    //   <ChevronLeftIcon size={24} color="#FF601B" />
-    // </TouchableOpacity>
     <TouchableOpacity
       onPress={() => router.back()}
       style={{
@@ -61,14 +49,13 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      // Handle login logic here
       const frmData = {
         email: formData.email,
         password: formData.password,
-      }; // Your form data here
+      };
       const res = await axios.post(
         "https://api-blog.thanywhere.com/api/v2/login",
-        frmData, // data goes here as the second parameter
+        frmData,
         {
           headers: {
             "Content-Type": "application/json",
@@ -77,12 +64,18 @@ const Login = () => {
         }
       );
 
-      console.log(res.data, "this is response");
-
-      if (res.data.message == "success") {
+      if (res.data.message === "success") {
         setFormData({ email: "", password: "" });
+
+        // Log before storing
+        console.log("Storing token and user data...");
+
         await AsyncStorage.setItem("token", res.data.data.token);
         await AsyncStorage.setItem("user", JSON.stringify(res.data.data.user));
+
+        // Log after storing
+        console.log("Token and user data stored successfully.");
+
         Toast.show({
           type: "success",
           text1: "Login success",
@@ -90,6 +83,7 @@ const Login = () => {
           position: "top",
           visibilityTime: 3000,
         });
+
         setTimeout(() => {
           router.push("/home");
         }, 5000);
@@ -108,6 +102,10 @@ const Login = () => {
     } catch (error) {
       await AsyncStorage.removeItem("token");
       await AsyncStorage.removeItem("user");
+
+      // Log the error
+      console.log("Error during login:", error);
+
       if (error.response) {
         console.log("Server responded with an error:", error.response.data);
       } else if (error.request) {

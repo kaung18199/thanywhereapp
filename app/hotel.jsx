@@ -17,11 +17,9 @@ import {
   TextInput,
 } from "react-native";
 import { Stack, useRouter } from "expo-router";
-import { getListCity } from "../redux/stores/citySlice";
-import { useDispatch } from "react-redux";
+
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import HotelSearchBottom from "../components/HotelSearchBottom";
-import ListVantour from "../components/Layout/ListVantour";
+
 import { TouchableOpacity } from "react-native";
 import { icons } from "../constants";
 import axios from "../axiosConfig";
@@ -37,8 +35,6 @@ import ListHotel from "../components/Layout/ListHotel";
 const Hotel = () => {
   const animatedOpacity = useRef(new Animated.Value(1)).current; // Initial opacity is 1
   const animatedHeight = useRef(new Animated.Value(360)).current; // Initial height is 300
-
-  const dispatch = useDispatch();
   const router = useRouter();
   const [stickyHeader, setStickyHeader] = useState(false);
   const { height: screenHeight } = Dimensions.get("window");
@@ -105,7 +101,7 @@ const Hotel = () => {
     );
   };
 
-  const goExploreAction = () => {
+  const goExploreAction = useCallback(() => {
     // Navigate to explore page
     if (chooseDestination != "") {
       router.push({
@@ -125,7 +121,7 @@ const Hotel = () => {
         visibilityTime: 3000,
       });
     }
-  };
+  }, [chooseDestination, router]);
 
   useEffect(() => {
     handleClosePreps();
@@ -145,6 +141,14 @@ const Hotel = () => {
 
   useEffect(() => {
     getCityAction(city_name);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      animatedOpacity.current = null;
+      animatedHeight.current = null;
+      getCityAction.cancel(); // Clean up debounced function
+    };
   }, []);
 
   // useEffect(() => {
@@ -588,7 +592,7 @@ const Hotel = () => {
             <ScrollView className=" px-6 w-full">
               {destination?.map((item, index) => (
                 <TouchableOpacity
-                  key={item.id}
+                  key={item.id.toString()}
                   onPress={() => {
                     console.log("====================================");
                     setDestinationId(item.id);
