@@ -4,7 +4,7 @@
     "slug": "thanywhere",
     "version": "1.0.0",
     "scheme": ["thanywhere-app"],
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icons/web-logo.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
