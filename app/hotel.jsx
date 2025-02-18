@@ -510,13 +510,13 @@ const Hotel = () => {
               />
               <View className="absolute bottom-0 left-0 py-8 px-6 border-t border-gray-100 right-0 flex-1 flex-row justify-between items-center">
                 <Text className=" font-pbold text-lg text-secondary">
-                  {setSelectedConfirmOutDate
-                    ? setSelectedConfirmOutDate
+                  {selectedConfirmOutDate
+                    ? selectedConfirmOutDate
                     : "Please select a date"}
                 </Text>
                 <TouchableOpacity
                   onPress={() => {
-                    if (setSelectedConfirmOutDate) {
+                    if (selectedConfirmOutDate) {
                       handle2ClosePreps();
                     }
                   }}

@@ -426,7 +426,7 @@ const ThingsToDo = () => {
               >
                 {data.data.map(renderItem)}
               </ScrollView>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={{
                   flexDirection: "row",
                   justifyContent: "center",
@@ -445,7 +445,7 @@ const ThingsToDo = () => {
                     see more
                   </Text>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </>
           ) : (
             // Render this when data is empty

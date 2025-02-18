@@ -20,7 +20,7 @@ export const getListHotel = (params) => async (dispatch) => {
     const { city_id, page } = params;
     console.log(city_id, page, "this is page");
     const response = await axios.get("/hotels", { params: params });
-    dispatch(hotelSlice.actions.addHotel(response.data)); // Dispatching addHotel action directly from hotelSlice.actions
+    // dispatch(hotelSlice.actions.addHotel(response.data)); // Dispatching addHotel action directly from hotelSlice.actions
 
     // console.log(response.data);
     return Array.isArray(response.data) ? response.data : [];

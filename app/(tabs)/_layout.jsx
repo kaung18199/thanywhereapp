@@ -56,7 +56,7 @@ const TabsLayout = () => {
             ),
           }}
         />
-        <Tabs.Screen
+        {/* <Tabs.Screen
           name="about"
           options={{
             title: "About",
@@ -70,8 +70,8 @@ const TabsLayout = () => {
               />
             ),
           }}
-        />
-        <Tabs.Screen
+        /> */}
+        {/* <Tabs.Screen
           name="save"
           options={{
             title: "save",
@@ -85,8 +85,8 @@ const TabsLayout = () => {
               />
             ),
           }}
-        />
-        <Tabs.Screen
+        /> */}
+        {/* <Tabs.Screen
           name="trips"
           options={{
             title: "trips",
@@ -100,7 +100,7 @@ const TabsLayout = () => {
               />
             ),
           }}
-        />
+        /> */}
         <Tabs.Screen
           name="profile"
           options={{

@@ -61,7 +61,7 @@ export default function ListHotel({ setStickyHeader }) {
   const handleScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { y: scrollY } } }],
     {
-      useNativeDriver: false,
+      useNativeDriver: true,
       listener: (event) => {
         const offsetY = event.nativeEvent.contentOffset.y;
         setStickyHeader(offsetY > 5); // Switch header after 100px
@@ -207,7 +207,7 @@ export default function ListHotel({ setStickyHeader }) {
       <Animated.FlatList
         data={vantourData || []}
         keyExtractor={(item, index) => `${item.id}_${index}`}
-        renderItem={({ item }) => <HotelCart item={item} />}
+        renderItem={({ item }) => <HotelCart item={item} key={item.id} />}
         contentContainerStyle={styles.contentContainer}
         ListHeaderComponent={renderHeader}
         stickyHeaderIndices={[0]}

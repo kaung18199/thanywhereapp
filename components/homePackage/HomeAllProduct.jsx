@@ -24,24 +24,24 @@ const data = [
     state: true,
     link: "/vantour",
   },
-  {
-    icon: icons.destiantionicon,
-    text: "read destiantion",
-    state: false,
-    link: "/destination",
-  },
-  {
-    icon: icons.inclusiveicon,
-    text: "inclusive packages",
-    state: false,
-    link: "/inclusive",
-  },
-  {
-    icon: icons.flighticon,
-    text: "flight tickets",
-    state: false,
-    link: "/flight",
-  },
+  // {
+  //   icon: icons.destiantionicon,
+  //   text: "read destiantion",
+  //   state: false,
+  //   link: "/destination",
+  // },
+  // {
+  //   icon: icons.inclusiveicon,
+  //   text: "inclusive packages",
+  //   state: false,
+  //   link: "/inclusive",
+  // },
+  // {
+  //   icon: icons.flighticon,
+  //   text: "flight tickets",
+  //   state: false,
+  //   link: "/flight",
+  // },
 ];
 
 const HomeAllProduct = () => {
