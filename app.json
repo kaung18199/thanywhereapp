@@ -2,7 +2,7 @@
   "expo": {
     "name": "thanywhere",
     "slug": "thanywhere",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "scheme": ["thanywhere-app"],
     "orientation": "default",
     "icon": "./assets/icons/web-logo.png",
@@ -19,6 +19,7 @@
       "bundleIdentifier": "com.kaung312.thanywhere"
     },
     "android": {
+      "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/web-logo.png",
         "backgroundColor": "#ffffff"
