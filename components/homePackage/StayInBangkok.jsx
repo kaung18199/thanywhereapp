@@ -238,6 +238,9 @@ const StayInBangkok = () => {
               style={{ fontSize: 12, fontWeight: "600", paddingBottom: 3 }}
               numberOfLines={1}
               className=" font-psemibold text-secondary"
+              accessible={true}
+              accessibilityRole="header"
+              accessibilityLabel={`Hotel name: ${item?.name}`}
             >
               {item?.name}
             </Text>
@@ -342,32 +345,64 @@ const StayInBangkok = () => {
         <View className=" flex-1 flex-row items-center justify-start  overflow-hidden">
           <Text
             style={{ fontSize: 16, fontWeight: "600", color: "#FF601B" }}
-            className=" font-psemibold mr-2"
+            className=" font-psemibold"
+            accessible={true}
+            accessibilityRole="header"
+            accessibilityLabel="Stay in Bangkok section"
           >
-            Stays in bangkok
+            Stay in Bangkok
           </Text>
           {place != "" && (
-            <View className=" rounded-full bg-secondary/10 text-center">
-              <Text
-                className=" font-pregular text-secondary text-center py-1 line-clamp-1 px-2"
-                style={{ fontSize: 10, maxWidth: 100, minWidth: 50 }}
-              >
-                {place}
-              </Text>
-            </View>
+            <TouchableOpacity
+              style={{
+                minHeight: 48,
+                minWidth: 48,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 24
+              }}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel={`Selected place: ${place}`}
+              onPress={handleOpenModal}
+            >
+              <View className="rounded-full bg-secondary/10 text-center px-2 py-2">
+                <Text
+                  className="font-pregular text-secondary text-center line-clamp-1"
+                  style={{ fontSize: 14, minWidth: 50 }}
+                  accessible={false}
+                >
+                  {place}
+                </Text>
+              </View>
+            </TouchableOpacity>
           )}
         </View>
-        {/* <TouchableOpacity onPress={handleOpenModal}>
+        <TouchableOpacity
+          onPress={handleOpenModal}
+          style={{
+            padding: 12,
+            minHeight: 48,
+            minWidth: 48,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#F5F5F5',
+            borderRadius: 8
+          }}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel="Filter accommodations"
+          accessibilityHint="Open filter options for Bangkok accommodations"
+        >
           <Text
-            style={{ fontSize: 10 }}
-            className="text-secondary font-psemibold"
+            className="text-secondary font-psemibold text-base"
+            style={{
+              paddingVertical: 4,
+              paddingHorizontal: 8
+            }}
+            accessible={false}
           >
-            filter place
-          </Text>
-        </TouchableOpacity> */}
-        <TouchableOpacity onPress={handleOpenModal} style={{ padding: 4 }}>
-          <Text className="text-secondary font-psemibold text-sm py-2">
-            filter
+            Filter
           </Text>
         </TouchableOpacity>
       </View>
@@ -376,6 +411,9 @@ const StayInBangkok = () => {
         horizontal
         showsHorizontalScrollIndicator={false}
         ref={scrollViewRef}
+        accessible={true}
+        accessibilityLabel="Price range options"
+        accessibilityHint="Scroll horizontally to see all price range options"
       >
         {priceOptions?.map((item, index) => (
           <TouchableOpacity
@@ -385,26 +423,43 @@ const StayInBangkok = () => {
               scrollViewRef.current.scrollTo({
                 // Scroll to the selected item
                 animated: true,
-                x: index * 80, // Adjust this value based on your item width
+                x: index * 70, // Adjust this value based on your item width
                 y: 0,
               });
             }}
+            style={{
+              minHeight: 48, // Ensure minimum touch target height
+              minWidth: 48, // Ensure minimum touch target width
+              justifyContent: 'center',
+              marginRight: 8
+            }}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel={`Filter by ${item.name} price range`}
+            accessibilityState={{ selected: priceRange === item.value }}
+            accessibilityHint={`Show accommodations in ${item.name} price range`}
           >
             <View
-              className={`rounded-full px-4 py-1 mr-2 font-pregular ${
+              className={`rounded-full px-4 py-3 mr-2 font-pregular ${
                 priceRange === item.value
                   ? "border-secondary"
                   : "border-[#dadada]"
               }`}
-              style={{ borderWidth: 1 }}
+              style={{ 
+                borderWidth: 1,
+                minHeight: 40,
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
             >
               <Text
                 className={
                   priceRange === item.value
                     ? "text-secondary font-pregular"
-                    : "font-pregular"
+                    : ""
                 }
-                style={{ fontSize: 10 }}
+                style={{ fontSize: 14 }} // Increased font size for better readability
+                accessible={false} // Parent already has accessibility label
               >
                 {item.name}
               </Text>
@@ -419,6 +474,9 @@ const StayInBangkok = () => {
           renderItem={({ item, index }) => renderItem({ item, index })}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
+          accessible={true}
+          accessibilityLabel="List of accommodations in Bangkok"
+          accessibilityHint="Scroll to browse available hotels and accommodations"
         />
       ) : (
         <View
@@ -466,6 +524,9 @@ const StayInBangkok = () => {
         transparent={true}
         visible={modalVisible} // Use modal visibility state
         onRequestClose={handleCloseModal} // Handle back button
+        accessible={true}
+        accessibilityLabel="Place selection modal"
+        accessibilityHint="Select a place to filter accommodations in Bangkok"
       >
         <ScrollView
           contentContainerStyle={{
@@ -483,20 +544,15 @@ const StayInBangkok = () => {
               padding: 16,
             }}
           >
-            <View className="flex-row justify-between items-center px-4 ">
-              <Text className=" text-secondary font-psemibold">
+            <View className="flex-row justify-between items-center px-4 py-2">
+              <Text
+                className=" text-secondary font-psemibold"
+                accessible={true}
+                accessibilityRole="header"
+                accessibilityLabel="Choose Place"
+              >
                 Choose Place
               </Text>
-              {/* <TouchableOpacity
-                onPress={() => {
-                  handleCloseModal();
-                  setPlace("");
-                }}
-              >
-                <Text style={{ textAlign: "center", color: "#FF601B" }}>
-                  Clean
-                </Text>
-              </TouchableOpacity> */}
               <TouchableOpacity
                 onPress={() => {
                   handleCloseModal();
@@ -508,15 +564,21 @@ const StayInBangkok = () => {
                   alignItems: "center",
                   backgroundColor: "#FFFFFF",
                   borderRadius: 10,
+                  minWidth: 44, // Ensure minimum touch target size
                 }}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel="Clear place selection"
+                accessibilityHint="Reset the place filter"
               >
                 <Text
                   className=" font-pregular"
                   style={{
                     textAlign: "center",
                     color: "#FF601B",
-                    fontSize: 14,
+                    fontSize: 16, // Increased font size for better readability
                   }}
+                  accessible={false} // Parent already has accessibility label
                 >
                   Clean
                 </Text>
@@ -526,6 +588,9 @@ const StayInBangkok = () => {
             <ScrollView
               className="mt-2 "
               style={{ maxHeight: 200, minHeight: 200, overflow: "hidden" }}
+              accessible={true}
+              accessibilityLabel="List of places in Bangkok"
+              accessibilityHint="Scroll to see all available places"
             >
               {placeList.map((item) => (
                 <TouchableOpacity
@@ -540,13 +605,19 @@ const StayInBangkok = () => {
                     justifyContent: "space-between",
                     alignItems: "center",
                     padding: 6,
+                    minHeight: 44, // Ensure minimum touch target size
                   }}
+                  accessible={true}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Select ${item}`}
+                  accessibilityState={{ selected: place === item }}
                 >
                   <Text
                     className={`rounded-full px-4 w-full font-pregular py-1 mr-2 ${
                       place == item ? "text-secondary" : "text-[#000]"
                     }`}
-                    style={{ flex: 1, fontSize: 12 }}
+                    style={{ flex: 1, fontSize: 14 }} // Increased font size for better readability
+                    accessible={false} // Parent already has accessibility label
                   >
                     {item}
                   </Text>
@@ -566,8 +637,8 @@ const StayInBangkok = () => {
                     </View> */}
                     <View
                       style={{
-                        width: 20,
-                        height: 20,
+                        width: 24,
+                        height: 24, // Increased size for better touch target
                         borderWidth: 1,
                         borderColor: "#757575",
                         borderRadius: 30,
@@ -575,13 +646,7 @@ const StayInBangkok = () => {
                         alignItems: "center",
                       }}
                       className={` ${place == item ? "bg-secondary" : ""}`}
-                      accessibilityLabel={
-                        place == item
-                          ? `${item} selected`
-                          : `${item} not selected`
-                      }
-                      accessibilityRole="checkbox"
-                      accessibilityState={{ checked: place == item }}
+                      accessible={false} // This is decorative, main accessibility is on the parent
                     >
                       {/* Placeholder for checkbox */}
                     </View>
@@ -607,14 +672,19 @@ const StayInBangkok = () => {
                 backgroundColor: "#FFFFFF",
                 borderRadius: 10,
               }}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Close place selection modal"
+              accessibilityHint="Dismiss the place selection dialog"
             >
               <Text
                 className=" font-pregular"
                 style={{
                   textAlign: "center",
                   color: "#FF601B",
-                  fontSize: 14,
+                  fontSize: 16, // Increased font size for better readability
                 }}
+                accessible={false} // Parent already has accessibility label
               >
                 Close
               </Text>

@@ -226,6 +226,12 @@ const ThingsToDo = () => {
                   color: "white",
                   fontSize: 12,
                 }}
+                accessible={true}
+                accessibilityLabel={`${percent(
+                  item.lowest_walk_in_price,
+                  item.lowest_variation_price
+                )} percent discount`}
+                accessibilityRole="text"
               >
                 {percent(
                   item.lowest_walk_in_price,
@@ -239,40 +245,69 @@ const ThingsToDo = () => {
             style={{ fontSize: 12, fontWeight: "600" }}
             numberOfLines={1}
             className=" font-psemibold "
+            accessible={true}
+            accessibilityLabel={`Attraction: ${item?.name}`}
+            accessibilityRole="header"
           >
             {item?.name}
           </Text>
           <View style={{ flexDirection: "row" }}>
             {item.cities.map((city) => (
-              <View
+              <TouchableOpacity
                 key={city.id.toString()}
-                style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 4,
+                  minHeight: 48, // Ensure minimum touch target height
+                  paddingVertical: 8,
+                  paddingHorizontal: 4
+                }}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel={`Located in ${city.name}. Tap for more information`}
+                onPress={() => {}}
               >
                 <View
-                  style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 8,
+                    minWidth: 48 // Ensure minimum touch target width
+                  }}
                 >
                   <Image
                     source={icons.locationPin}
-                    style={{ width: 12, height: 12 }}
+                    style={{ width: 16, height: 16 }}
+                    accessible={false}
                   />
                   <Text
-                    style={{ fontSize: 10, paddingRight: 8, paddingTop: 2 }}
-                    className=" font-pmedium text-secondary"
+                    style={{
+                      fontSize: 14,
+                      paddingRight: 8,
+                      paddingVertical: 4
+                    }}
+                    className="font-pmedium text-secondary"
+                    accessible={true}
+                    accessibilityLabel={`Located in ${city.name}`}
+                    accessibilityRole="text"
                   >
                     {city.name}
                   </Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             ))}
           </View>
           <Text
             style={{
               fontSize: 12,
               fontWeight: "500",
-
               paddingBottom: 2,
             }}
             className=" font-pmedium"
+            accessible={true}
+            accessibilityLabel="Starting price information"
+            accessibilityRole="text"
           >
             starting price
           </Text>
@@ -286,7 +321,12 @@ const ThingsToDo = () => {
               justifyContent: "space-between",
               alignItems: "center",
               paddingVertical: 4,
+              minHeight: 44, // Ensure minimum touch target size
             }}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel={`View details for ${item?.name}`}
+            accessibilityHint={`Opens detailed information about ${item?.name}`}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text
@@ -362,9 +402,31 @@ const ThingsToDo = () => {
         >
           Things to do in {cityName ? cityName : "bangkok"}
         </Text>
-        <TouchableOpacity onPress={handleOpenModal} style={{ padding: 4 }}>
-          <Text className="text-secondary font-psemibold text-sm py-2">
-            filter
+        <TouchableOpacity 
+          onPress={handleOpenModal} 
+          style={{
+            padding: 12,
+            minHeight: 48,
+            minWidth: 48,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#F5F5F5',
+            borderRadius: 8
+          }}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel="Filter things to do by city"
+          accessibilityHint="Opens city selection options"
+        >
+          <Text 
+            className="text-secondary font-psemibold text-base"
+            style={{
+              paddingVertical: 4,
+              paddingHorizontal: 8
+            }}
+            accessible={false}
+          >
+            Filter
           </Text>
         </TouchableOpacity>
       </View>
@@ -388,14 +450,30 @@ const ThingsToDo = () => {
                     y: 0,
                   });
                 }}
+                style={{
+                  minHeight: 48, // Ensure minimum touch target height
+                  minWidth: 48, // Ensure minimum touch target width
+                  justifyContent: 'center',
+                  marginRight: 8
+                }}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel={`Filter by ${item.name} category`}
+                accessibilityState={{ selected: categoryId === item.id }}
+                accessibilityHint={`Show attractions in ${item.name} category`}
               >
                 <View
-                  className={`rounded-full px-4 py-1 mr-2 ${
+                  className={`rounded-full px-4 py-3 mr-2 ${
                     categoryId === item.id
                       ? "border-secondary"
                       : "border-[#dadada]"
                   }`}
-                  style={{ borderWidth: 1 }}
+                  style={{ 
+                    borderWidth: 1,
+                    minHeight: 40,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}
                 >
                   <Text
                     className={
@@ -403,7 +481,8 @@ const ThingsToDo = () => {
                         ? "text-secondary font-pregular"
                         : "font-pregular"
                     }
-                    style={{ fontSize: 10 }}
+                    style={{ fontSize: 14 }}
+                    accessible={false}
                   >
                     {item.name}
                   </Text>
@@ -488,6 +567,9 @@ const ThingsToDo = () => {
         transparent={true}
         visible={modalVisible} // Use modal visibility state
         onRequestClose={handleCloseModal} // Handle back button
+        accessible={true}
+        accessibilityLabel="City selection modal"
+        accessibilityHint="Select a city to filter attractions"
       >
         <ScrollView
           contentContainerStyle={{
@@ -505,13 +587,21 @@ const ThingsToDo = () => {
               padding: 16,
             }}
           >
-            <Text className="px-6 pb-2 text-secondary font-psemibold">
+            <Text 
+              className="px-6 pb-2 text-secondary font-psemibold"
+              accessible={true}
+              accessibilityRole="header"
+              accessibilityLabel="Choose city"
+            >
               Choose city
             </Text>
 
             <ScrollView
               className="mt-2 "
               style={{ maxHeight: 200, minHeight: 200, overflow: "hidden" }}
+              accessible={true}
+              accessibilityLabel="List of cities"
+              accessibilityHint="Scroll to see all available cities"
             >
               {city?.data.map((item) => (
                 <TouchableOpacity
@@ -527,13 +617,20 @@ const ThingsToDo = () => {
                     justifyContent: "space-between",
                     alignItems: "center",
                     padding: 6,
+                    minHeight: 44, // Ensure minimum touch target size
                   }}
+                  accessible={true}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Select ${item.name}`}
+                  accessibilityState={{ selected: cityId === item.id }}
                 >
                   <Text
                     className={`rounded-full px-4 w-full font-pregular py-1 mr-2 ${
                       cityId == item.id ? "text-secondary" : "text-[#000]"
                     }`}
-                    style={{ flex: 1, fontSize: 12 }}
+                    style={{ flex: 1, fontSize: 14 }} // Increased font size for better readability
+                    accessible={true}
+                    accessibilityLabel={item.name}
                   >
                     {item.name}
                   </Text>
@@ -553,8 +650,8 @@ const ThingsToDo = () => {
                     </View> */}
                     <View
                       style={{
-                        width: 20,
-                        height: 20,
+                        width: 24,
+                        height: 24, // Increased size for better touch target
                         borderWidth: 1,
                         borderColor: "#757575",
                         borderRadius: 30,
@@ -562,13 +659,7 @@ const ThingsToDo = () => {
                         alignItems: "center",
                       }}
                       className={` ${cityId == item.id ? "bg-secondary" : ""}`}
-                      accessibilityLabel={
-                        cityId == item.id
-                          ? `${item.id} selected`
-                          : `${item.id} not selected`
-                      }
-                      accessibilityRole="checkbox"
-                      accessibilityState={{ checked: cityId == item.id }}
+                      accessible={false} // This is decorative, main accessibility is on the parent
                     >
                       {/* Placeholder for checkbox */}
                     </View>
@@ -587,10 +678,16 @@ const ThingsToDo = () => {
                 backgroundColor: "#FFFFFF",
                 borderRadius: 10,
               }}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Close city selection modal"
+              accessibilityHint="Dismiss the city selection without making changes"
             >
               <Text
                 className=" font-pregular"
-                style={{ textAlign: "center", color: "#FF601B", fontSize: 14 }}
+                style={{ textAlign: "center", color: "#FF601B", fontSize: 16 }} // Increased font size for better readability
+                accessible={true}
+                accessibilityLabel="Close button"
               >
                 Close
               </Text>

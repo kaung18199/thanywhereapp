@@ -51,6 +51,9 @@ const HomeAllProduct = () => {
         <Text
           className=" tracking-wide font-psemibold text-secondary "
           style={{ fontSize: 14 }}
+          accessible={true}
+          accessibilityRole="header"
+          accessibilityLabel="All products section"
         >
           All products
         </Text>
@@ -71,6 +74,9 @@ const HomeAllProduct = () => {
         horizontal={true} // Enable horizontal scrolling
         onEndReachedThreshold={0.5}
         showsHorizontalScrollIndicator={false} // Hide horizontal scroll indicator
+        accessible={true}
+        accessibilityLabel="Categories carousel"
+        accessibilityHint="Scroll horizontally to see all categories"
       />
     </View>
   );

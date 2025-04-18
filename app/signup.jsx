@@ -1,4 +1,5 @@
 import { Stack, useRouter } from "expo-router";
+import { Platform } from "react-native";
 import React, { useState } from "react";
 import { Button, TextInput } from "react-native";
 import axios from "../axiosConfig";
@@ -21,18 +22,6 @@ const HeaderLeftCustom = () => {
   const router = useRouter();
   return (
     <View>
-      {/* <TouchableOpacity
-        onPress={() => router.back()}
-        style={{
-          height: 48, // Ensures the touch area is 48dp
-          width: 48, // Ensures the touch area is 48dp
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} // Optional, to further increase tappable area
-      >
-        <ChevronLeftIcon size={24} color="#FF601B" />
-      </TouchableOpacity> */}
       <TouchableOpacity
         onPress={() => router.back()}
         style={{
@@ -42,8 +31,10 @@ const HeaderLeftCustom = () => {
           alignItems: "center",
         }}
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} // Optional, to further increase tappable area
-        accessibilityLabel="Go back"
+        accessible={true}
+        accessibilityLabel="Back to previous screen"
         accessibilityRole="button"
+        accessibilityHint="Return to the previous page"
       >
         <ChevronLeftIcon size={24} color="#FF601B" />
       </TouchableOpacity>
@@ -67,10 +58,28 @@ const SignUp = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const onChangeDate = (event, selectedDate) => {
-    setShowDatePicker(false); // Hide picker after selection
+    if (Platform.OS === 'android') {
+      setShowDatePicker(false); // Hide picker after selection on Android
+    }
     if (selectedDate) {
       const formattedDate = selectedDate.toISOString().split("T")[0];
       setFormData({ ...formData, dob: formattedDate });
+    }
+  };
+
+  // Function to show the date picker with platform-specific handling
+  const showDatePickerHandler = () => {
+    if (Platform.OS === 'android') {
+      // For Android, use the DateTimePickerAndroid API for larger touch targets
+      DateTimePickerAndroid.open({
+        value: formData.dob ? new Date(formData.dob) : new Date(),
+        onChange: onChangeDate,
+        mode: 'date',
+        is24Hour: true,
+      });
+    } else {
+      // For iOS, use the modal approach
+      setShowDatePicker(true);
     }
   };
 
@@ -184,6 +193,7 @@ const SignUp = () => {
             options={{
               headerShown: true,
               headerTitle: "Sign up",
+              headerAccessibilityLabel: "Registration page",
               headerLeft: () => <HeaderLeftCustom />,
               headerTitleAlign: "center",
               headerTitleStyle: {
@@ -195,114 +205,177 @@ const SignUp = () => {
           />
         </View>
         <View className=" py-5 px-6">
-          <Text className=" font-pmedium text-lg pb-4">
+          <Text 
+            className=" font-pmedium text-lg pb-4"
+            accessible={true}
+            accessibilityRole="header"
+            accessibilityLabel="Welcome to ThanyWhere">
             Welcome to ThanyWhere
           </Text>
           <View className=" flex flex-col justify-start items-center border border-gray-300 rounded-xl">
             <TextInput
-              className=" border-b border-gray-300 rounded-xl px-6 text-sm font-pregular py-5 w-full"
+              className=" border-b border-gray-300 rounded-xl px-6 text-base font-pregular py-6 w-full"
               placeholder="First name"
-              keyboardType="name" // Show email-specific keyboard
+              keyboardType="name"
               value={formData.first_name}
               onChangeText={(first_name) =>
                 setFormData({ ...formData, first_name: first_name })
               }
-              autoCapitalize="none" // No automatic capitalization
-              autoCorrect={false} // Disable autocorrect
+              autoCapitalize="none"
+              autoCorrect={false}
+              accessible={true}
+              accessibilityLabel="First name input"
+              accessibilityHint="Enter your first name as it appears on your ID"
+              style={{ minHeight: 48 }} // Ensure minimum touch target height
             />
             <TextInput
-              className="  rounded-xl px-6 text-sm font-pregular py-5 w-full"
+              className="rounded-xl px-6 text-base font-pregular py-6 w-full"
               placeholder="Last Name"
-              keyboardType="name" // Show email-specific keyboard
+              keyboardType="name"
               value={formData.last_name}
               onChangeText={(last_name) =>
                 setFormData({ ...formData, last_name: last_name })
               }
-              autoCapitalize="none" // No automatic capitalization
-              autoCorrect={false} // Disable autocorrect
+              autoCapitalize="none"
+              autoCorrect={false}
+              accessible={true}
+              accessibilityLabel="Last name input"
+              accessibilityHint="Enter your last name as it appears on your ID"
+              style={{ minHeight: 48 }} // Ensure minimum touch target height
             />
           </View>
-          <Text className=" text-xs font-pregular py-4">
+          <Text 
+            className=" text-xs font-pregular py-4"
+            accessible={true}
+            accessibilityRole="text"
+            accessibilityLabel="ID name matching instruction">
             make sure it matches the name on your goverment ID.
           </Text>
           <View>
-            <TextInput
-              className="border border-gray-300 rounded-xl px-6 text-sm font-pregular py-5 w-full"
-              placeholder="DOB eg: 2000/01/01"
-              value={formData.dob}
-              onChangeText={(dob) => setFormData({ ...formData, dob: dob })}
-              autoCapitalize="none" // No automatic capitalization
-              autoCorrect={false} // Disable autocorrect
-            />
-            {/* <TouchableOpacity
-              className="border border-gray-300 rounded-xl px-6 text-sm font-pregular py-5 w-full"
-              onPress={() => setShowDatePicker(true)}
+            <TouchableOpacity
+              className="border border-gray-300 rounded-xl px-6 text-base font-pregular py-6 w-full"
+              onPress={showDatePickerHandler}
+              style={{
+                minHeight: 48, // Ensure minimum touch target height
+                justifyContent: 'center',
+              }}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Select date of birth"
+              accessibilityHint="Tap to open calendar for date selection"
             >
               {formData.dob ? (
-                <Text className=" text-sm font-pregular">{formData.dob}</Text>
+                <Text 
+                  className=" text-sm font-pregular"
+                  accessible={true}
+                  accessibilityLabel={`Selected date of birth: ${formData.dob}`}
+                >
+                  {formData.dob}
+                </Text>
               ) : (
-                <Text className=" text-sm font-pregular">Select DOB</Text>
+                <Text 
+                  className=" text-sm font-pregular"
+                  accessible={true}
+                  accessibilityLabel="No date selected"
+                >
+                  Select date of birth
+                </Text>
               )}
-            </TouchableOpacity> */}
-            {/* {showDatePicker && (
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={formData.dob ? new Date(formData.dob) : new Date()}
-                mode="date"
-                className="bg-white border border-gray-300 rounded-xl px-4 text-sm font-pregular py-3 w-full"
-                display="inline"
-                onChange={onChangeDate}
-              />
-            )} */}
+            </TouchableOpacity>
+            {showDatePicker && (
+              <View style={{ 
+                minHeight: 48, // Ensure minimum touch target height
+                minWidth: 48, // Ensure minimum touch target width
+              }}>
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={formData.dob ? new Date(formData.dob) : new Date()}
+                  mode="date"
+                  display="default"
+                  onChange={onChangeDate}
+                  accessible={true}
+                  accessibilityLabel="Date of birth calendar"
+                  accessibilityHint="Select your date of birth from the calendar"
+                  style={{
+                    height: 48, // Ensure minimum touch target height
+                    width: '100%',
+                  }}
+                />
+              </View>
+            )}
             {/* display={Platform.OS === "ios" ? "inline" : "default"} */}
-            <Text className=" text-xs font-pregular py-4">
+            <Text 
+              className=" text-xs font-pregular py-4"
+              accessible={true}
+              accessibilityRole="text"
+              accessibilityLabel="Age requirement information">
               to sign up, you need to be at least 18 . your birthday won't be
               shared with other people who use thanywhere.
             </Text>
             <TextInput
-              className=" border border-gray-300 rounded-xl px-6 text-sm font-pregular py-5 w-full"
+              className="border border-gray-300 rounded-xl px-6 text-base font-pregular py-6 w-full"
               placeholder="Enter your email"
-              keyboardType="email-address" // Show email-specific keyboard
+              keyboardType="email-address"
               value={formData.email}
               onChangeText={(email) =>
                 setFormData({ ...formData, email: email })
               }
-              autoCapitalize="none" // No automatic capitalization
-              autoCorrect={false} // Disable autocorrect
+              autoCapitalize="none"
+              autoCorrect={false}
+              accessible={true}
+              accessibilityLabel="Email input"
+              accessibilityHint="Enter your email address for account verification"
+              style={{ minHeight: 48 }} // Ensure minimum touch target height
             />
-            <Text className=" text-xs font-pregular py-4">
+            <Text 
+              className=" text-xs font-pregular py-4"
+              accessible={true}
+              accessibilityRole="text"
+              accessibilityLabel="Email usage information">
               we'll email you trip confirmations and receipts.
             </Text>
             <TextInput
-              className=" border border-gray-300 rounded-xl px-6 text-sm font-pregular py-5 w-full"
+              className="border border-gray-300 rounded-xl px-6 text-base font-pregular py-6 w-full"
               placeholder="Enter your phone number"
-              keyboardType="phone" // Show email-specific keyboard
+              keyboardType="phone"
               value={formData.phone_number}
               onChangeText={(phone_number) =>
                 setFormData({ ...formData, phone_number: phone_number })
               }
-              autoCapitalize="none" // No automatic capitalization
-              autoCorrect={false} // Disable autocorrect
+              autoCapitalize="none"
+              autoCorrect={false}
+              accessible={true}
+              accessibilityLabel="Phone number input"
+              accessibilityHint="Enter your phone number for account verification"
+              style={{ minHeight: 48 }} // Ensure minimum touch target height
             />
-            <Text className=" text-xs font-pregular py-4">
+            <Text 
+              className=" text-xs font-pregular py-4"
+              accessible={true}
+              accessibilityRole="text"
+              accessibilityLabel="Phone number usage information">
               we'll phone number will remind you trip confirmations and
               receipts.
             </Text>
           </View>
           <View className=" flex flex-col justify-start items-center border border-gray-300 rounded-xl">
             <TextInput
-              className="  rounded-xl px-6 text-sm font-pregular py-5 w-full border-b border-gray-300"
+              className="rounded-xl px-6 text-base font-pregular py-6 w-full border-b border-gray-300"
               placeholder="Enter your password"
-              secureTextEntry // Hides the input for passwords
+              secureTextEntry
               value={formData.password}
               onChangeText={(password) =>
                 setFormData({ ...formData, password: password })
               }
+              accessible={true}
+              accessibilityLabel="Password input"
+              accessibilityHint="Create a secure password for your account"
+              style={{ minHeight: 48 }} // Ensure minimum touch target height
             />
             <TextInput
-              className="  rounded-xl px-6 text-sm font-pregular py-5 w-full"
+              className="rounded-xl px-6 text-base font-pregular py-6 w-full"
               placeholder="Confirm your password"
-              secureTextEntry // Hides the input for passwords
+              secureTextEntry
               value={formData.password_confirmation}
               onChangeText={(password_confirmation) =>
                 setFormData({
@@ -310,26 +383,50 @@ const SignUp = () => {
                   password_confirmation: password_confirmation,
                 })
               }
+              accessible={true}
+              accessibilityLabel="Confirm password input"
+              accessibilityHint="Re-enter your password to confirm"
+              style={{ minHeight: 48 }} // Ensure minimum touch target height
             />
           </View>
-          <Text className=" text-xs font-pregular py-4">
+          <Text 
+            className=" text-xs font-pregular py-4"
+            accessible={true}
+            accessibilityRole="text"
+            accessibilityLabel="Confirmation code information">
             we'll send confirmation code to confirm your email. standard message
-            and data rates apply.{" "}
+            and data rates apply.
           </Text>
           <View>
             <TouchableOpacity
               onPress={handleLogin}
               className="bg-[#FF601B]  rounded-xl px-6 py-4 flex justify-center items-center"
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Create account"
+              accessibilityHint="Complete registration and create your account"
             >
-              <Text className=" text-white font-psemibold ">Sign up</Text>
+              <Text 
+                className=" text-white font-psemibold "
+                accessible={true}
+                accessibilityLabel="Create account button"
+              >Sign up</Text>
             </TouchableOpacity>
           </View>
           <View className="pb-20">
             <TouchableOpacity
               className="bg-white border border-gray-300 rounded-xl px-6 py-4 mt-3 flex justify-center items-center"
               onPress={() => router.push("/login")}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Login instead"
+              accessibilityHint="Navigate to the login page if you already have an account"
             >
-              <Text className=" text-gray-600 font-psemibold ">
+              <Text 
+                className=" text-gray-600 font-psemibold "
+                accessible={true}
+                accessibilityLabel="Login instead button"
+              >
                 Go to login
               </Text>
             </TouchableOpacity>

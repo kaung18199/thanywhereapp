@@ -53,7 +53,12 @@ const ReadAboutDestination = () => {
       }}
       style={{
         marginRight: 16,
+        minHeight: 44,
       }}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={`Read about ${item.name}`}
+      accessibilityHint={`View information about ${item.name} destination`}
     >
       <CachedImage
         uri={item.image}
@@ -62,6 +67,8 @@ const ReadAboutDestination = () => {
           height: 100,
           borderRadius: 10,
         }}
+        accessible={true}
+        accessibilityLabel={`Image of ${item.name}`}
       />
     </TouchableOpacity>
   );
@@ -88,6 +95,9 @@ const ReadAboutDestination = () => {
         <Text
           style={{ fontSize: 16, fontWeight: "600", color: "#FF601B" }}
           className=" font-psemibold"
+          accessible={true}
+          accessibilityRole="header"
+          accessibilityLabel="Read about destinations section"
         >
           Read about destinations
         </Text>
@@ -98,6 +108,9 @@ const ReadAboutDestination = () => {
         keyExtractor={(item) => item.id.toString()}
         horizontal
         showsHorizontalScrollIndicator={false}
+        accessible={true}
+        accessibilityLabel="List of destinations to read about"
+        accessibilityHint="Scroll horizontally to browse different destinations"
       />
     </View>
   );

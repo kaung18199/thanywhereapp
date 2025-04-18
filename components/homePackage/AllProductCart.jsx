@@ -14,6 +14,11 @@ const AllProductCart = ({ icon, text, state, link }) => {
           router.push(`${link}`);
         }
       }}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={`${text} category`}
+      accessibilityHint={state ? `Navigate to ${text} page` : "This feature is coming soon"}
+      accessibilityState={{ disabled: !state }}
     >
       <View
         key={text}
@@ -26,11 +31,13 @@ const AllProductCart = ({ icon, text, state, link }) => {
           resizeMethod="contain"
           className=" w-full h-full object-cover"
           tintColor={"#ffffff"}
+          accessible={false}
         />
       </View>
       <Text
         className=" pt-2 w-[53px] text-wrap font-pregular text-center"
-        style={{ fontSize: 9 }}
+        style={{ fontSize: 11 }} // Increased font size for better readability
+        accessible={false} // The parent TouchableOpacity already has the accessibility label
       >
         {text}
       </Text>

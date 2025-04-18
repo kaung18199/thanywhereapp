@@ -64,44 +64,70 @@ const LanguageSelectionModal = ({ visible, onSelectLanguage }) => {
             </View>
             <View className="gap-y-3">
               <TouchableOpacity
-                className={`flex-row justify-between items-center px-2 py-3  border border-secondary rounded-lg ${
+                className={`flex-row justify-between items-center px-4 py-4 border border-secondary rounded-lg ${
                   chooseLanguage === "english"
                     ? "bg-secondary/20"
                     : "bg-transparent"
                 }`}
+                style={{ minHeight: 48 }} // Ensure minimum touch target height
                 onPress={() => handleLanguageChange("english")}
+                accessible={true}
+                accessibilityRole="radio"
+                accessibilityLabel="Select English language"
+                accessibilityState={{ checked: chooseLanguage === "english" }}
               >
                 <View className="flex-row justify-start items-center gap-4">
                   <Image
                     source={images.englishImage}
                     className="w-8 h-8 rounded-full border-2 border-white"
+                    accessible={false} // Image is decorative
                   />
-                  <Text className="text-sm font-psemibold">English</Text>
+                  <Text 
+                    className="text-base font-psemibold" // Increased text size for better readability
+                    accessible={false} // Parent already has accessibility label
+                  >English</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
-                className={`flex-row justify-between items-center px-2 py-3  border border-secondary rounded-lg ${
+                className={`flex-row justify-between items-center px-4 py-4 border border-secondary rounded-lg ${
                   chooseLanguage === "myanmar"
                     ? "bg-secondary/20"
                     : "bg-transparent"
                 }`}
+                style={{ minHeight: 48 }} // Ensure minimum touch target height
                 onPress={() => handleLanguageChange("myanmar")}
+                accessible={true}
+                accessibilityRole="radio"
+                accessibilityLabel="Select Burmese language"
+                accessibilityState={{ checked: chooseLanguage === "myanmar" }}
               >
                 <View className="flex-row justify-start items-center gap-4 ">
                   <Image
                     source={images.myanmarImage}
                     className="w-8 h-8 rounded-full border-2 border-white"
+                    accessible={false} // Image is decorative
                   />
-                  <Text className="text-sm font-psemibold">Burmese</Text>
+                  <Text 
+                    className="text-base font-psemibold" // Increased text size for better readability
+                    accessible={false} // Parent already has accessibility label
+                  >Burmese</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
-                className={`flex-row justify-between w-full mx-auto items-center px-2 py-3 bg-secondary border border-secondary rounded-lg `}
+                className={`flex-row justify-between w-full mx-auto items-center px-4 py-4 bg-secondary border border-secondary rounded-lg`}
+                style={{ minHeight: 48 }} // Ensure minimum touch target height
                 onPress={() => choose()}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel="Confirm language selection"
+                accessibilityHint="Save your language preference and continue"
               >
-                <View className=" text-center w-full">
-                  <Text className=" text-white text-center font-psemibold">
-                    choose
+                <View className="text-center w-full">
+                  <Text 
+                    className="text-white text-center font-psemibold text-base" // Increased text size
+                    accessible={false} // Parent already has accessibility label
+                  >
+                    Choose
                   </Text>
                 </View>
               </TouchableOpacity>

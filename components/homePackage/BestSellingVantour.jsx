@@ -109,6 +109,10 @@ const BestSellingVantour = () => {
         onPress={() => {
           router.push(`/detail/vantour/${item.id}`);
         }}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={`${item?.name} van tour`}
+        accessibilityHint={`View details of this van tour in ${item?.cities?.[0]?.name || ''}`}
       >
         <View
           style={{
@@ -133,6 +137,9 @@ const BestSellingVantour = () => {
               style={{ fontSize: 12, fontWeight: "600", paddingBottom: 3 }}
               numberOfLines={1}
               className=" font-psemibold text-secondary"
+              accessible={true}
+              accessibilityRole="header"
+              accessibilityLabel={`Tour name: ${item?.name}`}
             >
               {item?.name}
             </Text>
@@ -151,6 +158,7 @@ const BestSellingVantour = () => {
                 <Image
                   source={icons.locationPin}
                   style={{ width: 12, height: 12 }}
+                  accessible={false}
                 />
                 <Text
                   style={{ fontSize: 10, color: "#757575", paddingRight: 8 }}
@@ -185,7 +193,12 @@ const BestSellingVantour = () => {
                 />
               )}
             </View>
-            <Text style={{ fontSize: 14, fontWeight: "500", marginTop: 8 }}>
+            <Text 
+              style={{ fontSize: 14, fontWeight: "500", marginTop: 8 }}
+              accessible={true}
+              accessibilityRole="text"
+              accessibilityLabel="Starting price information"
+            >
               starting price
             </Text>
             <View
@@ -197,10 +210,16 @@ const BestSellingVantour = () => {
             >
               <Text
                 style={{ fontSize: 20, fontWeight: "700", color: "#FF5722" }}
+                accessible={true}
+                accessibilityLabel={`${item?.lowest_car_price} Thai Baht`}
               >
                 {item?.lowest_car_price} thb
               </Text>
-              <Text style={{ fontSize: 14, color: "#6c757d" }}> / car</Text>
+              <Text 
+                style={{ fontSize: 14, color: "#6c757d" }}
+                accessible={true}
+                accessibilityLabel="per car"
+              > / car</Text>
             </View>
           </View>
         </View>
@@ -227,6 +246,9 @@ const BestSellingVantour = () => {
         <Text
           style={{ fontSize: 16, fontWeight: "600", color: "#FF601B" }}
           className=" font-psemibold"
+          accessible={true}
+          accessibilityRole="header"
+          accessibilityLabel="Best selling van tours section"
         >
           Best selling van tours
         </Text>
@@ -235,6 +257,9 @@ const BestSellingVantour = () => {
         horizontal
         showsHorizontalScrollIndicator={false}
         ref={scrollViewRef}
+        accessible={true}
+        accessibilityLabel="City filter options"
+        accessibilityHint="Scroll horizontally to see all city options"
       >
         {filterCityList?.map((item, index) => (
           <TouchableOpacity
@@ -248,20 +273,38 @@ const BestSellingVantour = () => {
                 y: 0,
               });
             }}
+            style={{
+              minHeight: 48, // Ensure minimum touch target height
+              minWidth: 48, // Ensure minimum touch target width
+              justifyContent: 'center',
+              marginRight: 8
+            }}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel={`Filter by ${item.name}`}
+            accessibilityState={{ selected: cityId === item.id }}
+            accessibilityHint={`Show van tours in ${item.name}`}
           >
             <View
-              className={`rounded-full px-4 py-1 mr-2 ${
+              className={`rounded-full px-4 py-3 mr-2 ${
                 cityId === item.id ? "border-secondary" : "border-[#dadada]"
               }`}
-              style={{ borderWidth: 1 }}
+              style={{ 
+                borderWidth: 1,
+                minHeight: 40,
+                justifyContent: 'center',
+                alignItems: 'center',
+                minWidth: 48
+              }}
             >
               <Text
                 className={
                   cityId === item.id
                     ? "text-secondary font-pregular"
-                    : " font-pregular"
+                    : "font-pregular"
                 }
-                style={{ fontSize: 10 }}
+                style={{ fontSize: 14 }} // Increased font size for better readability
+                accessible={false} // Parent TouchableOpacity already has accessibility label
               >
                 {item.name}
               </Text>
@@ -275,6 +318,9 @@ const BestSellingVantour = () => {
           renderItem={({ item, index }) => renderItem({ item, index })}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
+          accessible={true}
+          accessibilityLabel="List of van tours"
+          accessibilityHint="Scroll to browse available van tours"
         />
       ) : (
         <View

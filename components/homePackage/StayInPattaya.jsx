@@ -305,19 +305,56 @@ const StayInPattaya = () => {
             Stays in pattaya
           </Text>
           {place != "" && (
-            <View className=" rounded-full bg-secondary/10 text-center">
-              <Text
-                className=" font-pregular text-secondary text-center py-1 line-clamp-1 px-2"
-                style={{ fontSize: 10, maxWidth: 100, minWidth: 50 }}
-              >
-                {place}
-              </Text>
-            </View>
+            <TouchableOpacity
+              style={{
+                minHeight: 48,
+                minWidth: 48,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 24
+              }}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel={`Selected place: ${place}`}
+              onPress={handleOpenModal}
+            >
+              <View className="rounded-full bg-secondary/10 text-center px-2 py-2">
+                <Text
+                  className="font-pregular text-secondary text-center line-clamp-1"
+                  style={{ fontSize: 14, minWidth: 50 }}
+                  accessible={false}
+                >
+                  {place}
+                </Text>
+              </View>
+            </TouchableOpacity>
           )}
         </View>
-        <TouchableOpacity onPress={handleOpenModal} style={{ padding: 4 }}>
-          <Text className="text-secondary font-psemibold text-sm py-2">
-            filter
+        <TouchableOpacity 
+          onPress={handleOpenModal} 
+          style={{
+            padding: 12,
+            minHeight: 48,
+            minWidth: 48,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#F5F5F5',
+            borderRadius: 8
+          }}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel="Filter accommodations in Pattaya"
+          accessibilityHint="Opens place selection options for Pattaya"
+        >
+          <Text 
+            className="text-secondary font-psemibold text-base"
+            style={{
+              paddingVertical: 4,
+              paddingHorizontal: 8
+            }}
+            accessible={false}
+          >
+            Filter
           </Text>
         </TouchableOpacity>
       </View>
@@ -335,26 +372,44 @@ const StayInPattaya = () => {
               scrollViewRef.current.scrollTo({
                 // Scroll to the selected item
                 animated: true,
-                x: index * 60, // Adjust this value based on your item width
+                x: index * 70, // Adjust this value based on your item width
                 y: 0,
               });
             }}
+            style={{
+              minHeight: 48, // Ensure minimum touch target height
+              minWidth: 48, // Ensure minimum touch target width
+              justifyContent: 'center',
+              marginRight: 8
+            }}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel={`Filter by ${item.name} price range`}
+            accessibilityState={{ selected: priceRange === item.value }}
+            accessibilityHint={`Show accommodations in ${item.name} price range`}
           >
             <View
-              className={`rounded-full px-4 py-1 mr-2 ${
+              className={`rounded-full px-4 py-3 mr-2 ${
                 priceRange === item.value
                   ? "border-secondary"
                   : "border-[#dadada]"
               }`}
-              style={{ borderWidth: 1 }}
+              style={{ 
+                borderWidth: 1,
+                minHeight: 40,
+                justifyContent: 'center',
+                alignItems: 'center',
+                minWidth: 48
+              }}
             >
               <Text
                 className={
                   priceRange === item.value
                     ? "text-secondary font-pregular"
-                    : ""
+                    : "font-pregular"
                 }
-                style={{ fontSize: 10 }}
+                style={{ fontSize: 14 }}
+                accessible={false}
               >
                 {item.name}
               </Text>
@@ -405,6 +460,9 @@ const StayInPattaya = () => {
         transparent={true}
         visible={modalVisible} // Use modal visibility state
         onRequestClose={handleCloseModal} // Handle back button
+        accessible={true}
+        accessibilityLabel="Place selection modal"
+        accessibilityHint="Select a place to filter accommodations"
       >
         <ScrollView
           contentContainerStyle={{
@@ -419,11 +477,15 @@ const StayInPattaya = () => {
               width: "80%",
               backgroundColor: "white",
               borderRadius: 10,
-              padding: 16,
+              padding: 20,
             }}
           >
             <View className="flex-row justify-between items-center px-4 py-2">
-              <Text className=" text-secondary font-psemibold">
+              <Text 
+                className=" text-secondary font-psemibold"
+                accessible={true}
+                accessibilityRole="header"
+                accessibilityLabel="Choose Place">
                 Choose Place
               </Text>
               {/* <TouchableOpacity
@@ -447,7 +509,12 @@ const StayInPattaya = () => {
                   alignItems: "center",
                   backgroundColor: "#FFFFFF",
                   borderRadius: 10,
+                  minWidth: 44, // Ensure minimum touch target size
                 }}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel="Clear place selection"
+                accessibilityHint="Reset the place filter"
               >
                 <Text
                   className=" font-pregular"
@@ -464,7 +531,10 @@ const StayInPattaya = () => {
 
             <ScrollView
               className="mt-2 "
-              style={{ maxHeight: 200, minHeight: 200, overflow: "hidden" }}
+              style={{ maxHeight: 250, minHeight: 200, overflow: "hidden" }}
+              accessible={true}
+              accessibilityLabel="List of places"
+              accessibilityHint="Scroll to see all available places"
             >
               {placeList.map((item) => (
                 <TouchableOpacity
@@ -478,14 +548,21 @@ const StayInPattaya = () => {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    padding: 6,
+                    padding: 10,
+                    minHeight: 48, // Increased to ensure minimum touch target size of 48dp
                   }}
+                  accessible={true}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Select ${item}`}
+                  accessibilityState={{ selected: place === item }}
                 >
                   <Text
-                    className={`rounded-full px-4 w-full font-pregular py-1 mr-2 ${
+                    className={`rounded-full px-4 w-full font-pregular py-2 mr-2 ${
                       place == item ? "text-secondary" : "text-[#000]"
                     }`}
-                    style={{ flex: 1, fontSize: 12 }}
+                    style={{ flex: 1, fontSize: 16 }} // Increased font size for better readability
+                    accessible={true}
+                    accessibilityLabel={item}
                   >
                     {item}
                   </Text>
@@ -505,8 +582,8 @@ const StayInPattaya = () => {
                     </View> */}
                     <View
                       style={{
-                        width: 20,
-                        height: 20,
+                        width: 28,
+                        height: 28, // Further increased size for better touch target
                         borderWidth: 1,
                         borderColor: "#757575",
                         borderRadius: 30,
@@ -514,13 +591,7 @@ const StayInPattaya = () => {
                         alignItems: "center",
                       }}
                       className={` ${place == item ? "bg-secondary" : ""}`}
-                      accessibilityLabel={
-                        place == item
-                          ? `${item} selected`
-                          : `${item} not selected`
-                      }
-                      accessibilityRole="checkbox"
-                      accessibilityState={{ checked: place == item }}
+                      accessible={false} // This is decorative, main accessibility is on the parent
                     >
                       {/* Placeholder for checkbox */}
                     </View>
@@ -546,13 +617,18 @@ const StayInPattaya = () => {
                 backgroundColor: "#FFFFFF",
                 borderRadius: 10,
               }}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Close place selection modal"
+              accessibilityHint="Dismiss the place selection dialog"
             >
               <Text
                 className=" font-pregular"
                 style={{
                   textAlign: "center",
                   color: "#FF601B",
-                  fontSize: 14,
+                  fontSize: 16, // Increased font size for better readability
+                  paddingVertical: 8, // Added padding for larger touch area
                 }}
               >
                 Close

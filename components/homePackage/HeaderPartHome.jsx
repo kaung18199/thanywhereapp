@@ -46,15 +46,25 @@ const HeaderPart = ({ children, style }) => {
             <TouchableOpacity
               onPress={() => router.back()}
               className="flex flex-row pr-4 pt-1 justify-start items-center gap-x-2"
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="ThanyWhere logo"
+              accessibilityHint="Navigate to home screen"
             >
               <Image
                 source={icons.logo}
                 tintColor="#ffffff"
                 resizeMode="cover"
                 style={styles.logo}
+                accessible={false}
               />
 
-              <Text style={styles.title}>THANYWHERE</Text>
+              <Text 
+                style={styles.title}
+                accessible={true}
+                accessibilityLabel="THANYWHERE"
+                accessibilityRole="header"
+              >THANYWHERE</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.languageContainer}>
@@ -62,10 +72,15 @@ const HeaderPart = ({ children, style }) => {
               <TouchableOpacity
                 style={styles.languageButton}
                 onPress={() => setIsShowModal(true)}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel="Change language from English"
+                accessibilityHint="Opens language selection dialog"
               >
                 <Image
                   source={images.englishImage}
                   style={styles.languageImage}
+                  accessible={false}
                 />
                 {/* <Text style={styles.languageText}>en</Text> */}
               </TouchableOpacity>
@@ -77,6 +92,7 @@ const HeaderPart = ({ children, style }) => {
                 <Image
                   source={images.myanmarImage}
                   style={styles.languageImage}
+                  accessible={false}
                 />
                 {/* <Text style={styles.languageText}>mm</Text> */}
               </TouchableOpacity>

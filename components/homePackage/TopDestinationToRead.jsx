@@ -57,6 +57,10 @@ const TopDestinationToRead = () => {
         onPress={() => {
           console.log(`Pressed ${item.name}`);
         }}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={`Read about ${item?.name}`}
+        accessibilityHint={`View details about ${item?.city?.name || 'this destination'}`}
       >
         <View
           style={{
@@ -70,11 +74,15 @@ const TopDestinationToRead = () => {
               <CachedImage
                 uri={item.feature_img}
                 style={{ width: "100%", height: 100, borderRadius: 15 }}
+                accessible={true}
+                accessibilityLabel={`Image of ${item?.name}`}
               />
             ) : (
               <Image
                 source={icons.bookmark}
                 style={{ width: "100%", height: 100, borderRadius: 15 }}
+                accessible={true}
+                accessibilityLabel={`Placeholder image for ${item?.name}`}
               />
             )}
           </View>
@@ -88,6 +96,9 @@ const TopDestinationToRead = () => {
               style={{ fontSize: 12, fontWeight: "600", paddingBottom: 3 }}
               numberOfLines={1}
               className=" font-psemibold text-secondary"
+              accessible={true}
+              accessibilityRole="header"
+              accessibilityLabel={`Destination name: ${item?.name}`}
             >
               {item?.name}
             </Text>
@@ -101,20 +112,34 @@ const TopDestinationToRead = () => {
                 paddingBottom: 4,
               }}
             >
-              <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 8,
+                  minHeight: 48,
+                  minWidth: 48,
+                  paddingVertical: 4,
+                  paddingHorizontal: 4
+                }}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel={`Located in ${item?.city?.name}`}
+                onPress={() => console.log(`Pressed city: ${item?.city?.name}`)}
               >
                 <Image
                   source={icons.locationPin}
-                  style={{ width: 12, height: 12 }}
+                  style={{ width: 16, height: 16 }}
+                  accessible={false}
                 />
                 <Text
-                  style={{ fontSize: 10, color: "#757575", paddingRight: 8 }}
-                  className=" font-pmedium"
+                  style={{ fontSize: 14, color: "#757575", paddingRight: 8 }}
+                  className="font-pmedium"
+                  accessible={false}
                 >
                   {item?.city?.name}
                 </Text>
-              </View>
+              </TouchableOpacity>
               <View
                 style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
               >
@@ -127,12 +152,18 @@ const TopDestinationToRead = () => {
                 <Image
                   source={icons.staricon}
                   style={{ width: 12, height: 12 }}
+                  accessible={false}
                 />
               </View>
             </View>
 
             <View style={{ height: 80 }}>
-              <Text style={{ fontSize: 10, color: "#333" }} numberOfLines={4}>
+              <Text 
+                style={{ fontSize: 10, color: "#333" }} 
+                numberOfLines={4}
+                accessible={true}
+                accessibilityLabel={`Summary: ${item?.summary?.substring(0, 50)}${item?.summary?.length > 50 ? '...' : ''}`}
+              >
                 {item?.summary}
               </Text>
             </View>
@@ -140,6 +171,9 @@ const TopDestinationToRead = () => {
             <View style={{ marginTop: 8 }}>
               <Text
                 style={{ fontSize: 16, fontWeight: "600", color: "#FF601B" }}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel="Read more about this destination"
               >
                 read more ...
               </Text>
@@ -165,6 +199,9 @@ const TopDestinationToRead = () => {
         <Text
           style={{ fontSize: 16, fontWeight: "600", color: "#FF601B" }}
           className=" font-psemibold"
+          accessible={true}
+          accessibilityRole="header"
+          accessibilityLabel="Top destinations to read section"
         >
           Top destination to read
         </Text>
@@ -184,6 +221,9 @@ const TopDestinationToRead = () => {
           renderItem={({ item, index }) => renderItem({ item, index })}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
+          accessible={true}
+          accessibilityLabel="List of top destinations"
+          accessibilityHint="Scroll to browse available destinations to read about"
         />
       ) : (
         <View>

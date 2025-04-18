@@ -48,15 +48,34 @@ const Home = () => {
         return (
           <HeaderPart style="home">
             <View>
-              <Text className="text-white text-base font-psemibold">
+              <Text 
+                className="text-white text-base font-psemibold"
+                accessible={true}
+                accessibilityRole="header"
+                accessibilityLabel="Explore Thailand"
+              >
                 Expore Thailand.
               </Text>
-              <Text className="text-white text-sm font-pregular">
+              <Text 
+                className="text-white text-sm font-pregular"
+                accessible={true}
+                accessibilityRole="text"
+                accessibilityLabel="Bringing you over 140 partners and counting"
+              >
                 Bringing you over 140 partners and counting.
               </Text>
             </View>
-            <View className=" bg-white px-4 py-4 flex flex-row mt-5 mb-1  justify-between items-center rounded-full">
-              <Text className=" text-secondary text-sm font-pregular pl-2">
+            <View 
+              className=" bg-white px-4 py-4 flex flex-row mt-5 mb-1 justify-between items-center rounded-full"
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Search for all products"
+              accessibilityHint="Tap to open search"
+            >
+              <Text 
+                className=" text-secondary text-sm font-pregular pl-2"
+                accessible={false}
+              >
                 search for all products
               </Text>
               <Image
@@ -64,6 +83,7 @@ const Home = () => {
                 resizeMethod="contain"
                 className=" w-5 h-5"
                 tintColor="#FF601B"
+                accessible={false}
               />
             </View>
           </HeaderPart>
