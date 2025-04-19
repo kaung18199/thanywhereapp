@@ -2,8 +2,8 @@
   "expo": {
     "name": "thanywhere",
     "slug": "thanywhere",
-    "version": "1.0.1",
-    "scheme": ["thanywhere-app"],
+    "version": "1.0.0",
+    "scheme": ["thanywhereapp"],
     "orientation": "default",
     "icon": "./assets/icons/web-logo.png",
     "userInterfaceStyle": "light",
@@ -16,15 +16,15 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.kaung312.thanywhere"
+      "bundleIdentifier": "com.thanywhere.travelapp"
     },
     "android": {
-      "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/web-logo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.kaung312.thanywhere",
+      "package": "com.thanywhere.travelappv2",
+      "versionCode": 1,
       "permissions": ["INTERNET"],
       "config": {}
     },
@@ -38,7 +38,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "92ffd935-2014-4d7d-bd0f-dfb1f02ba941"
+        "projectId": "eeb276f9-c0c1-45bd-9e54-6b2adde0aecf"
       }
     }
   }
