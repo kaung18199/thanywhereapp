@@ -29,10 +29,20 @@ const SmoothModal = ({ visible, onClose, children }) => {
   }));
 
   return (
-    <Modal visible={visible} transparent={true} animationType="none">
+    <Modal 
+      visible={visible} 
+      transparent={true} 
+      animationType="none"
+      accessibilityViewIsModal={true}
+      onRequestClose={onClose}
+    >
       <TouchableOpacity
         style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.5)" }}
         onPress={onClose}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel="Close modal"
+        accessibilityHint="Tap to close the modal and return to previous screen"
       >
         <Animated.ScrollView
           contentContainerStyle={[

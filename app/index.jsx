@@ -51,7 +51,13 @@ const Index = () => {
   return (
     <SafeAreaView className="  h-full relative">
       <ScrollView contentContainerStyle={{ height: "100%" }}>
-        <TouchableOpacity onPress={() => router.push("/home")}>
+        <TouchableOpacity 
+          onPress={() => router.push("/home")}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel="ThanyWhere app logo"
+          accessibilityHint="Tap to continue to home screen"
+        >
           <View className="w-full justify-center items-center h-full px-4 space-y-4 bg-white">
             <Animated.View
               className=" bg-secondary/5 rounded-full"
@@ -69,6 +75,8 @@ const Index = () => {
                     width: hp(20),
                     resizeMode: "contain",
                   }}
+                  accessible={true}
+                  accessibilityLabel="ThanyWhere travel app logo"
                 />
               </Animated.View>
             </Animated.View>

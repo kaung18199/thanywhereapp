@@ -34,12 +34,17 @@ const CustomBottomSheet = forwardRef(({ id, handleClosePreps }, ref) => {
             activeOpacity={0.7}
             onPress={handleClosePreps}
             className="bg-[#FFFFFF] p-2 overflow-hidden rounded-full  border border-[#ff5f1b33] "
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel="Close bottom sheet"
+            accessibilityHint="Tap to close the room details view"
           >
             <Ionicons
               name="close"
               size={18}
               color={"#FF601B"}
               className=" p-2"
+              accessible={false}
             />
           </TouchableOpacity>
         </View>

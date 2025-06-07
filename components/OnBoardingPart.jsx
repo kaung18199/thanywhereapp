@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { CachedImage } from "../helpers/image";
 import images from "../constants/images";
-import { icons } from "../constants";
+import { icons, STRINGS } from "../constants";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 const { width } = Dimensions.get("window");
@@ -107,11 +107,18 @@ const OnBoardingPart = () => {
                         onPress={handlePrev}
                         disabled={currentPage === 0}
                         className=" bg-white/60 p-2 rounded-full"
+                        accessibilityLabel={STRINGS.NAVIGATION.PREVIOUS_PAGE}
+                        accessibilityRole="button"
+                        accessibilityHint={STRINGS.NAVIGATION.PREVIOUS_PAGE_BUTTON}
+                        hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+                        style={{ minHeight: 44, minWidth: 44, justifyContent: 'center', alignItems: 'center' }}
                       >
                         <Image
                           source={icons.leftArrow}
                           resizeMode="contain"
                           className="h-4 w-4 "
+                          accessibilityLabel={STRINGS.ACCESSIBILITY.PREVIOUS_ARROW}
+                          accessible={true}
                         />
                       </TouchableOpacity>
                     </View>
@@ -122,9 +129,12 @@ const OnBoardingPart = () => {
                         onPress={handleNext}
                         className=" bg-secondary font-pmedium px-4 py-2 rounded-full"
                         disabled={currentPage === list.length - 1}
+                        accessibilityLabel={STRINGS.NAVIGATION.NEXT_PAGE}
+                        accessibilityRole="button"
+                        accessibilityHint={STRINGS.NAVIGATION.NEXT_PAGE_BUTTON}
                       >
                         <Text className=" text-white font-pmedium text-sm">
-                          next page
+                          {STRINGS.NAVIGATION.NEXT_PAGE}
                         </Text>
                       </TouchableOpacity>
                     </View>
@@ -134,9 +144,12 @@ const OnBoardingPart = () => {
                       <TouchableOpacity
                         onPress={() => router.push("/home")}
                         className=" bg-secondary font-pmedium px-4 py-2 rounded-full"
+                        accessibilityLabel={STRINGS.NAVIGATION.CONTINUE_AS_GUEST}
+                        accessibilityRole="button"
+                        accessibilityHint={STRINGS.NAVIGATION.SKIP_LOGIN}
                       >
                         <Text className=" text-white font-pmedium text-sm">
-                          guest
+                          {STRINGS.NAVIGATION.GUEST}
                         </Text>
                       </TouchableOpacity>
                     </View>
@@ -148,6 +161,8 @@ const OnBoardingPart = () => {
                 resizeMode="cover"
                 style={{ width: width }}
                 className="h-screen relative z-0"
+                accessibilityLabel={`Onboarding screen ${item.id}: ${item.title}`}
+                accessible={true}
               />
             </View>
           )}

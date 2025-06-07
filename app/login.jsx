@@ -16,6 +16,7 @@ import { ChevronLeftIcon } from "react-native-heroicons/outline";
 import Toast from "react-native-toast-message";
 import toastConfig from "../helpers/toastConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { STRINGS } from "../constants";
 
 const HeaderLeftCustom = () => {
   const router = useRouter();
@@ -29,7 +30,7 @@ const HeaderLeftCustom = () => {
         alignItems: "center",
       }}
       hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} // Optional, to further increase tappable area
-      accessibilityLabel="Go back"
+      accessibilityLabel={STRINGS.NAVIGATION.BACK}
       accessibilityRole="button"
     >
       <ChevronLeftIcon size={24} color="#FF601B" />
@@ -123,7 +124,7 @@ const Login = () => {
           <Stack.Screen
             options={{
               headerShown: true,
-              headerTitle: "Log in",
+              headerTitle: STRINGS.AUTH.LOGIN_BUTTON,
               headerLeft: () => <HeaderLeftCustom />,
               headerTitleAlign: "center",
               headerTitleStyle: {
@@ -137,12 +138,12 @@ const Login = () => {
 
         <View className=" pt-5 px-6">
           <Text className=" font-pmedium text-lg pb-4">
-            Welcome to ThanyWhere
+            {STRINGS.AUTH.WELCOME}
           </Text>
           <View className=" flex flex-col justify-start items-center border border-gray-300 rounded-xl">
             <TextInput
               className=" border-b border-gray-300 rounded-xl px-6 text-sm font-pregular py-5 w-full"
-              placeholder="Enter your email"
+              placeholder={STRINGS.AUTH.EMAIL_PLACEHOLDER}
               keyboardType="email-address" // Show email-specific keyboard
               value={formData.email}
               onChangeText={(email) =>
@@ -150,45 +151,59 @@ const Login = () => {
               }
               autoCapitalize="none" // No automatic capitalization
               autoCorrect={false} // Disable autocorrect
+              accessibilityLabel={STRINGS.AUTH.EMAIL_PLACEHOLDER}
+              accessibilityHint="Enter your email address to log in"
             />
             <TextInput
               className="  rounded-xl px-6 text-sm font-pregular py-5 w-full"
-              placeholder="Enter your password"
+              placeholder={STRINGS.AUTH.PASSWORD_PLACEHOLDER}
               secureTextEntry // Hides the input for passwords
               value={formData.password}
               onChangeText={(password) =>
                 setFormData({ ...formData, password: password })
               }
+              accessibilityLabel={STRINGS.AUTH.PASSWORD_PLACEHOLDER}
+              accessibilityHint="Enter your password to log in"
             />
           </View>
           <Text className=" text-xs font-pregular py-4">
-            we'll send confirmation code to confirm your email. standard message
-            and data rates apply.{" "}
+            {STRINGS.AUTH.CONFIRMATION_MESSAGE}{" "}
           </Text>
           <View>
             <TouchableOpacity
               onPress={handleLogin}
               className="bg-[#FF601B]  rounded-xl px-6 py-4 flex justify-center items-center"
+              accessibilityLabel={STRINGS.AUTH.LOGIN}
+              accessibilityRole="button"
+              accessibilityHint="Tap to log in to your account"
             >
-              <Text className=" text-white font-psemibold ">Login</Text>
+              <Text className=" text-white font-psemibold ">{STRINGS.AUTH.LOGIN}</Text>
             </TouchableOpacity>
           </View>
           <View>
             <TouchableOpacity
               className="bg-white border border-gray-300 rounded-xl px-6 py-4 mt-3 flex justify-center items-center"
               onPress={() => router.push("/signup")}
+              accessibilityLabel={STRINGS.AUTH.GO_TO_SIGNUP}
+              accessibilityRole="button"
+              accessibilityHint="Tap to navigate to the sign up page"
             >
-              <Text className=" text-gray-600 font-psemibold ">
-                Go to Sign up
+              <Text className=" text-gray-800 font-psemibold ">
+                {STRINGS.AUTH.GO_TO_SIGNUP}
               </Text>
             </TouchableOpacity>
           </View>
 
           <View className="border-b border-gray-300 mt-6"></View>
           <View>
-            <TouchableOpacity className="bg-gray-200 border border-gray-300 rounded-xl px-6 py-4 mt-5 flex justify-center items-center">
+            <TouchableOpacity 
+              className="bg-gray-200 border border-gray-300 rounded-xl px-6 py-4 mt-5 flex justify-center items-center"
+              accessibilityLabel={STRINGS.AUTH.CONTINUE_WITH_GOOGLE}
+              accessibilityRole="button"
+              accessibilityHint="Tap to sign in using your Google account"
+            >
               <Text className=" text-gray-600 font-psemibold ">
-                continue with google
+                {STRINGS.AUTH.CONTINUE_WITH_GOOGLE}
               </Text>
             </TouchableOpacity>
           </View>

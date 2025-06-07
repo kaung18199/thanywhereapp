@@ -132,6 +132,10 @@ const ItemBox = ({ item }) => {
       <TouchableOpacity
         className="flex flex-row items-center"
         onPress={() => item.action(logoutAction)}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={item.name}
+        accessibilityHint={`Tap to ${item.name.toLowerCase()}`}
       >
         {item.icon()}
         <Text className=" font-pmedium text-sm ml-2">{item.name}</Text>
@@ -143,6 +147,7 @@ const ItemBox = ({ item }) => {
           width={10}
           className="w-6 h-6"
           height={10}
+          accessible={false}
         />
       </View>
     </View>
@@ -215,6 +220,10 @@ const Profile = () => {
                     onPress={() => {
                       console.log("hello world!");
                     }}
+                    accessible={true}
+                    accessibilityRole="button"
+                    accessibilityLabel="Copy user ID"
+                    accessibilityHint="Copy your unique user identifier to clipboard"
                   >
                     <Text className=" font-psemibold text-white">Copy</Text>
                   </TouchableOpacity>
@@ -245,6 +254,8 @@ const Profile = () => {
           <CachedImage
             uri={"https://cdn-icons-png.flaticon.com/128/17745/17745512.png"}
             style={{ width: 120, height: 120 }}
+            accessible={true}
+            accessibilityLabel="Not logged in illustration"
           />
           <Text className=" font-pmedium text-sm text-gray-600">
             You are not logged in , please
@@ -254,11 +265,19 @@ const Profile = () => {
             onPress={() => {
               router.push("/login"); // push to login page
             }}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel="Login to your account"
+            accessibilityHint="Navigate to login screen"
           >
             <Text className=" font-psemibold text-secondary text-lg">
               Login
             </Text>
-            <CursorArrowRippleIcon size={20} color="#FF601B" />
+            <CursorArrowRippleIcon 
+              size={20} 
+              color="#FF601B" 
+              accessible={false}
+            />
           </TouchableOpacity>
         </View>
       )}

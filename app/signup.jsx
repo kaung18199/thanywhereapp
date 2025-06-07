@@ -70,12 +70,15 @@ const SignUp = () => {
   // Function to show the date picker with platform-specific handling
   const showDatePickerHandler = () => {
     if (Platform.OS === 'android') {
-      // For Android, use the DateTimePickerAndroid API for larger touch targets
+      // For Android, use the DateTimePickerAndroid API which provides native accessibility support
       DateTimePickerAndroid.open({
         value: formData.dob ? new Date(formData.dob) : new Date(),
         onChange: onChangeDate,
         mode: 'date',
         is24Hour: true,
+        // Android-specific accessibility properties
+        accessibilityLabel: "Date of birth selection",
+        accessibilityHint: "Select your date of birth from the native calendar picker",
       });
     } else {
       // For iOS, use the modal approach
@@ -262,7 +265,7 @@ const SignUp = () => {
               accessible={true}
               accessibilityRole="button"
               accessibilityLabel="Select date of birth"
-              accessibilityHint="Tap to open calendar for date selection"
+              accessibilityHint={Platform.OS === 'android' ? "Tap to open native Android calendar picker" : "Tap to open calendar for date selection"}
             >
               {formData.dob ? (
                 <Text 
@@ -282,7 +285,7 @@ const SignUp = () => {
                 </Text>
               )}
             </TouchableOpacity>
-            {showDatePicker && (
+            {showDatePicker && Platform.OS === 'ios' && (
               <View style={{ 
                 minHeight: 48, // Ensure minimum touch target height
                 minWidth: 48, // Ensure minimum touch target width
@@ -423,7 +426,7 @@ const SignUp = () => {
               accessibilityHint="Navigate to the login page if you already have an account"
             >
               <Text 
-                className=" text-gray-600 font-psemibold "
+                className=" text-gray-800 font-psemibold "
                 accessible={true}
                 accessibilityLabel="Login instead button"
               >

@@ -18,11 +18,17 @@ const RoomList = ({ rooms, modalOpen }) => {
     <FlatList
       data={rooms}
       keyExtractor={(item) => item.id}
+      accessible={true}
+      accessibilityRole="list"
       renderItem={({ item }) => (
         <TouchableOpacity
           onPress={() => router.push("/detail/room/" + item.id)}
           activeOpacity={0.7}
           className=" w-[160px] h-[280px] mr-6"
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel={`${item.name} room - ${item?.room_price || 'Price not available'} THB per night`}
+          accessibilityHint="Tap to view room details and booking options"
         >
           <View className=" gap-y-2">
             {/* <Image
@@ -36,6 +42,8 @@ const RoomList = ({ rooms, modalOpen }) => {
               uri={item?.images[0]?.image}
               resizeMode="cover"
               className=" w-[160px] h-[120px] rounded-lg"
+              accessible={true}
+              accessibilityLabel={`${item.name} room image`}
             />
             <Text
               className=" text-sm font-psemibold text-secondary"
@@ -44,13 +52,18 @@ const RoomList = ({ rooms, modalOpen }) => {
               {item.name}
             </Text>
             <Text
-              className=" text-xs h-[25px] font-pregular text-gray-600"
+              className=" text-xs h-[25px] font-pregular text-gray-700"
               numberOfLines={2}
             >
               {item.description}
             </Text>
             <View className=" w-full flex-row justify-start items-center mt-3 mb-2">
-              <MaterialIcons name="attach-money" size={16} color="#FF601B" />
+              <MaterialIcons 
+                name="attach-money" 
+                size={16} 
+                color="#FF601B" 
+                accessible={false}
+              />
               <Text className=" text-base  font-psemibold text-secondary ">
                 {item?.room_price} thb
               </Text>

@@ -7,7 +7,7 @@ import {
   Alert,
 } from "react-native";
 import React, { useState } from "react";
-import { icons } from "../constants";
+import { icons, STRINGS } from "../constants";
 import { useRouter } from "expo-router";
 
 const SearchInput = ({
@@ -40,12 +40,19 @@ const SearchInput = ({
         onPress={() => {
           handleIndexPreps();
         }}
+        accessibilityLabel={STRINGS.SEARCH.SEARCH_BUTTON}
+        accessibilityRole="button"
+        accessibilityHint={STRINGS.SEARCH.START_SEARCH}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        style={{ minHeight: 44, minWidth: 44, justifyContent: 'center', alignItems: 'center' }}
       >
         <Image
           source={icons.search}
           resizeMode="contain"
           className="w-5 h-5 "
           tintColor="#FF601B"
+          accessibilityLabel={STRINGS.ACCESSIBILITY.SEARCH_ICON}
+          accessible={true}
         />
       </TouchableOpacity>
       <TouchableOpacity
@@ -53,11 +60,14 @@ const SearchInput = ({
         onPress={() => {
           handleIndexPreps();
         }}
+        accessibilityLabel={STRINGS.SEARCH.SEARCH_INPUT}
+        accessibilityRole="button"
+        accessibilityHint={STRINGS.SEARCH.ENTER_SEARCH_TERMS}
       >
-        <Text className=" text-base font-pregular text-gray-500">
+        <Text className=" text-base font-pregular text-gray-700">
           {searchHotel.search != ""
             ? searchHotel.search
-            : "Search with Name ..."}{" "}
+            : STRINGS.SEARCH.SEARCH_PLACEHOLDER}{" "}
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -65,12 +75,19 @@ const SearchInput = ({
           handleIndexPreps();
         }}
         className=" border p-1.5 rounded-lg border-gray-100"
+        accessibilityLabel={STRINGS.SEARCH.FILTER_SETTINGS}
+        accessibilityRole="button"
+        accessibilityHint={STRINGS.SEARCH.OPEN_FILTERS}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        style={{ minHeight: 44, minWidth: 44, justifyContent: 'center', alignItems: 'center' }}
       >
         <Image
           source={icons.setting}
           resizeMode="contain"
           className="w-4 h-4 "
           tintColor="#FF601B"
+          accessibilityLabel={STRINGS.ACCESSIBILITY.FILTER_ICON}
+          accessible={true}
         />
       </TouchableOpacity>
     </View>

@@ -38,6 +38,8 @@ const Carousel = ({ list, showButtom }) => {
                 <CachedImage
                   uri={item.image}
                   style={{ width: width, height: 380 }}
+                  accessibilityLabel={`Carousel image ${currentPage + 1} of ${list?.length}`}
+                  accessible={true}
                 />
               </View>
             )}
@@ -53,15 +55,20 @@ const Carousel = ({ list, showButtom }) => {
             }}
           />
           {showButtom && (
-            <View className=" absolute bottom-8 right-24 flex-row justify-center bg-gray-800/60 rounded-3xl w-[100px] gap-x-3 px-2 py-1.5 items-center">
-              <TouchableOpacity onPress={() => setShow(true)}>
+            <View className=" absolute bottom-8 right-24 flex-row justify-center bg-gray-900/80 rounded-3xl w-[100px] gap-x-3 px-2 py-1.5 items-center">
+              <TouchableOpacity 
+                onPress={() => setShow(true)}
+                accessibilityLabel="See all images"
+                accessibilityRole="button"
+                accessibilityHint="View all images in full screen"
+              >
                 <Text className=" text-white text-sm text-nowrap">
                   see images
                 </Text>
               </TouchableOpacity>
             </View>
           )}
-          <View className=" absolute bottom-8 right-4 flex-row justify-center bg-gray-800/60 rounded-3xl w-[65px] gap-x-3 px-2 py-1.5 items-center">
+          <View className=" absolute bottom-8 right-4 flex-row justify-center bg-gray-900/80 rounded-3xl w-[65px] gap-x-3 px-2 py-1.5 items-center">
             <Text className=" text-white text-sm">{currentPage + 1}</Text>
             <Text className=" text-white text-sm">|</Text>
             <Text className=" text-white text-sm">{list?.length}</Text>
@@ -78,12 +85,17 @@ const Carousel = ({ list, showButtom }) => {
                 key={index}
                 className={` h-[350px] `}
                 style={{ width: width }}
+                accessibilityLabel={`Full screen image ${index + 1} of ${list?.length}`}
+                accessibilityRole="button"
+                accessibilityHint="Tap to return to carousel view"
               >
                 <CachedImage
                   uri={item.image}
                   resizeMode="cover"
                   className="h-full mx-auto"
                   style={{ width: width }}
+                  accessibilityLabel={`Full screen view of image ${index + 1}`}
+                  accessible={true}
                 />
               </TouchableOpacity>
             ))}

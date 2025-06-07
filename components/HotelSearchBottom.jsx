@@ -70,6 +70,8 @@ const HotelSearchBottom = ({
           placeholder="Enter search text"
           value={searchText}
           onChangeText={setSearchText}
+          accessibilityLabel="Hotel search input"
+          accessibilityHint="Enter hotel name or location to search"
         />
         {list != null &&
           list.length > 0 &&
@@ -77,6 +79,9 @@ const HotelSearchBottom = ({
             <TouchableOpacity
               key={item.id}
               onPress={() => setSearchText(item.name)}
+              accessibilityLabel={`Select hotel: ${item.name}`}
+              accessibilityRole="button"
+              accessibilityHint="Tap to select this hotel"
             >
               <View className=" border border-secondary-200 rounded-lg py-2 bg-secondary-200/10 mt-2 w-full px-4">
                 <Text>{item.name}</Text>

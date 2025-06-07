@@ -26,6 +26,11 @@ const EmptyState = ({ title, subtitle, count }) => {
             activeOpacity={0.7}
             onPress={() => console.log("hello")}
             style={{ position: "relative" }}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel="Loading placeholder content"
+            accessibilityState={{ busy: true }}
+            accessibilityHint="Content is loading, please wait"
           >
             <View
               style={{
@@ -54,7 +59,7 @@ const EmptyState = ({ title, subtitle, count }) => {
                 >
                   <CachedImage
                     uri={
-                      "https://img.freepik.com/free-photo/abstract-textured-backgound_1258-30576.jpg?t=st=1730589697~exp=1730593297~hmac=fcac11d660a2c87242409664e4e8bf25de2f964c16334084e744579ef2f41136&w=1380"
+                      "https://img.freepik.com/free-photo/abstract-textured-backgound_1258-30576.jpg?t=st=1730589697~exp=1730589697~hmac=fcac11d660a2c87242409664e4e8bf25de2f964c16334084e744579ef2f41136&w=1380"
                     }
                     style={{
                       width: "100%",
@@ -62,6 +67,8 @@ const EmptyState = ({ title, subtitle, count }) => {
                       borderRadius: 15,
                       resizeMode: "cover",
                     }}
+                    accessible={true}
+                    accessibilityLabel="Loading placeholder image"
                   />
                 </View>
 

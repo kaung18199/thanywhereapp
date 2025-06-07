@@ -6,18 +6,27 @@ import "../../assets/global.css";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
-    <View className=" items-center justify-center pt-4 gap-2">
+    <View 
+      className=" items-center justify-center pt-4 gap-2"
+      accessible={true}
+      accessibilityRole="tab"
+      accessibilityState={{ selected: focused }}
+      accessibilityLabel={`${name} tab${focused ? ', selected' : ''}`}
+    >
       <Image
         source={icon}
         resizeMode="contain"
         tintColor={color}
         className="w-5 h-5"
+        accessibilityLabel={`${name} tab icon`}
+        accessible={true}
       />
       <Text
         className={`${
           focused ? "font-pregular" : "font-pregular"
         } text-center whitespace-nowrap w-10 font-pregular`}
         style={{ color: color, fontSize: 10 }}
+        accessible={false}
       >
         {name}
       </Text>

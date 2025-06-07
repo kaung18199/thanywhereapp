@@ -16,24 +16,35 @@ const HomeCart = ({ action, text, count, image, icon }) => {
       style={{
         width: wp(45),
       }}
+      accessibilityLabel={`${text} category with ${count} packages`}
+      accessibilityRole="button"
+      accessibilityHint={`Browse ${text.toLowerCase()} packages`}
     >
       <View className=" w-full bg-white/10 " style={{ height: hp(25) }}>
         <Image
           source={image}
           resizeMode="cover"
           className=" w-[100%] h-[100%] rounded-lg"
+          accessibilityLabel={`${text} category image`}
+          accessible={true}
         />
       </View>
       {/* <View className=" absolute -bottom-[60%] -right-[90%] w-[200px] h-[200px] bg-secondary-200/10 -z-10 rounded-full"></View> */}
 
       <View className=" px-2 pt-1">
         <View className=" flex-row justify-start items-center gap-2">
-          <FontAwesome5 name={icon} size={wp(3.5)} color="#FF601B" />
+          <FontAwesome5 
+            name={icon} 
+            size={wp(3.5)} 
+            color="#FF601B" 
+            accessibilityLabel={`${text} icon`}
+            accessible={true}
+          />
           <Text className=" text-base font-psemibold text-secondary pt-1">
             {text}
           </Text>
         </View>
-        <Text className=" text-xs pt-1 font-pregular text-gray-600 pl-1 pb-1">
+        <Text className=" text-xs pt-1 font-pregular text-gray-700 pl-1 pb-1">
           {count} Packages
         </Text>
       </View>

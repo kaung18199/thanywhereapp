@@ -72,6 +72,10 @@ const HotelCart = ({ item }) => {
         activeOpacity={0.7}
         onPress={() => router.push("/detail/hotel/" + item.id)}
         style={{ position: "relative" }}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={`Hotel: ${item?.name || 'Unnamed hotel'} - Starting from $${item?.lowest_room_price || 'Price not available'}`}
+        accessibilityHint="Tap to view hotel details and booking options"
       >
         <View
           style={{
@@ -133,7 +137,7 @@ const HotelCart = ({ item }) => {
                     paddingVertical: 2,
                     textAlign: "center",
                     color: "white",
-                    fontSize: 10,
+                    fontSize: 12,
                   }}
                 >
                   {calculatePercent(
@@ -188,8 +192,10 @@ const HotelCart = ({ item }) => {
                       <Image
                         source={icons.staricon}
                         style={{ width: 12, height: 12 }}
+                        accessibilityLabel="Rating"
+                        accessible={true}
                       />
-                      <Text style={{ fontSize: 8 }} className=" font-pregular">
+                      <Text style={{ fontSize: 10, color: '#374151' }} className=" font-pregular">
                         {item?.rating}
                       </Text>
                     </View>
@@ -206,8 +212,10 @@ const HotelCart = ({ item }) => {
                       <Image
                         source={icons.locationPin}
                         style={{ width: 12, height: 12 }}
+                        accessibilityLabel="Location"
+                        accessible={true}
                       />
-                      <Text style={{ fontSize: 8 }} className=" font-pregular">
+                      <Text style={{ fontSize: 10, color: '#374151' }} className=" font-pregular">
                         {item?.city?.name}
                       </Text>
                     </View>
@@ -221,7 +229,7 @@ const HotelCart = ({ item }) => {
                       source={{
                         html: truncateHtml(item?.full_description, 100),
                       }}
-                      baseFontStyle={{ fontSize: 8 }}
+                      baseFontStyle={{ fontSize: 10, color: '#374151' }}
                       numberOfLines={4}
                     />
                   )}
@@ -258,8 +266,10 @@ const HotelCart = ({ item }) => {
                             height: 10,
                             tintColor: "#08d14b",
                           }}
+                          accessibilityLabel="Includes video guide"
+                          accessible={true}
                         />
-                        <Text className=" text-[10px] px-1 py-0.5 text-green-500">
+                        <Text className=" text-xs px-1 py-0.5 text-green-600 font-medium">
                           includes
                         </Text>
                       </View>
@@ -276,7 +286,7 @@ const HotelCart = ({ item }) => {
                       paddingBottom: 2,
                     }}
                   >
-                    <Text style={{ fontSize: 10, fontWeight: "500" }}>
+                    <Text style={{ fontSize: 12, fontWeight: "500", color: "#374151" }}>
                       starting price
                     </Text>
                   </View>
@@ -290,7 +300,7 @@ const HotelCart = ({ item }) => {
                     >
                       {item?.lowest_room_price} THB
                       <Text
-                        style={{ fontSize: 10, color: "rgba(0, 0, 0, 0.5)" }}
+                        style={{ fontSize: 12, color: "#6B7280" }}
                       >
                         {" "}
                         / night

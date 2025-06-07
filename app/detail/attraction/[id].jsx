@@ -148,15 +148,33 @@ const AttractionDetailPage = () => {
             <TouchableOpacity
               activeOpacity={0.7}
               className="bg-white p-2 rounded-full "
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Add to wishlist"
+              accessibilityHint="Save this attraction to your favorites"
             >
-              <Ionicons name="heart-outline" size={18} color={"#FF601B"} />
+              <Ionicons 
+                name="heart-outline" 
+                size={18} 
+                color={"#FF601B"} 
+                accessible={false}
+              />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={shareListingg}
               activeOpacity={0.7}
               className="bg-white p-2 rounded-full "
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Share attraction"
+              accessibilityHint="Share this attraction with others"
             >
-              <Ionicons name="share-outline" size={18} color={"#FF601B"} />
+              <Ionicons 
+                name="share-outline" 
+                size={18} 
+                color={"#FF601B"} 
+                accessible={false}
+              />
             </TouchableOpacity>
           </View>
         );
@@ -168,8 +186,17 @@ const AttractionDetailPage = () => {
               activeOpacity={0.7}
               onPress={() => router.back()}
               className="bg-white p-2 rounded-full "
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Go back"
+              accessibilityHint="Return to previous screen"
             >
-              <Ionicons name="chevron-back" size={18} color={"#FF601B"} />
+              <Ionicons 
+                name="chevron-back" 
+                size={18} 
+                color={"#FF601B"} 
+                accessible={false}
+              />
             </TouchableOpacity>
           </View>
         );
@@ -185,6 +212,8 @@ const AttractionDetailPage = () => {
             source={icons.logo}
             resizeMode="contain"
             className="w-20 h-20"
+            accessible={true}
+            accessibilityLabel="Loading ThanyWhere logo"
           />
         </View>
       ) : (

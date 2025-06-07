@@ -88,6 +88,10 @@ const HeaderPart = ({ children, style }) => {
               <TouchableOpacity
                 style={styles.languageButton}
                 onPress={() => setIsShowModal(true)}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel="Change language from Burmese"
+                accessibilityHint="Opens language selection dialog"
               >
                 <Image
                   source={images.myanmarImage}

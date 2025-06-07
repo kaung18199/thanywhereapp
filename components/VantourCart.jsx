@@ -48,6 +48,10 @@ const VantourCart = ({ item }) => {
         activeOpacity={0.7}
         onPress={() => router.push("/detail/vantour/" + item.id)}
         style={{ position: "relative" }}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={`Van tour: ${item?.name || 'Unnamed tour'}`}
+        accessibilityHint="Tap to view tour details and booking options"
       >
         <View
           style={{
@@ -82,6 +86,8 @@ const VantourCart = ({ item }) => {
                     : "https://cdn-icons-png.flaticon.com/128/14005/14005478.png"
                 }
                 style={{ width: "100%", height: "100%", borderRadius: 15 }}
+                accessible={true}
+                accessibilityLabel={`${item?.name || 'Van tour'} cover image`}
               />
             </View>
 
@@ -131,9 +137,11 @@ const VantourCart = ({ item }) => {
                         <Image
                           source={icons.locationPin}
                           style={{ width: 12, height: 12 }}
+                          accessibilityLabel="Location"
+                          accessible={true}
                         />
                         <Text
-                          style={{ fontSize: 8 }}
+                          style={{ fontSize: 10, color: '#374151' }}
                           className=" font-pregular"
                         >
                           {c.name}
@@ -184,7 +192,7 @@ const VantourCart = ({ item }) => {
                       paddingBottom: 2,
                     }}
                   >
-                    <Text style={{ fontSize: 10, fontWeight: "500" }}>
+                    <Text style={{ fontSize: 12, fontWeight: "500", color: "#374151" }}>
                       starting price
                     </Text>
                   </View>
@@ -198,7 +206,7 @@ const VantourCart = ({ item }) => {
                     >
                       {item?.lowest_car_price} THB
                       <Text
-                        style={{ fontSize: 10, color: "rgba(0, 0, 0, 0.5)" }}
+                        style={{ fontSize: 12, color: "#6B7280" }}
                       >
                         {" "}
                         / car

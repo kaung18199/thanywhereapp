@@ -16,6 +16,9 @@ const CustomButton = ({
         isLoading ? "opacity-50" : ""
       }`}
       disabled={isLoading}
+      accessibilityLabel={title}
+      accessibilityRole="button"
+      accessibilityHint={isLoading ? "Button is loading" : `Tap to ${title.toLowerCase()}`}
       style={{
         // Adjust as needed
         shadowColor: "#000", // iOS

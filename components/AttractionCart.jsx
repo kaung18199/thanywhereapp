@@ -72,6 +72,9 @@ const AttractionCart = ({ item }) => {
         activeOpacity={0.7}
         onPress={() => router.push("/detail/attraction/" + item.id)}
         style={{ position: "relative" }}
+        accessibilityLabel={`${item.name || 'Attraction'} - ${item.lowest_variation_price ? '$' + item.lowest_variation_price : 'Price not available'}`}
+        accessibilityRole="button"
+        accessibilityHint="Tap to view attraction details"
       >
         <View
           style={{
@@ -108,6 +111,8 @@ const AttractionCart = ({ item }) => {
                       : "https://cdn-icons-png.flaticon.com/128/14005/14005478.png"
                   }
                   style={{ width: "100%", height: "100%", borderRadius: 15 }}
+                  accessibilityLabel={`${item.name || 'Attraction'} cover image`}
+                  accessible={true}
                 />
               ) : (
                 <Image
@@ -115,6 +120,8 @@ const AttractionCart = ({ item }) => {
                     uri: "https://cdn-icons-png.flaticon.com/128/14005/14005478.png",
                   }}
                   style={{ width: "100%", height: "100%", borderRadius: 15 }}
+                  accessibilityLabel="Default attraction placeholder image"
+                  accessible={true}
                 />
               )}
               <View
@@ -188,8 +195,10 @@ const AttractionCart = ({ item }) => {
                       <Image
                         source={icons.locationPin}
                         style={{ width: 12, height: 12 }}
+                        accessibilityLabel="Location"
+                        accessible={true}
                       />
-                      <Text style={{ fontSize: 8 }} className=" font-pregular">
+                      <Text style={{ fontSize: 10, color: '#374151' }} className=" font-pregular">
                         {item?.cities[0]?.name}
                       </Text>
                     </View>
@@ -203,7 +212,7 @@ const AttractionCart = ({ item }) => {
                       source={{
                         html: truncateHtml(item?.description, 100),
                       }}
-                      baseFontStyle={{ fontSize: 8 }}
+                      baseFontStyle={{ fontSize: 10, color: '#374151' }}
                       numberOfLines={4}
                     />
                   )}
@@ -222,8 +231,10 @@ const AttractionCart = ({ item }) => {
                             height: 10,
                             tintColor: "#08d14b",
                           }}
+                          accessibilityLabel="Includes video guide"
+                          accessible={true}
                         />
-                        <Text className=" text-[10px] px-1 py-0.5 text-green-500">
+                        <Text className=" text-xs px-1 py-0.5 text-green-600 font-medium">
                           includes
                         </Text>
                       </View>
@@ -239,8 +250,10 @@ const AttractionCart = ({ item }) => {
                           height: 10,
                           tintColor: "#fff400",
                         }}
+                        accessibilityLabel="Video guide coming soon"
+                        accessible={true}
                       />
-                      <Text className=" text-[10px] px-1 py-0.5 text-yellow-500">
+                      <Text className=" text-xs px-1 py-0.5 text-yellow-600 font-medium">
                         coming soon
                       </Text>
                     </View>
@@ -257,7 +270,7 @@ const AttractionCart = ({ item }) => {
                       paddingBottom: 2,
                     }}
                   >
-                    <Text style={{ fontSize: 10, fontWeight: "500" }}>
+                    <Text style={{ fontSize: 12, fontWeight: "500", color: "#374151" }}>
                       starting price
                     </Text>
                   </View>
@@ -271,7 +284,7 @@ const AttractionCart = ({ item }) => {
                     >
                       {item?.lowest_variation_price} THB
                       <Text
-                        style={{ fontSize: 10, color: "rgba(0, 0, 0, 0.5)" }}
+                        style={{ fontSize: 12, color: "#6B7280" }}
                       >
                         {" "}
                         / tickets
